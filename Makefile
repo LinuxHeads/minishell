@@ -13,7 +13,7 @@ SRCS = $(addprefix $(SRC_DIR)/, $(SRC))
 OBJS_DIR = objs
 OBJS = $(addprefix $(OBJS_DIR)/, $(SRC:.c=.o))
 
-all: $(NAME) 
+all: $(NAME)
 
 $(NAME): $(OBJS) $(LIBFT)
 	$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS)
@@ -26,9 +26,11 @@ $(OBJS_DIR)/%.o: $(SRC_DIR)/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
+	$(MAKE) -C $(LIBFT_DIR) clean
 	rm -rf $(OBJS_DIR)
 
 fclean: clean
+	$(MAKE) -C $(LIBFT_DIR) fclean
 	rm -f $(NAME)
 
 re: fclean all
