@@ -17,11 +17,12 @@
 # include <stdlib.h>
 # include <unistd.h>
 
-typedef struct s_minishell {
-    char **envp;
-} t_minishell;
+typedef struct s_minishell
+{
+	char	**envp;
+}			t_minishell;
 
-t_minishell init_minishell(char **envp);
-void minishell_loop(t_minishell *minishell);
+t_minishell	init_minishell(char **envp);
+void		minishell_loop(t_minishell *minishell);
 
 #endif
