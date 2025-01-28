@@ -14,20 +14,19 @@
 
 void print_envp(char **envp)
 {
+	int i = 0;
 	if (envp == NULL)
 	{
-		// If envp is NULL, return early
 		return;
 	}
 
-	// Loop through the envp array and print each environment variable
-	for (int i = 0; envp[i] != NULL; i++)
+	while (envp[i] != NULL)
 	{
-		// Ensure each element in envp is not NULL
 		if (envp[i] != NULL)
 		{
-			printf("%s\n", envp[i]);  // Print the environment variable
+			printf("%s\n", envp[i]);
 		}
+		i++;
 	}
 }
 
