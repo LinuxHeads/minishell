@@ -12,13 +12,29 @@
 
 #include "../include/minishell.h"
 
+void print_envp(char **envp)
+{
+	if (envp == NULL)
+	{
+		// If envp is NULL, return early
+		return;
+	}
+
+	// Loop through the envp array and print each environment variable
+	for (int i = 0; envp[i] != NULL; i++)
+	{
+		// Ensure each element in envp is not NULL
+		if (envp[i] != NULL)
+		{
+			printf("%s\n", envp[i]);  // Print the environment variable
+		}
+	}
+}
+
 int	main(int argc, char **argv, char **envp)
 {
-	t_minishell	minishell;
-
 	(void)argc;
 	(void)argv;
-	minishell = init_minishell(envp);
-	minishell_loop(&minishell);
+	print_envp(envp);
 	return (0);
 }
