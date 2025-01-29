@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/29 20:18:07 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/01/29 23:28:11 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/01/30 01:41:12 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,12 +133,30 @@ void free_envp_array(char **envp)
 	}
 	free(envp);
 }
-// void ft_setenv(const char *name, const char *value, char **envp)
-// {
-//   char *p;
 
-//   if (getenv(name) == NULL)
-//   {
+void ft_setenv(const char *name, const char *value, t_env **env_list)
+{
+    t_env *env = *env_list;
+    t_env *new;
 
-//   }
-// }
+    // Check if the variable already exists
+    while (env)
+    {
+        if (ft_strcmp(env->name, name) == 0)
+        {
+            free(env->value);
+            env->value = ft_strdup(value);
+            return;
+        }
+        env = env->next;
+    }
+
+    // If not found, create a new entry
+    new = malloc(sizeof(t_env));
+    if (!new)
+        return;
+    new->name = ft_strdup(name);
+    new->value = ft_strdup(value);
+    new->next = *env_list;
+    *env_list = new;
+}
