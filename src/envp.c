@@ -1,25 +1,41 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   envp.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: abdsalah <abdsalah@std.42amman.com>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/01/29 20:18:07 by abdsalah          #+#    #+#             */
+/*   Updated: 2025/01/29 20:21:52 by abdsalah         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../include/minishell.h"
 
 void add_variable(char *envp, t_env *env)
 {
-  t_env *new;
-  char *name;
-  char *value;
-  int length;
+    t_env *new;
+    char *equal_sign;
+    int length;
 
-  name = ft_strchr(envp, '=') + 1;
-  value = ft_strdup(name);
-  length = ft_strchr(envp, '=') - envp;
-  name = malloc(sizeof(char) * length);
-  name = ft_strncpy(name, envp, length);
-  new = malloc(sizeof(t_env));
-  new->name = ft_strdup(name);
-  new->value = ft_strdup(value);
-  new->next = NULL;
-  while (env->next)
-    env = env->next;
-  env->next = new;
+    equal_sign = ft_strchr(envp, '=');
+    if (!equal_sign)
+        return; // Invalid environment variable (no '=' found)
+
+    length = equal_sign - envp;
+    new = malloc(sizeof(t_env));
+    if (!new)
+        return;
+
+    new->name = ft_substr(envp, 0, length); // Extract name
+    new->value = ft_strdup(equal_sign + 1); // Extract value
+    new->next = NULL;
+
+    while (env->next)
+        env = env->next;
+    env->next = new;
 }
+
 int env_length(t_env *env)
 {
   int i;
@@ -32,38 +48,56 @@ int env_length(t_env *env)
   }
   return (i);
 }
-
 t_env *init_envp(char **envp)
 {
-  int i;
-  t_env *env;
+    int i;
+    t_env *env;
+    t_env *head;
 
-  i = 0;
-  env = malloc(sizeof(t_env));
-  while (envp[i])
-  {
-    add_variable(envp[i], env);
-    i++;
-  }
-	// print_envp(env);
-  return (env);
+    if (!envp || !envp[0])
+        return (NULL);
+
+    head = malloc(sizeof(t_env));
+    if (!head)
+        return (NULL);
+    head->next = NULL;
+    add_variable(envp[0], head);
+
+    env = head;
+    i = 1;
+    while (envp[i])
+    {
+        add_variable(envp[i], env);
+        i++;
+    }
+
+    return (head);
 }
+
 char **envp_to_str(t_env *env)
 {
-  char **envp;
-  int i;
+    char **envp;
+    int i;
+    char *temp;
 
-  i = 0;
-  envp = malloc(sizeof(char *) * (env_length(env) + 1));
-  while (env)
-  {
-    envp[i] = ft_strjoin(env->name, "=");
-    envp[i] = ft_strjoin(envp[i], env->value);
-    i++;
-    env = env->next;
-  }
-  envp[i] = NULL;
-  return (envp);
+    if (!env)
+        return (NULL);
+
+    envp = malloc(sizeof(char *) * (env_length(env) + 1));
+    if (!envp)
+        return (NULL);
+
+    i = 0;
+    while (env)
+    {
+        temp = ft_strjoin(env->name, "=");
+        envp[i] = ft_strjoin(temp, env->value);
+        free(temp);
+        i++;
+        env = env->next;
+    }
+    envp[i] = NULL;
+    return (envp);
 }
 
 void print_envp(t_env *env)
