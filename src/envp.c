@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@std.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/29 20:18:07 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/01/29 20:21:52 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/01/29 20:26:20 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,31 +48,42 @@ int env_length(t_env *env)
   }
   return (i);
 }
+
 t_env *init_envp(char **envp)
 {
-    int i;
-    t_env *env;
-    t_env *head;
+    int i = 0;
+    t_env *head = NULL;
+    t_env *tail = NULL;
 
-    if (!envp || !envp[0])
-        return (NULL);
-
-    head = malloc(sizeof(t_env));
-    if (!head)
-        return (NULL);
-    head->next = NULL;
-    add_variable(envp[0], head);
-
-    env = head;
-    i = 1;
     while (envp[i])
     {
-        add_variable(envp[i], env);
+        t_env *new = malloc(sizeof(t_env));
+        if (!new)
+            return (NULL);
+        
+        char *equal_sign = ft_strchr(envp[i], '=');
+        if (!equal_sign) // If there's no '=', skip this entry
+        {
+            free(new);
+            i++;
+            continue;
+        }
+        int name_len = equal_sign - envp[i];
+        new->name = ft_substr(envp[i], 0, name_len);
+        new->value = ft_strdup(equal_sign + 1);
+        new->next = NULL;
+
+        if (!head)
+            head = new;
+        else
+            tail->next = new;
+        
+        tail = new;
         i++;
     }
-
-    return (head);
+    return head;
 }
+
 
 char **envp_to_str(t_env *env)
 {
