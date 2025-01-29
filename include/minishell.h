@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abdsalah <abdsalah@std.42amman.com>        +#+  +:+       +#+        */
+/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 19:24:00 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/01/29 20:14:29 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/01/29 23:28:26 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,5 +41,9 @@ void		ft_unset();
 void        ft_setenv(const char *name, const char *value, char **envp);
 void        ft_pwd();
 void        init_minishell(char **envp);
+void        free_envp_array(char **envp);
+void        free_envp_list(t_env *env);
+void        printstr_envp(char **envp);
+int         env_length(t_env *env);
 
 #endif

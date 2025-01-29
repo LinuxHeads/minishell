@@ -3,48 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abdsalah <abdsalah@std.42amman.com>        +#+  +:+       +#+        */
+/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/29 20:22:52 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/01/29 20:25:04 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/01/29 23:25:09 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-void printstr_envp(char **envp)
-{
-	int i = 0;
-	while (envp[i])
-	{
-		printf("%s\n", envp[i]);
-		i++;
-	}
-}
-
-void free_envp_list(t_env *env)
-{
-	t_env *tmp;
-	while (env)
-	{
-		tmp = env;
-		env = env->next;
-		free(tmp->name);
-		free(tmp->value);
-		free(tmp);
-	}
-}
-
-void free_envp_array(char **envp)
-{
-	int i = 0;
-	while (envp[i])
-	{
-		free(envp[i]);
-		i++;
-	}
-	free(envp);
-}
 void init_minishell(char **envp)
 {
     t_env *env = init_envp(envp);

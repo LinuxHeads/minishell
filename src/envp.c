@@ -3,38 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   envp.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abdsalah <abdsalah@std.42amman.com>        +#+  +:+       +#+        */
+/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/29 20:18:07 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/01/29 20:26:20 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/01/29 23:28:11 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
-
-void add_variable(char *envp, t_env *env)
-{
-    t_env *new;
-    char *equal_sign;
-    int length;
-
-    equal_sign = ft_strchr(envp, '=');
-    if (!equal_sign)
-        return; // Invalid environment variable (no '=' found)
-
-    length = equal_sign - envp;
-    new = malloc(sizeof(t_env));
-    if (!new)
-        return;
-
-    new->name = ft_substr(envp, 0, length); // Extract name
-    new->value = ft_strdup(equal_sign + 1); // Extract value
-    new->next = NULL;
-
-    while (env->next)
-        env = env->next;
-    env->next = new;
-}
 
 int env_length(t_env *env)
 {
@@ -51,17 +27,20 @@ int env_length(t_env *env)
 
 t_env *init_envp(char **envp)
 {
-    int i = 0;
+    int i;
     t_env *head = NULL;
     t_env *tail = NULL;
-
+    t_env *new;
+    char *equal_sign;
+    
+    i = 0;
     while (envp[i])
     {
-        t_env *new = malloc(sizeof(t_env));
+        new = malloc(sizeof(t_env));
         if (!new)
             return (NULL);
         
-        char *equal_sign = ft_strchr(envp[i], '=');
+        equal_sign = ft_strchr(envp[i], '=');
         if (!equal_sign) // If there's no '=', skip this entry
         {
             free(new);
@@ -69,8 +48,8 @@ t_env *init_envp(char **envp)
             continue;
         }
         int name_len = equal_sign - envp[i];
-        new->name = ft_substr(envp[i], 0, name_len);
-        new->value = ft_strdup(equal_sign + 1);
+        new->name = ft_substr(envp[i], 0, name_len);//check
+        new->value = ft_strdup(equal_sign + 1);//check
         new->next = NULL;
 
         if (!head)
@@ -118,6 +97,41 @@ void print_envp(t_env *env)
     printf("%s=%s\n", env->name, env->value);
     env = env->next;
   }
+}
+
+
+void printstr_envp(char **envp)
+{
+	int i = 0;
+	while (envp[i])
+	{
+		printf("%s\n", envp[i]);
+		i++;
+	}
+}
+
+void free_envp_list(t_env *env)
+{
+	t_env *tmp;
+	while (env)
+	{
+		tmp = env;
+		env = env->next;
+		free(tmp->name);
+		free(tmp->value);
+		free(tmp);
+	}
+}
+
+void free_envp_array(char **envp)
+{
+	int i = 0;
+	while (envp[i])
+	{
+		free(envp[i]);
+		i++;
+	}
+	free(envp);
 }
 // void ft_setenv(const char *name, const char *value, char **envp)
 // {
