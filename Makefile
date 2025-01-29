@@ -1,5 +1,5 @@
 CC = cc
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror -g
 NAME = minishell
 
 LIBFT_DIR = libft
@@ -7,7 +7,7 @@ LDFLAGS = -L$(LIBFT_DIR) -I$(LIBFT_DIR) -lft
 LIBFT = $(LIBFT_DIR)/libft.a
 
 SRC_DIR = src
-SRC = main.c builtin_functions/cd.c builtin_functions/echo.c builtin_functions/env.c builtin_functions/exit.c builtin_functions/unset.c builtin_functions/export.c envp_functions/envp.c
+SRC = main.c envp.c
 SRCS = $(addprefix $(SRC_DIR)/, $(SRC))
 
 OBJS_DIR = objs
