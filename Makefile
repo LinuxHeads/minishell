@@ -3,11 +3,11 @@ CFLAGS = -Wall -Wextra -Werror -g -Iinclude
 NAME = minishell
 
 LIBFT_DIR = libft
-LDFLAGS = -L$(LIBFT_DIR) -lft
+LDFLAGS = -L$(LIBFT_DIR) -lft -lreadline
 LIBFT = $(LIBFT_DIR)/libft.a
 
 SRC_DIR = src
-SRC = main.c envp.c
+SRC = main.c envp.c signals.c
 SRCS = $(addprefix $(SRC_DIR)/, $(SRC))
 
 OBJS_DIR = objs
