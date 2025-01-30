@@ -6,15 +6,21 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/29 20:22:52 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/01/30 01:49:00 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/01/30 03:01:03 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
 
-void init_minishell(t_shell *shell, char **envp)
+void init_minishell(t_shell *shell, char **envp)//$SHLVL
 {
+	if (!isatty(STDIN_FILENO))
+    {
+        // If not a TTY, print an error and exit
+        fprintf(stderr, "Error: Minishell must be run in a terminal (TTY)\n");
+        exit(1);
+    }
 	shell->env_list = init_envp(envp);
     if (!shell->env_list)
 	{
@@ -25,9 +31,11 @@ void init_minishell(t_shell *shell, char **envp)
 	if (!shell->envp || !shell->envp[0])
 	{
 		printf("Error: envp_to_str returned NULL or empty\n");
+		free_envp_list(shell->env_list);
 		exit(1);
 	}
 	shell->exit_status = 0;
+	
 }
 
 void minishell_loop()
@@ -41,7 +49,7 @@ void minishell_loop()
 			break;
 		if (ft_strlen(line) > 0)
 			add_history(line);
-		if (ft_strcmp(line, "exit") == 0)
+		if (ft_strcmp(line, "exit") == 0)//temp 
 		{
 			free(line);
 			break;
@@ -49,6 +57,7 @@ void minishell_loop()
 		free(line);
 	}
 }
+
 int main(int argc, char **argv, char **envp)
 {
 	(void)argc;
@@ -57,5 +66,7 @@ int main(int argc, char **argv, char **envp)
 	init_minishell(&shell, envp);
 	signals_t3res();
 	minishell_loop();
+	free_envp_list(shell.env_list);
+	free_envp_array(shell.envp);
 	return (shell.exit_status);
 }
