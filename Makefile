@@ -7,7 +7,8 @@ LDFLAGS = -L$(LIBFT_DIR) -lft -lreadline
 LIBFT = $(LIBFT_DIR)/libft.a
 
 SRC_DIR = src
-SRC = main.c envp.c signals.c
+# SRC = main.c envp.c signals.c
+SRC= parsing.c
 SRCS = $(addprefix $(SRC_DIR)/, $(SRC))
 
 OBJS_DIR = objs
