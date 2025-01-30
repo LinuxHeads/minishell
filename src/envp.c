@@ -6,11 +6,22 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/29 20:18:07 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/01/30 02:55:06 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/01/30 14:31:58 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
+
+char *ft_getenv(const char *name, t_env *env)
+{
+    while (env)
+    {
+        if (ft_strcmp(env->name, name) == 0)
+            return (env->value);
+        env = env->next;
+    }
+    return (NULL);
+}
 
 int env_length(t_env *env)
 {
