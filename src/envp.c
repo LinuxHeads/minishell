@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/29 20:18:07 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/01/30 01:41:12 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/01/30 02:55:06 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,33 +32,35 @@ t_env *init_envp(char **envp)
     t_env *tail = NULL;
     t_env *new;
     char *equal_sign;
+    int name_len;
     
-    i = 0;
-    while (envp[i])
+    i = -1;
+    while (envp[++i])
     {
         new = malloc(sizeof(t_env));
         if (!new)
             return (NULL);
-        
         equal_sign = ft_strchr(envp[i], '=');
-        if (!equal_sign) // If there's no '=', skip this entry
+        name_len = equal_sign - envp[i];
+        new->name = ft_substr(envp[i], 0, name_len);//check
+        if (!new->name)
         {
             free(new);
-            i++;
-            continue;
+            return (NULL);
         }
-        int name_len = equal_sign - envp[i];
-        new->name = ft_substr(envp[i], 0, name_len);//check
         new->value = ft_strdup(equal_sign + 1);//check
+        if (!new->value)
+        {
+            free(new->name);
+            free(new);
+            return (NULL);
+        }
         new->next = NULL;
-
         if (!head)
             head = new;
         else
             tail->next = new;
-        
         tail = new;
-        i++;
     }
     return head;
 }
@@ -150,7 +152,6 @@ void ft_setenv(const char *name, const char *value, t_env **env_list)
         }
         env = env->next;
     }
-
     // If not found, create a new entry
     new = malloc(sizeof(t_env));
     if (!new)
