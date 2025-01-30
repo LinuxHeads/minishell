@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 19:24:00 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/01/30 01:53:30 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/01/30 02:55:01 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,7 +148,7 @@ void        ft_unset(void);
 ** ft_setenv: Function to manually set an environment variable (can be used 
 ** to implement `setenv` if needed).
 */
-void ft_setenv(const char *name, const char *value, t_env **env_list);
+void        ft_setenv(const char *name, const char *value, t_env **env_list);
 
 /* 
 ** ft_pwd: Built-in pwd command to print the current directory path.
