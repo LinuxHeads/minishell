@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
+/*   By: abdsalah <abdsalah@std.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 01:23:07 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/01/30 18:46:46 by ahramada         ###   ########.fr       */
+/*   Updated: 2025/01/31 16:51:21 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -214,39 +214,39 @@ void free_shell(t_shell *shell)
 }
 
 
-int main(void)
-{
-    t_shell *shell;
-    char **commands;
-    int num_commands;
-    char *input;
+// int main(void)
+// {
+//     t_shell *shell;
+//     char **commands;
+//     int num_commands;
+//     char *input;
 
-    while (1)
-    {
-        /* \033[1;32m sets bold green color, \033[0m resets all attributes */
-        input = readline("\033[1;32mminishell>\033[0m ");
+//     while (1)
+//     {
+//         /* \033[1;32m sets bold green color, \033[0m resets all attributes */
+//         input = readline("\033[1;32mminishell>\033[0m ");
         
-        if (!input)
-        {
-            /* \033[1;31m sets bold red color, \033[0m resets all attributes */
-            printf("\033[1;31mexit\033[0m\n");
-            break;
-        }
+//         if (!input)
+//         {
+//             /* \033[1;31m sets bold red color, \033[0m resets all attributes */
+//             printf("\033[1;31mexit\033[0m\n");
+//             break;
+//         }
         
-        if (*input)
-            add_history(input);
+//         if (*input)
+//             add_history(input);
         
-        commands = ft_split(input, '|');
-        num_commands = count_words(input, '|');
+//         commands = ft_split(input, '|');
+//         num_commands = count_words(input, '|');
 
-        shell = allocate_shell_commands(num_commands, commands);
-        print_shell(shell);
+//         shell = allocate_shell_commands(num_commands, commands);
+//         print_shell(shell);
 
-        free_shell(shell);
-        free(commands);
-        free(input);
-    }
+//         free_shell(shell);
+//         free(commands);
+//         free(input);
+//     }
 
-    clear_history();
-    return 0;
-}
+//     clear_history();
+//     return 0;
+// }
