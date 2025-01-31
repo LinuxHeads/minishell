@@ -7,11 +7,13 @@ LDFLAGS = -L$(LIBFT_DIR) -lft -lreadline
 LIBFT = $(LIBFT_DIR)/libft.a
 
 SRC_DIR = src
-SRC = main.c envp.c signals.c parsing.c
-SRCS = $(addprefix $(SRC_DIR)/, $(SRC))
-
 OBJS_DIR = objs
-OBJS = $(addprefix $(OBJS_DIR)/, $(SRC:.c=.o))
+
+SRC = main.c envp.c signals.c parsing.c builtin_functions/cd.c
+
+# Automatically find the full paths of the source files
+SRCS = $(addprefix $(SRC_DIR)/, $(SRC))
+OBJS = $(patsubst $(SRC_DIR)/%.c, $(OBJS_DIR)/%.o, $(SRCS))
 
 all: $(NAME)
 
@@ -21,7 +23,9 @@ $(NAME): $(OBJS) $(LIBFT)
 $(LIBFT):
 	$(MAKE) -C $(LIBFT_DIR)
 
+# Rule to create .o files while preserving the subdirectory structure
 $(OBJS_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJS_DIR)
+	@mkdir -p $(dir $@)  # Ensure subdirectories exist
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(OBJS_DIR):
