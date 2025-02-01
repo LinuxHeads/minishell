@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
+/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 01:23:07 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/01/31 20:15:14 by ahramada         ###   ########.fr       */
+/*   Updated: 2025/02/01 18:51:08 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,25 +97,25 @@ t_token_type	identify_token_type(char *token, t_next_token *decide)
 		decide->command = 1;
 		return (PIPE);
 	}
-	if (ft_strcmp(token, ">") == 0)
-	{
-		decide->output_file = 1;
-		return (REDIRECT_OUT);
-	}
 	if (ft_strcmp(token, ">>") == 0)
 	{
 		decide->input_file = 1;
 		return (REDIRECT_APPEND);
 	}
-	if (ft_strcmp(token, "<") == 0)
+	if (ft_strcmp(token, ">") == 0)
 	{
-		decide->input_file = 1;
-		return (REDIRECT_IN);
+		decide->output_file = 1;
+		return (REDIRECT_OUT);
 	}
 	if (ft_strcmp(token, "<<") == 0)
 	{
 		decide->output_file = 1;
 		return (HEREDOC);
+	}
+	if (ft_strcmp(token, "<") == 0)
+	{
+		decide->input_file = 1;
+		return (REDIRECT_IN);
 	}
 	if (token[0] == '$')
     {
@@ -210,23 +210,37 @@ void	free_shell(t_shell *shell)
 }
 const char *get_token_type_name(t_token_type type)
 {
-    switch (type)
-    {
-        case COMMAND: return "COMMAND";
-        case ARGUMENT: return "ARGUMENT";
-        case PIPE: return "PIPE";
-        case REDIRECT_IN: return "REDIRECT_IN";
-        case REDIRECT_OUT: return "REDIRECT_OUT";
-        case REDIRECT_APPEND: return "REDIRECT_APPEND";
-        case HEREDOC: return "HEREDOC";
-        case ENV_VAR: return "ENV_VAR";
-        case DOLLAR_SIGN: return "DOLLAR_SIGN";
-        case SINGLE_QUOTE: return "SINGLE_QUOTE";
-        case DOUBLE_QUOTE: return "DOUBLE_QUOTE";
-        case INPUT_FILE: return "INPUT_FILE";
-        case OUTPUT_FILE: return "OUTPUT_FILE";
-        default: return "UNKNOWN";
-    }
+    // switch (type)
+    // {
+    //     case COMMAND: return "COMMAND";
+    //     case ARGUMENT: return "ARGUMENT";
+    //     case PIPE: return "PIPE";
+    //     case REDIRECT_IN: return "REDIRECT_IN";
+    //     case REDIRECT_OUT: return "REDIRECT_OUT";
+    //     case REDIRECT_APPEND: return "REDIRECT_APPEND";
+    //     case HEREDOC: return "HEREDOC";
+    //     case ENV_VAR: return "ENV_VAR";
+    //     case DOLLAR_SIGN: return "DOLLAR_SIGN";
+    //     case SINGLE_QUOTE: return "SINGLE_QUOTE";
+    //     case DOUBLE_QUOTE: return "DOUBLE_QUOTE";
+    //     case INPUT_FILE: return "INPUT_FILE";
+    //     case OUTPUT_FILE: return "OUTPUT_FILE";
+    //     default: return "UNKNOWN";
+    // }
+	return (char *[]){"COMMAND",
+	"ARGUMENT",
+	"PIPE",
+	"REDIRECT_IN",
+	"REDIRECT_OUT",
+	"REDIRECT_APPEND",
+	"HEREDOC",
+	"ENV_VAR",
+	"DOLLAR_SIGN",
+	"SINGLE_QUOTE",
+	"DOUBLE_QUOTE",
+	"INPUT_FILE",
+	"OUTPUT_FILE",
+	"UNKNOWN"}[type];
 }
 
 void print_shell(t_shell *shell)
