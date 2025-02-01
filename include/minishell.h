@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 19:24:00 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/01/30 02:55:01 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/01 23:35:58 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,12 +127,12 @@ void        ft_echo(void);
 /* 
 ** ft_env: Built-in env command to print environment variables to stdout.
 */
-void        ft_env(void);
+void        ft_env(t_shell *shell);
 
 /* 
 ** ft_cd: Built-in cd command to change the current directory.
 */
-void        ft_cd(char *args, char **envp);
+void        ft_cd(char *args, t_env **envp);
 
 /* 
 ** ft_export: Built-in export command to set an environment variable.
@@ -166,5 +166,5 @@ void        ft_pwd(void);
 void        init_minishell(t_shell *shell, char **envp);
 
 /* ************************************************************************** */
-
+char *ft_getenv(const char *name, t_env *env);
 #endif
