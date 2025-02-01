@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 01:23:07 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/01 18:51:08 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/01 20:07:33 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -330,32 +330,32 @@ char	*preprocess_input(char *input)
 }
 
 
-int	main(void)
-{
-	t_shell	*shell;
-	char	**commands;
-	int		num_commands;
-	char	*input;
+// int	main(void)
+// {
+// 	t_shell	*shell;
+// 	char	**commands;
+// 	int		num_commands;
+// 	char	*input;
 
-	while (1)
-	{
-		input = readline("\033[1;32mminishell>\033[0m ");
-		if (!input)
-		{
-			printf("\033[1;31mexit\033[0m\n");
-			break ;
-		}
-		if (*input)
-			add_history(input);
-		input = preprocess_input(input);
-		commands = ft_split(input, '|');
-		num_commands = count_words(input, '|');
-		shell = allocate_shell_commands(num_commands, commands);
-        print_shell(shell);
-		free_shell(shell);
-		free(commands);
-		free(input);
-	}
-	clear_history();
-	return (0);
-}
+// 	while (1)
+// 	{
+// 		input = readline("\033[1;32mminishell>\033[0m ");
+// 		if (!input)
+// 		{
+// 			printf("\033[1;31mexit\033[0m\n");
+// 			break ;
+// 		}
+// 		if (*input)
+// 			add_history(input);
+// 		input = preprocess_input(input);
+// 		commands = ft_split(input, '|');
+// 		num_commands = count_words(input, '|');
+// 		shell = allocate_shell_commands(num_commands, commands);
+//         print_shell(shell);
+// 		free_shell(shell);
+// 		free(commands);
+// 		free(input);
+// 	}
+// 	clear_history();
+// 	return (0);
+// }
