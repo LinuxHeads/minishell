@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 19:24:00 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/01 23:35:58 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/01 23:47:43 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,7 +142,7 @@ void        ft_export(void);
 /* 
 ** ft_unset: Built-in unset command to remove an environment variable.
 */
-void        ft_unset(void);
+void    ft_unset(char *arg, t_shell *shell);
 
 /* 
 ** ft_setenv: Function to manually set an environment variable (can be used 
