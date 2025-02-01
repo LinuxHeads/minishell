@@ -1,5 +1,5 @@
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -g -Iinclude
+CFLAGS =  -g -Iinclude
 NAME = minishell
 
 LIBFT_DIR = libft

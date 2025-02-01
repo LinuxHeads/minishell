@@ -6,7 +6,7 @@
 /*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 01:23:07 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/01 22:29:35 by ahramada         ###   ########.fr       */
+/*   Updated: 2025/02/01 22:31:13 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -311,7 +311,7 @@ char	*ft_str_replace(const char *str, const char *old, const char *new)
 }
 
 
-char    preprocess_input(charinput)
+char    preprocess_input(char *input)
 {
     char    *new_input;
     char    *tmp;
