@@ -6,7 +6,7 @@
 /*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 01:23:07 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/01 20:07:33 by ahramada         ###   ########.fr       */
+/*   Updated: 2025/02/01 22:29:35 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -311,22 +311,22 @@ char	*ft_str_replace(const char *str, const char *old, const char *new)
 }
 
 
-char	*preprocess_input(char *input)
+char    preprocess_input(charinput)
 {
-	char	*new_input;
-	char	*tmp;
+    char    *new_input;
+    char    *tmp;
 
-	new_input = ft_str_replace(input, ">>", " >> ");
-	tmp = new_input;
-	new_input = ft_str_replace(tmp, "<<", " << ");
-	free(tmp);
-	tmp = new_input;
-	new_input = ft_str_replace(tmp, ">", " > ");
-	free(tmp);
-	tmp = new_input;
-	new_input = ft_str_replace(tmp, "<", " < ");
-	free(tmp);
-	return (new_input);
+
+
+    new_input = ft_str_replace(input, ">", " > ");
+    tmp = new_input;
+    new_input = ft_str_replace(tmp, "<", " < ");
+    tmp = new_input;
+    new_input = ft_str_replace(tmp, " >  > ", " >> ");
+    tmp = new_input;
+    new_input = ft_str_replace(tmp, " <  < ", " << ");
+
+    return (new_input);
 }
 
 
