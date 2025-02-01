@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
+/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/29 20:22:52 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/01/30 16:45:19 by ahramada         ###   ########.fr       */
+/*   Updated: 2025/02/01 23:38:27 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ void init_minishell(t_shell *shell, char **envp)//$SHLVL
 	shell->exit_status = 0;
 }
 
-void minishell_loop()
+void minishell_loop(t_shell *shell)
 {
 	char *line;
 
@@ -52,6 +52,14 @@ void minishell_loop()
 		{
 			free(line);
 			break;
+		}if (ft_strncmp(line, "cd",2) == 0)//temp 
+		{
+			ft_cd(line+2, &shell->env_list);
+		}
+		if (ft_strcmp(line, "env") == 0)//temp 
+		{
+			ft_env(shell);
+			// free(line);
 		}
 		free(line);
 	}
@@ -64,7 +72,7 @@ int main(int argc, char **argv, char **envp)
 	t_shell shell;
 	init_minishell(&shell, envp);
 	signals_t3res();
-	minishell_loop();
+	minishell_loop(&shell);
 	free_envp_list(shell.env_list);
 	free_envp_array(shell.envp);
 	return (shell.exit_status);
