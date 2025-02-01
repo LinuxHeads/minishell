@@ -3,24 +3,27 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abdsalah <abdsalah@std.42amman.com>        +#+  +:+       +#+        */
+/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 15:41:43 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/01/27 15:43:07 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/01 23:37:55 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "../../include/minishell.h"
 
-void ft_cd(char *args, char **envp)
+void ft_cd(char *args, t_env **envp)
 {
   char *path;
   char cwd[1024];
   char *oldpwd;
 
   // If no arguments, use $HOME
-  if (args == NULL)
+  printf("%s\n", args);
+  args = ft_strtrim(args, " ");
+  if (args == NULL || args[0] == '\0')
   {
-    path = getenv("HOME");
+    path = ft_getenv("HOME", *envp);
     if (path == NULL)
     {
       write(2, "cd: HOME not set\n", 18);
@@ -30,7 +33,7 @@ void ft_cd(char *args, char **envp)
   // If argument is "-", use $OLDPWD
   else if (ft_strcmp(args, "-") == 0)
   {
-    path = getenv("OLDPWD");
+    path = ft_getenv("OLDPWD", *envp);
     if (path == NULL)
     {
       write(2, "cd: OLDPWD not set\n", 19);
@@ -71,5 +74,5 @@ void ft_cd(char *args, char **envp)
     ft_setenv("PWD", cwd, envp);
   }
 
-  free(oldpwd);  // Free allocated memory for oldpwd
+  free(oldpwd);  // Free allocated memory for oldpwd    }
 }
