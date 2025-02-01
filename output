@@ -1,14 +1,20 @@
-total 72
-drwxr-xr-x  9 ahmad ahmad  4096 Jan 31 19:40 .
-drwxr-xr-x 26 ahmad ahmad  4096 Jan 31 19:40 ..
-drwxr-xr-x  2 ahmad ahmad  4096 Jan 31 19:31 get_next_line
-drwxr-xr-x  8 ahmad ahmad  4096 Jan 31 12:04 .git
-drwxr-xr-x  2 ahmad ahmad  4096 Jan 30 09:26 include
-drwxr-xr-x  2 ahmad ahmad  4096 Jan 31 19:31 libft
--rw-r--r--  1 ahmad ahmad   722 Jan 31 12:03 Makefile
--rwxr-xr-x  1 ahmad ahmad 26096 Jan 31 19:39 minishell
-drwxr-xr-x  2 ahmad ahmad  4096 Jan 31 19:39 objs
--rw-r--r--  1 ahmad ahmad     0 Jan 31 19:40 output
+ls
+-la
+total 96
+drwxr-xr-x  9 ahmad ahmad  4096 Feb  1 20:07 .
+drwxr-xr-x 27 ahmad ahmad  4096 Feb  1 19:43 ..
+drwxr-xr-x  2 ahmad ahmad  4096 Feb  1 16:26 get_next_line
+drwxr-xr-x  8 ahmad ahmad  4096 Feb  1 19:23 .git
+-rw-r--r--  1 ahmad ahmad     9 Feb  1 19:21 .gitignore
+drwxr-xr-x  2 ahmad ahmad  4096 Feb  1 20:00 include
+-rw-r--r--  1 ahmad ahmad     3 Feb  1 19:04 input
+drwxr-xr-x  2 ahmad ahmad  4096 Feb  1 16:26 libft
+-rw-r--r--  1 ahmad ahmad   895 Feb  1 20:05 Makefile
+-rwxr-xr-x  1 ahmad ahmad 31752 Feb  1 20:07 minishell
+drwxr-xr-x  2 ahmad ahmad  4096 Feb  1 20:07 objs
+-rw-r--r--  1 ahmad ahmad     3 Feb  1 19:43 out
+-rw-r--r--  1 ahmad ahmad     7 Feb  1 20:07 output
 -rw-r--r--  1 ahmad ahmad    11 Jan 30 09:26 README.md
-drwxr-xr-x  3 ahmad ahmad  4096 Jan 31 18:43 src
-drwxr-xr-x  2 ahmad ahmad  4096 Jan 31 19:28 .vscode
+drwxr-xr-x  3 ahmad ahmad  4096 Feb  1 19:25 src
+-rw-r--r--  1 ahmad ahmad     9 Feb  1 19:43 tt
+drwxr-xr-x  2 ahmad ahmad  4096 Feb  1 19:21 .vscode

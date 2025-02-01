@@ -9,7 +9,7 @@ LIBFT = $(LIBFT_DIR)/libft.a
 SRC_DIR = src
 OBJS_DIR = objs
 
-SRC = parsing.c
+SRC =  execute.c  parsing.c
 
 # Automatically find the full paths of the source files
 SRCS = $(addprefix $(SRC_DIR)/, $(SRC))

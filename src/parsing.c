@@ -6,7 +6,7 @@
 /*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 01:23:07 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/01/31 20:15:14 by ahramada         ###   ########.fr       */
+/*   Updated: 2025/02/01 20:07:33 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,25 +97,25 @@ t_token_type	identify_token_type(char *token, t_next_token *decide)
 		decide->command = 1;
 		return (PIPE);
 	}
-	if (ft_strcmp(token, ">") == 0)
-	{
-		decide->output_file = 1;
-		return (REDIRECT_OUT);
-	}
 	if (ft_strcmp(token, ">>") == 0)
 	{
 		decide->input_file = 1;
 		return (REDIRECT_APPEND);
 	}
-	if (ft_strcmp(token, "<") == 0)
+	if (ft_strcmp(token, ">") == 0)
 	{
-		decide->input_file = 1;
-		return (REDIRECT_IN);
+		decide->output_file = 1;
+		return (REDIRECT_OUT);
 	}
 	if (ft_strcmp(token, "<<") == 0)
 	{
 		decide->output_file = 1;
 		return (HEREDOC);
+	}
+	if (ft_strcmp(token, "<") == 0)
+	{
+		decide->input_file = 1;
+		return (REDIRECT_IN);
 	}
 	if (token[0] == '$')
     {
@@ -210,23 +210,37 @@ void	free_shell(t_shell *shell)
 }
 const char *get_token_type_name(t_token_type type)
 {
-    switch (type)
-    {
-        case COMMAND: return "COMMAND";
-        case ARGUMENT: return "ARGUMENT";
-        case PIPE: return "PIPE";
-        case REDIRECT_IN: return "REDIRECT_IN";
-        case REDIRECT_OUT: return "REDIRECT_OUT";
-        case REDIRECT_APPEND: return "REDIRECT_APPEND";
-        case HEREDOC: return "HEREDOC";
-        case ENV_VAR: return "ENV_VAR";
-        case DOLLAR_SIGN: return "DOLLAR_SIGN";
-        case SINGLE_QUOTE: return "SINGLE_QUOTE";
-        case DOUBLE_QUOTE: return "DOUBLE_QUOTE";
-        case INPUT_FILE: return "INPUT_FILE";
-        case OUTPUT_FILE: return "OUTPUT_FILE";
-        default: return "UNKNOWN";
-    }
+    // switch (type)
+    // {
+    //     case COMMAND: return "COMMAND";
+    //     case ARGUMENT: return "ARGUMENT";
+    //     case PIPE: return "PIPE";
+    //     case REDIRECT_IN: return "REDIRECT_IN";
+    //     case REDIRECT_OUT: return "REDIRECT_OUT";
+    //     case REDIRECT_APPEND: return "REDIRECT_APPEND";
+    //     case HEREDOC: return "HEREDOC";
+    //     case ENV_VAR: return "ENV_VAR";
+    //     case DOLLAR_SIGN: return "DOLLAR_SIGN";
+    //     case SINGLE_QUOTE: return "SINGLE_QUOTE";
+    //     case DOUBLE_QUOTE: return "DOUBLE_QUOTE";
+    //     case INPUT_FILE: return "INPUT_FILE";
+    //     case OUTPUT_FILE: return "OUTPUT_FILE";
+    //     default: return "UNKNOWN";
+    // }
+	return (char *[]){"COMMAND",
+	"ARGUMENT",
+	"PIPE",
+	"REDIRECT_IN",
+	"REDIRECT_OUT",
+	"REDIRECT_APPEND",
+	"HEREDOC",
+	"ENV_VAR",
+	"DOLLAR_SIGN",
+	"SINGLE_QUOTE",
+	"DOUBLE_QUOTE",
+	"INPUT_FILE",
+	"OUTPUT_FILE",
+	"UNKNOWN"}[type];
 }
 
 void print_shell(t_shell *shell)
@@ -316,32 +330,32 @@ char	*preprocess_input(char *input)
 }
 
 
-int	main(void)
-{
-	t_shell	*shell;
-	char	**commands;
-	int		num_commands;
-	char	*input;
+// int	main(void)
+// {
+// 	t_shell	*shell;
+// 	char	**commands;
+// 	int		num_commands;
+// 	char	*input;
 
-	while (1)
-	{
-		input = readline("\033[1;32mminishell>\033[0m ");
-		if (!input)
-		{
-			printf("\033[1;31mexit\033[0m\n");
-			break ;
-		}
-		if (*input)
-			add_history(input);
-		input = preprocess_input(input);
-		commands = ft_split(input, '|');
-		num_commands = count_words(input, '|');
-		shell = allocate_shell_commands(num_commands, commands);
-        print_shell(shell);
-		free_shell(shell);
-		free(commands);
-		free(input);
-	}
-	clear_history();
-	return (0);
-}
+// 	while (1)
+// 	{
+// 		input = readline("\033[1;32mminishell>\033[0m ");
+// 		if (!input)
+// 		{
+// 			printf("\033[1;31mexit\033[0m\n");
+// 			break ;
+// 		}
+// 		if (*input)
+// 			add_history(input);
+// 		input = preprocess_input(input);
+// 		commands = ft_split(input, '|');
+// 		num_commands = count_words(input, '|');
+// 		shell = allocate_shell_commands(num_commands, commands);
+//         print_shell(shell);
+// 		free_shell(shell);
+// 		free(commands);
+// 		free(input);
+// 	}
+// 	clear_history();
+// 	return (0);
+// }
