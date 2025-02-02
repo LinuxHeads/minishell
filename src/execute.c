@@ -3,100 +3,27 @@
 /*                                                        :::      ::::::::   */
 /*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yourlogin <yourlogin@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 01:23:07 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/01 20:11:23 by ahramada         ###   ########.fr       */
+/*   Updated: 2025/02/02 15:00:00 by yourlogin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/parsing.h"
 
-static char	**build_command_argv(t_command *cmd)
-{
-	int		i;
-	int		count;
-	char	**argv;
-
-	count = 0;
-	i = 0;
-	while (i < cmd->token_count)
-	{
-		if (cmd->tokens[i]->type == REDIRECT_IN ||
-			cmd->tokens[i]->type == REDIRECT_OUT ||
-			cmd->tokens[i]->type == REDIRECT_APPEND ||
-			cmd->tokens[i]->type == HEREDOC)
-		{
-			i += 2;
-			continue ;
-		}
-		count++;
-		i++;
-	}
-	argv = malloc(sizeof(char *) * (count + 1));
-	if (!argv)
-		return (NULL);
-	i = 0;
-	count = 0;
-	while (i < cmd->token_count)
-	{
-		if (cmd->tokens[i]->type == REDIRECT_IN ||
-			cmd->tokens[i]->type == REDIRECT_OUT ||
-			cmd->tokens[i]->type == REDIRECT_APPEND ||
-			cmd->tokens[i]->type == HEREDOC)
-		{
-			i += 2;
-			continue ;
-		}
-		argv[count++] = ft_strdup(cmd->tokens[i]->value);
-		i++;
-	}
-	argv[count] = NULL;
-	return (argv);
-}
-
-static void	get_redirections(t_command *cmd, int *in_fd, int *out_fd)
+static void	free_argv(char **argv)
 {
 	int	i = 0;
 
-	*in_fd = STDIN_FILENO;
-	*out_fd = STDOUT_FILENO;
-	while (i < cmd->token_count)
+	if (!argv)
+		return ;
+	while (argv[i])
 	{
-		if (cmd->tokens[i]->type == REDIRECT_IN)
-		{
-			if (i + 1 < cmd->token_count)
-			{
-				i++;
-				*in_fd = open(cmd->tokens[i]->value, O_RDONLY);
-				if (*in_fd < 0)
-					perror(cmd->tokens[i]->value);
-			}
-		}
-		else if (cmd->tokens[i]->type == REDIRECT_OUT)
-		{
-			if (i + 1 < cmd->token_count)
-			{
-				i++;
-				*out_fd = open(cmd->tokens[i]->value,
-					O_WRONLY | O_CREAT | O_TRUNC, 0644);
-				if (*out_fd < 0)
-					perror(cmd->tokens[i]->value);
-			}
-		}
-		else if (cmd->tokens[i]->type == REDIRECT_APPEND)
-		{
-			if (i + 1 < cmd->token_count)
-			{
-				i++;
-				*out_fd = open(cmd->tokens[i]->value,
-					O_WRONLY | O_CREAT | O_APPEND, 0644);
-				if (*out_fd < 0)
-					perror(cmd->tokens[i]->value);
-			}
-		}
+		free(argv[i]);
 		i++;
 	}
+	free(argv);
 }
 
 static void	free_str_array(char **arr)
@@ -112,6 +39,142 @@ static void	free_str_array(char **arr)
 	free(arr);
 }
 
+static char	**build_command_argv(t_command *cmd)
+{
+	int		i;
+	int		count;
+	char	**argv;
+
+	if (!cmd)
+		return (NULL);
+	count = 0;
+	i = 0;
+	while (i < cmd->token_count)
+	{
+		if (cmd->tokens[i] && (cmd->tokens[i]->type == REDIRECT_IN ||
+			cmd->tokens[i]->type == REDIRECT_OUT ||
+			cmd->tokens[i]->type == REDIRECT_APPEND ||
+			cmd->tokens[i]->type == HEREDOC))
+		{
+			i += 2;
+			continue ;
+		}
+		count++;
+		i++;
+	}
+	argv = malloc(sizeof(char *) * (count + 1));
+	if (!argv)
+		return (NULL);
+	i = 0;
+	count = 0;
+	while (i < cmd->token_count)
+	{
+		if (cmd->tokens[i] && (cmd->tokens[i]->type == REDIRECT_IN ||
+			cmd->tokens[i]->type == REDIRECT_OUT ||
+			cmd->tokens[i]->type == REDIRECT_APPEND ||
+			cmd->tokens[i]->type == HEREDOC))
+		{
+			i += 2;
+			continue ;
+		}
+		argv[count] = ft_strdup(cmd->tokens[i]->value);
+		if (!argv[count])
+		{
+			free_argv(argv);
+			return (NULL);
+		}
+		count++;
+		i++;
+	}
+	argv[count] = NULL;
+	return (argv);
+}
+
+static void	get_redirections(t_command *cmd, int *in_fd, int *out_fd)
+{
+	int	i = 0;
+
+	if (!cmd || !in_fd || !out_fd)
+		return ;
+	*in_fd = STDIN_FILENO;
+	*out_fd = STDOUT_FILENO;
+	while (i < cmd->token_count)
+	{
+		if (cmd->tokens[i] == NULL)
+		{
+			i++;
+			continue ;
+		}
+		if (cmd->tokens[i]->type == REDIRECT_IN)
+		{
+			if (i + 1 < cmd->token_count && cmd->tokens[i + 1])
+			{
+				i++;
+				*in_fd = open(cmd->tokens[i]->value, O_RDONLY);
+				if (*in_fd < 0)
+					perror(cmd->tokens[i]->value);
+			}
+			else
+				fprintf(stderr, "minishell: syntax error near unexpected token `newline'\n");
+		}
+		else if (cmd->tokens[i]->type == REDIRECT_OUT)
+		{
+			if (i + 1 < cmd->token_count && cmd->tokens[i + 1])
+			{
+				i++;
+				*out_fd = open(cmd->tokens[i]->value,
+					O_WRONLY | O_CREAT | O_TRUNC, 0644);
+				if (*out_fd < 0)
+					perror(cmd->tokens[i]->value);
+			}
+			else
+				fprintf(stderr, "minishell: syntax error near unexpected token `newline'\n");
+		}
+		else if (cmd->tokens[i]->type == REDIRECT_APPEND)
+		{
+			if (i + 1 < cmd->token_count && cmd->tokens[i + 1])
+			{
+				i++;
+				*out_fd = open(cmd->tokens[i]->value,
+					O_WRONLY | O_CREAT | O_APPEND, 0644);
+				if (*out_fd < 0)
+					perror(cmd->tokens[i]->value);
+			}
+			else
+				fprintf(stderr, "minishell: syntax error near unexpected token `newline'\n");
+		}
+		else if (cmd->tokens[i]->type == HEREDOC)
+		{
+			if (i + 1 < cmd->token_count)
+			{
+				i++;
+				int pipe_fds[2];
+				if (pipe(pipe_fds) == -1)
+				{
+					perror("pipe");
+					exit(EXIT_FAILURE);
+				}
+				char *line;
+				while (1)
+				{
+					line = readline("> ");
+					if (!line || ft_strcmp(line, cmd->tokens[i]->value) == 0)
+					{
+						free(line);
+						break;
+					}
+					write(pipe_fds[1], line, ft_strlen(line));
+					write(pipe_fds[1], "\n", 1);
+					free(line);
+				}
+				close(pipe_fds[1]);
+				*in_fd = pipe_fds[0];
+			}
+		}
+		i++;
+	}
+}
+
 static char	*find_command_path(char *cmd, char **envp)
 {
 	char	*path_var;
@@ -119,6 +182,8 @@ static char	*find_command_path(char *cmd, char **envp)
 	char	*full_path;
 	int		i;
 
+	if (!cmd)
+		return (NULL);
 	if (ft_strchr(cmd, '/'))
 		return (ft_strdup(cmd));
 	i = 0;
@@ -154,16 +219,18 @@ static char	*find_command_path(char *cmd, char **envp)
 	return (NULL);
 }
 
-
 static void	execute_pipeline(t_shell *shell, char **envp)
 {
 	int		i;
-	int		prev_fd = -1;
+	int		prev_fd;
 	int		pipe_fd[2];
 	pid_t	pid;
 	int		in_fd;
 	int		out_fd;
+	char	**argv;
+	char	*cmd_path;
 
+	prev_fd = -1;
 	i = 0;
 	while (i < shell->command_count)
 	{
@@ -195,24 +262,30 @@ static void	execute_pipeline(t_shell *shell, char **envp)
 				close(prev_fd);
 			if (i < shell->command_count - 1)
 				close(pipe_fd[0]);
+			argv = build_command_argv(shell->commands[i]);
+			if (!argv || !argv[0])
 			{
-				char **argv = build_command_argv(shell->commands[i]);
-				char *cmd_path = find_command_path(argv[0], envp);
-				if (!cmd_path)
-				{
-					fprintf(stderr, "%s: command not found\n", argv[0]);
-					exit(127);
-				}
-				execve(cmd_path, argv, envp);
-				perror("execve");
+				fprintf(stderr, "minishell: invalid command\n");
 				exit(EXIT_FAILURE);
 			}
+			cmd_path = find_command_path(argv[0], envp);
+			if (!cmd_path)
+			{
+				fprintf(stderr, "%s: command not found\n", argv[0]);
+				free_argv(argv);
+				exit(127);
+			}
+			execve(cmd_path, argv, envp);
+			perror("execve");
+			free(cmd_path);
+			free_argv(argv);
+			exit(EXIT_FAILURE);
 		}
 		if (in_fd != STDIN_FILENO && in_fd != prev_fd)
 			close(in_fd);
 		if (out_fd != STDOUT_FILENO)
 			close(out_fd);
-		if (prev_fd != -1)
+		if (prev_fd != -1 && prev_fd != STDIN_FILENO)
 			close(prev_fd);
 		if (i < shell->command_count - 1 && out_fd == pipe_fd[1])
 			prev_fd = pipe_fd[0];
@@ -245,14 +318,26 @@ int	main(int argc, char **argv, char **envp)
 		if (*input)
 			add_history(input);
 		processed_input = preprocess_input(input);
+		if (!processed_input)
+		{
+			free(input);
+			continue ;
+		}
 		commands = ft_split(processed_input, '|');
+		if (!commands)
+		{
+			free(processed_input);
+			free(input);
+			continue ;
+		}
 		num_commands = count_words(processed_input, '|');
 		shell = allocate_shell_commands(num_commands, commands);
 		if (!shell)
 		{
+			free_str_array(commands);
 			free(processed_input);
 			free(input);
-			continue;
+			continue ;
 		}
 		execute_pipeline(shell, envp);
 		free_shell(shell);
