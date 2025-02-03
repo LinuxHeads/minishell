@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: abdsalah <abdsalah@std.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/29 20:22:52 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/01 23:38:27 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/03 20:49:27 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,34 +35,43 @@ void init_minishell(t_shell *shell, char **envp)//$SHLVL
 		exit(1);
 	}
 	shell->exit_status = 0;
+	shell->parser = NULL;
 }
 
 void minishell_loop(t_shell *shell)
 {
-	char *line;
+	char	*input;
+	char	*processed_input;
+	char	**commands;
+	int		num_commands;
 
 	while (1)
 	{
-		line = readline("minishell $>");
-		if (!line)
-			break;
-		if (ft_strlen(line) > 0)
-			add_history(line);
-		if (ft_strcmp(line, "exit") == 0)//temp 
+		input = readline("\033[1;32mminishell>\033[0m ");
+		if (!input)
 		{
-			free(line);
-			break;
-		}if (ft_strncmp(line, "cd",2) == 0)//temp 
-		{
-			ft_cd(line+2, &shell->env_list);
+			printf("exit\n");
+			break ;
 		}
-		if (ft_strcmp(line, "env") == 0)//temp 
+		if (*input)
+			add_history(input);
+		processed_input = preprocess_input(input);
+		commands = ft_split(processed_input, '|');
+		num_commands = count_words(processed_input, '|');
+		shell->parser = allocate_shell_commands(num_commands, commands); 
+		if (!shell->parser)
 		{
-			ft_env(shell);
-			// free(line);
+			free(processed_input);
+			free(input);
+			continue;
 		}
-		free(line);
+		execute_pipeline(shell->parser, &shell->env_list);
+		free_shell(shell->parser);
+		free_str_array(commands);
+		free(processed_input);
+		free(input);
 	}
+	clear_history();
 }
 
 int main(int argc, char **argv, char **envp)

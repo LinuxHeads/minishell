@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: abdsalah <abdsalah@std.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 23:51:27 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/01 23:55:57 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/03 19:45:21 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 
 #include "../../include/minishell.h"
 
-void ft_cd(char *args, t_env **envp)
+int ft_cd(char *args, t_env **envp)
 {
     char *path;
     char cwd[1024];
@@ -27,7 +27,7 @@ void ft_cd(char *args, t_env **envp)
         if (!path)
         {
             write(2, "cd: HOME not set\n", 17);
-            return;
+            return 0;
         }
     }
     // Handle "cd -" (use $OLDPWD)
@@ -37,7 +37,7 @@ void ft_cd(char *args, t_env **envp)
         if (!path)
         {
             write(2, "cd: OLDPWD not set\n", 19);
-            return;
+            return 0;
         }
     }
     else
@@ -49,13 +49,13 @@ void ft_cd(char *args, t_env **envp)
     if (!getcwd(cwd, sizeof(cwd)))
     {
         perror("getcwd");
-        return;
+        return 0;
     }
     oldpwd = ft_strdup(cwd);
     if (!oldpwd)
     {
         perror("ft_strdup");
-        return;
+        return 0 ;
     }
 
     // Change directory
@@ -63,7 +63,7 @@ void ft_cd(char *args, t_env **envp)
     {
         perror("cd");
         free(oldpwd);
-        return;
+        return 0;
     }
 
     // Print new directory for "cd -"
@@ -83,4 +83,5 @@ void ft_cd(char *args, t_env **envp)
     }
 
     free(oldpwd);
+    return 1;
 }
