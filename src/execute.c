@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abdsalah <abdsalah@std.42amman.com>        +#+  +:+       +#+        */
+/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 01:23:07 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/03 17:22:04 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/03 18:37:52 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -179,70 +179,91 @@ static char *find_command_path(char *cmd, char **envp)
 
 static void	execute_pipeline(t_shell *shell, char **envp)
 {
-	int		i;
-	int		prev_fd = -1;
-	int		pipe_fd[2];
-	pid_t	pid;
-	int		in_fd;
-	int		out_fd;
-	int		wstatus;	
-
+	int     i;
+	int 	prev_fd ;
+    int     pipe_fd[2];
+    int     pid;
+    int     in_fd, out_fd;
+    char    **argv;
+    char    *cmd_path;
+	int	wstatus;
+	int	pipe_created;
 	i = 0;
-	while (i < shell->command_count)
+	prev_fd=-1;
+    while (i < shell->command_count) 
 	{
-		get_redirections(shell->commands[i], &in_fd, &out_fd);
-		if (i > 0 && in_fd == STDIN_FILENO)
-			in_fd = prev_fd;
-		if (i < shell->command_count - 1 && out_fd == STDOUT_FILENO)
+        
+        get_redirections(shell->commands[i], &in_fd, &out_fd);
+        if (i > 0 && prev_fd != -1)
+            in_fd = prev_fd;
+        pipe_created = 0;
+        if (i < shell->command_count - 1) {
+            if (pipe(pipe_fd) == -1) {
+                perror("pipe");
+                exit(EXIT_FAILURE);
+            }
+            pipe_created = 1;
+        }
+        pid = fork();
+        if (pid < 0) {
+            perror("fork");
+            exit(EXIT_FAILURE);
+        }
+        if (pid == 0)
 		{
-			if (pipe(pipe_fd) == -1)
+            if (in_fd != STDIN_FILENO)
+                dup2(in_fd, STDIN_FILENO);
+            if (pipe_created)
 			{
-				perror("pipe");
-				exit(EXIT_FAILURE);
-			}
-			out_fd = pipe_fd[1];
-		}
-		pid = fork();
-		if (pid < 0)
-		{
-			perror("fork");
-			exit(EXIT_FAILURE);
-		}
-		if (pid == 0)
-		{
-			if (in_fd != STDIN_FILENO)
-				dup2(in_fd, STDIN_FILENO);
-			if (out_fd != STDOUT_FILENO)
-				dup2(out_fd, STDOUT_FILENO);
-			if (prev_fd != -1)
-				close(prev_fd);
-			if (i < shell->command_count - 1)
-				close(pipe_fd[0]);
+                if (out_fd == STDOUT_FILENO)
+                    out_fd = pipe_fd[1];
+            }
+            if (out_fd != STDOUT_FILENO)
+                dup2(out_fd, STDOUT_FILENO);
+            if (prev_fd != -1)
+                close(prev_fd);
+            if (pipe_created)
 			{
-				char **argv = build_command_argv(shell->commands[i]);// null check
-				char *cmd_path = find_command_path(argv[0], envp);
-				if (!cmd_path)
-				{
-					fprintf(stderr, "%s: command not found\n", argv[0]);
-					exit(127);
-				}
-				execve(cmd_path, argv, envp);// check for execve return
-				perror("execve");
-				exit(EXIT_FAILURE);
-			}
-		}
-		if (in_fd != STDIN_FILENO && in_fd != prev_fd)
-			close(in_fd);
-		if (out_fd != STDOUT_FILENO)
-			close(out_fd);
-		if (prev_fd != -1)
-			close(prev_fd);
-		if (i < shell->command_count - 1 && out_fd == pipe_fd[1])
-			prev_fd = pipe_fd[0];
+                close(pipe_fd[0]);
+                close(pipe_fd[1]);
+            }
+            argv = build_command_argv(shell->commands[i]);
+            if (!argv || !argv[0])
+			{
+                fprintf(stderr, "minishell: invalid command\n");
+                exit(EXIT_FAILURE);
+            }
+            cmd_path = find_command_path(argv[0], envp);
+            if (!cmd_path)
+			{
+                fprintf(stderr, "%s: command not found\n", argv[0]);
+    			free_str_array(argv);
+                exit(127);
+            }
+            execve(cmd_path, argv, envp);
+            perror("execve");
+			free_str_array(argv);
+            free(cmd_path);
+    
+            exit(EXIT_FAILURE);
+        }
+        if (in_fd != STDIN_FILENO && in_fd != prev_fd)
+            close(in_fd);
+        if (out_fd != STDOUT_FILENO)
+            close(out_fd);
+        if (prev_fd != -1)
+            close(prev_fd);
+        if (pipe_created)
+		{
+            close(pipe_fd[1]);
+            prev_fd = pipe_fd[0];
+        }
 		else
-			prev_fd = -1;
+		{
+            prev_fd = -1;
+        }
 		i++;
-	}
+    }
 	pid_t wpid;
 	while ((wpid = wait(&wstatus)) > 0 || (wpid == -1 && errno == EINTR))
 	{
