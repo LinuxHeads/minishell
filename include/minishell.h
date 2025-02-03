@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: abdsalah <abdsalah@std.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 19:24:00 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/02 00:26:21 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/03 20:30:50 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,54 @@
 ** and value. The linked list structure allows dynamic management of environment
 ** variables.
 */
+
+typedef enum e_token_type
+{
+	COMMAND,
+	ARGUMENT,
+	PIPE,
+	REDIRECT_IN,
+	REDIRECT_OUT,
+	REDIRECT_APPEND,
+	HEREDOC,
+	HEREDOC_DELI,
+	ENV_VAR,
+	DOLLAR_SIGN,
+	SINGLE_QUOTE,
+	DOUBLE_QUOTE,
+	INPUT_FILE,
+	OUTPUT_FILE
+}	t_token_type;
+
+typedef struct s_next_token
+{
+	int	command;
+	int	argument;
+	int	env_var;
+	int here_doc;
+	int	input_file;
+	int	output_file;
+}	t_next_token;
+
+typedef struct s_token
+{
+	char			*value;
+	t_token_type	type;
+}	t_token;
+
+typedef struct s_command
+{
+	t_token	**tokens;
+	int		token_count;
+}	t_command;
+
+
+typedef struct t_exec
+{
+	t_command	**commands;
+	int			command_count;
+}	t_exec;
+
 typedef struct s_env
 {
     char	*name;         // Name of the environment variable
@@ -55,8 +103,11 @@ typedef struct s_shell
 {
     t_env   *env_list;      // Linked list of environment variables
     char    **envp;         // Array representation for execve
-    int     exit_status;    // Exit status of the last command executed (stores $? value)
+    int     exit_status;
+	t_exec	*parser;   // Exit status of the last command executed (stores $? value)
 } t_shell;
+
+
 
 /* ************************************************************************** */
 /*                            SIGNAL HANDLING                                   */
@@ -132,12 +183,12 @@ void        ft_env(t_shell *shell);
 /* 
 ** ft_cd: Built-in cd command to change the current directory.
 */
-void        ft_cd(char *args, t_env **envp);
+int        ft_cd(char *args, t_env **envp);
 
 /* 
 ** ft_export: Built-in export command to set an environment variable.
 */
-void        ft_export(void);
+void        ft_export(char *args, t_env **env);
 
 /* 
 ** ft_unset: Built-in unset command to remove an environment variable.
@@ -167,4 +218,18 @@ void        init_minishell(t_shell *shell, char **envp);
 
 /* ************************************************************************** */
 char *ft_getenv(const char *name, t_env *env);
+
+
+/* Function Prototypes */
+int				count_words(char *str, char sep);
+t_token_type	identify_token_type(char *token, t_next_token *decide);
+t_exec			*allocate_shell_commands(int num_commands, char **shell_command);
+void			free_shell(t_exec *shell);
+const char		*get_token_type_name(t_token_type type);
+void			print_shell(t_exec *shell);
+char			*ft_str_replace(const char *str, const char *old, const char *);
+char			*preprocess_input(char *input);
+void			free_str_array(char **arr);
+void			execute_pipeline(t_exec *shell, t_env **envp);
+void			signals_t3res(void);
 #endif
