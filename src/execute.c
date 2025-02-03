@@ -3,30 +3,120 @@
 /*                                                        :::      ::::::::   */
 /*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yourlogin <yourlogin@student.42.fr>        +#+  +:+       +#+        */
+/*   By: abdsalah <abdsalah@std.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 01:23:07 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/02 15:00:00 by yourlogin         ###   ########.fr       */
+/*   Updated: 2025/02/03 16:31:09 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/parsing.h"
 
-static void	free_argv(char **argv)
+int g_last_exit_status = 0;
+
+static int	is_redirect_token(int type)
+{
+	return (type == REDIRECT_IN || type == REDIRECT_OUT ||
+			type == REDIRECT_APPEND || type == HEREDOC);
+}
+
+static int	count_command_arguments(t_command *cmd)
+{
+	int	i;
+	int	count;
+
+	count = 0;
+	i = 0;
+	while (i < cmd->token_count)
+	{
+		if (is_redirect_token(cmd->tokens[i]->type))
+		{
+			i += 2;
+			continue ;
+		}
+		count++;
+		i++;
+	}
+	return (count);
+}
+
+static char	**build_command_argv(t_command *cmd)
+{
+	int		count;
+	int		i;
+	int		j;
+	char	**argv;
+
+	count = count_command_arguments(cmd);
+	argv = malloc(sizeof(char *) * (count + 1));
+	if (!argv)
+		return (NULL);
+	i = -1;
+	j = 0;
+	while (++i < cmd->token_count)
+	{
+		if (is_redirect_token(cmd->tokens[i]->type))
+		{
+			i += 2;
+			continue ;
+		}
+		argv[j++] = ft_strdup(cmd->tokens[i]->value);
+		if (!argv[j - 1])
+		{
+			free_str_array(argv);
+			return (NULL);
+		}
+	}
+	argv[j] = NULL;
+	return (argv);
+}
+
+
+static void	get_redirections(t_command *cmd, int *in_fd, int *out_fd)
 {
 	int	i = 0;
 
-	if (!argv)
-		return ;
-	while (argv[i])
+	*in_fd = STDIN_FILENO;
+	*out_fd = STDOUT_FILENO;
+	while (i < cmd->token_count)
 	{
-		free(argv[i]);
+		if (cmd->tokens[i]->type == REDIRECT_IN)
+		{
+			if (i + 1 < cmd->token_count)
+			{
+				i++;
+				*in_fd = open(cmd->tokens[i]->value, O_RDONLY);
+				if (*in_fd < 0)
+					perror(cmd->tokens[i]->value);
+			}
+		}
+		else if (cmd->tokens[i]->type == REDIRECT_OUT)
+		{
+			if (i + 1 < cmd->token_count)
+			{
+				i++;
+				*out_fd = open(cmd->tokens[i]->value,
+					O_WRONLY | O_CREAT | O_TRUNC, 0644);
+				if (*out_fd < 0)
+					perror(cmd->tokens[i]->value);
+			}
+		}
+		else if (cmd->tokens[i]->type == REDIRECT_APPEND)
+		{
+			if (i + 1 < cmd->token_count)
+			{
+				i++;
+				*out_fd = open(cmd->tokens[i]->value,
+					O_WRONLY | O_CREAT | O_APPEND, 0644);
+				if (*out_fd < 0)
+					perror(cmd->tokens[i]->value);
+			}
+		}
 		i++;
 	}
-	free(argv);
 }
 
-static void	free_str_array(char **arr)
+void	free_str_array(char **arr)
 {
 	int	i = 0;
 	if (!arr)
@@ -39,198 +129,64 @@ static void	free_str_array(char **arr)
 	free(arr);
 }
 
-static char	**build_command_argv(t_command *cmd)
+static char *find_executable_in_paths(char **cmd, char **paths, char **full_path, int *i)
 {
-	int		i;
-	int		count;
-	char	**argv;
-
-	if (!cmd)
-		return (NULL);
-	count = 0;
-	i = 0;
-	while (i < cmd->token_count)
-	{
-		if (cmd->tokens[i] && (cmd->tokens[i]->type == REDIRECT_IN ||
-			cmd->tokens[i]->type == REDIRECT_OUT ||
-			cmd->tokens[i]->type == REDIRECT_APPEND ||
-			cmd->tokens[i]->type == HEREDOC))
-		{
-			i += 2;
-			continue ;
-		}
-		count++;
-		i++;
-	}
-	argv = malloc(sizeof(char *) * (count + 1));
-	if (!argv)
-		return (NULL);
-	i = 0;
-	count = 0;
-	while (i < cmd->token_count)
-	{
-		if (cmd->tokens[i] && (cmd->tokens[i]->type == REDIRECT_IN ||
-			cmd->tokens[i]->type == REDIRECT_OUT ||
-			cmd->tokens[i]->type == REDIRECT_APPEND ||
-			cmd->tokens[i]->type == HEREDOC))
-		{
-			i += 2;
-			continue ;
-		}
-		argv[count] = ft_strdup(cmd->tokens[i]->value);
-		if (!argv[count])
-		{
-			free_argv(argv);
-			return (NULL);
-		}
-		count++;
-		i++;
-	}
-	argv[count] = NULL;
-	return (argv);
+    while (paths[*i])
+    {
+        *full_path = malloc(ft_strlen(paths[*i]) + ft_strlen(*cmd) + 2);
+        if (!*full_path)
+            return (NULL);
+        sprintf(*full_path, "%s/%s", paths[*i], *cmd);
+        if (access(*full_path, X_OK) == 0)
+        {
+            free_str_array(paths);
+            return (*full_path);
+        }
+        free(*full_path);
+        (*i)++;
+    }
+    return (NULL);
 }
 
-static void	get_redirections(t_command *cmd, int *in_fd, int *out_fd)
+static char *find_command_path(char *cmd, char **envp)
 {
-	int	i = 0;
+    char    *path_var;
+    char    **paths;
+    char    *full_path;
+    int     i;
 
-	if (!cmd || !in_fd || !out_fd)
-		return ;
-	*in_fd = STDIN_FILENO;
-	*out_fd = STDOUT_FILENO;
-	while (i < cmd->token_count)
-	{
-		if (cmd->tokens[i] == NULL)
-		{
-			i++;
-			continue ;
-		}
-		if (cmd->tokens[i]->type == REDIRECT_IN)
-		{
-			if (i + 1 < cmd->token_count && cmd->tokens[i + 1])
-			{
-				i++;
-				*in_fd = open(cmd->tokens[i]->value, O_RDONLY);
-				if (*in_fd < 0)
-					perror(cmd->tokens[i]->value);
-			}
-			else
-				fprintf(stderr, "minishell: syntax error near unexpected token `newline'\n");
-		}
-		else if (cmd->tokens[i]->type == REDIRECT_OUT)
-		{
-			if (i + 1 < cmd->token_count && cmd->tokens[i + 1])
-			{
-				i++;
-				*out_fd = open(cmd->tokens[i]->value,
-					O_WRONLY | O_CREAT | O_TRUNC, 0644);
-				if (*out_fd < 0)
-					perror(cmd->tokens[i]->value);
-			}
-			else
-				fprintf(stderr, "minishell: syntax error near unexpected token `newline'\n");
-		}
-		else if (cmd->tokens[i]->type == REDIRECT_APPEND)
-		{
-			if (i + 1 < cmd->token_count && cmd->tokens[i + 1])
-			{
-				i++;
-				*out_fd = open(cmd->tokens[i]->value,
-					O_WRONLY | O_CREAT | O_APPEND, 0644);
-				if (*out_fd < 0)
-					perror(cmd->tokens[i]->value);
-			}
-			else
-				fprintf(stderr, "minishell: syntax error near unexpected token `newline'\n");
-		}
-		else if (cmd->tokens[i]->type == HEREDOC)
-		{
-			if (i + 1 < cmd->token_count)
-			{
-				i++;
-				int pipe_fds[2];
-				if (pipe(pipe_fds) == -1)
-				{
-					perror("pipe");
-					exit(EXIT_FAILURE);
-				}
-				char *line;
-				while (1)
-				{
-					line = readline("> ");
-					if (!line || ft_strcmp(line, cmd->tokens[i]->value) == 0)
-					{
-						free(line);
-						break;
-					}
-					write(pipe_fds[1], line, ft_strlen(line));
-					write(pipe_fds[1], "\n", 1);
-					free(line);
-				}
-				close(pipe_fds[1]);
-				*in_fd = pipe_fds[0];
-			}
-		}
-		i++;
-	}
-}
-
-static char	*find_command_path(char *cmd, char **envp)
-{
-	char	*path_var;
-	char	**paths;
-	char	*full_path;
-	int		i;
-
-	if (!cmd)
-		return (NULL);
-	if (ft_strchr(cmd, '/'))
-		return (ft_strdup(cmd));
-	i = 0;
-	while (envp[i])
-	{
-		if (ft_strncmp(envp[i], "PATH=", 5) == 0)
-		{
-			path_var = envp[i] + 5;
-			paths = ft_split(path_var, ':');
-			if (!paths)
-				return (NULL);
-			i = 0;
-			while (paths[i])
-			{
-				full_path = malloc(ft_strlen(paths[i]) +
-						ft_strlen(cmd) + 2);
-				if (!full_path)
-					break ;
-				sprintf(full_path, "%s/%s", paths[i], cmd);
-				if (access(full_path, X_OK) == 0)
-				{
-					free_str_array(paths);
-					return (full_path);
-				}
-				free(full_path);
-				i++;
-			}
-			free_str_array(paths);
-			return (NULL);
-		}
-		i++;
-	}
-	return (NULL);
+    if (ft_strchr(cmd, '/'))
+        return (ft_strdup(cmd));// null check
+    i = -1;
+    while (envp[++i])
+    {
+        if (ft_strncmp(envp[i], "PATH=", 5) == 0)
+        {
+            path_var = envp[i] + 5;
+            paths = ft_split(path_var, ':');
+            if (!paths)
+                return (NULL);
+            i = 0;
+            full_path = find_executable_in_paths(&cmd, paths, &full_path, &i);
+            if (full_path)
+                return (full_path);
+            free_str_array(paths);
+            return (NULL);
+        }
+    }
+    return (NULL);
 }
 
 static void	execute_pipeline(t_shell *shell, char **envp)
 {
 	int		i;
-	int		prev_fd;
+	int		prev_fd = -1;
 	int		pipe_fd[2];
 	pid_t	pid;
 	int		in_fd;
 	int		out_fd;
-	char	**argv;
-	char	*cmd_path;
+	int		wstatus;	
 
-	prev_fd = -1;
 	i = 0;
 	while (i < shell->command_count)
 	{
@@ -262,30 +218,24 @@ static void	execute_pipeline(t_shell *shell, char **envp)
 				close(prev_fd);
 			if (i < shell->command_count - 1)
 				close(pipe_fd[0]);
-			argv = build_command_argv(shell->commands[i]);
-			if (!argv || !argv[0])
 			{
-				fprintf(stderr, "minishell: invalid command\n");
+				char **argv = build_command_argv(shell->commands[i]);// null check
+				char *cmd_path = find_command_path(argv[0], envp);
+				if (!cmd_path)
+				{
+					fprintf(stderr, "%s: command not found\n", argv[0]);
+					exit(127);
+				}
+				execve(cmd_path, argv, envp);// check for execve return
+				perror("execve");
 				exit(EXIT_FAILURE);
 			}
-			cmd_path = find_command_path(argv[0], envp);
-			if (!cmd_path)
-			{
-				fprintf(stderr, "%s: command not found\n", argv[0]);
-				free_argv(argv);
-				exit(127);
-			}
-			execve(cmd_path, argv, envp);
-			perror("execve");
-			free(cmd_path);
-			free_argv(argv);
-			exit(EXIT_FAILURE);
 		}
 		if (in_fd != STDIN_FILENO && in_fd != prev_fd)
 			close(in_fd);
 		if (out_fd != STDOUT_FILENO)
 			close(out_fd);
-		if (prev_fd != -1 && prev_fd != STDIN_FILENO)
+		if (prev_fd != -1)
 			close(prev_fd);
 		if (i < shell->command_count - 1 && out_fd == pipe_fd[1])
 			prev_fd = pipe_fd[0];
@@ -293,8 +243,13 @@ static void	execute_pipeline(t_shell *shell, char **envp)
 			prev_fd = -1;
 		i++;
 	}
-	while (wait(NULL) > 0)
-		;
+	while (wait(&wstatus) != pid) 
+		; // Loop until the last process finishes
+	if (WIFEXITED(wstatus)) 
+		g_last_exit_status = WEXITSTATUS(wstatus);
+	else if (WIFSIGNALED(wstatus))
+		g_last_exit_status = 128 + WTERMSIG(wstatus);
+
 }
 
 int	main(int argc, char **argv, char **envp)
@@ -318,28 +273,17 @@ int	main(int argc, char **argv, char **envp)
 		if (*input)
 			add_history(input);
 		processed_input = preprocess_input(input);
-		if (!processed_input)
-		{
-			free(input);
-			continue ;
-		}
 		commands = ft_split(processed_input, '|');
-		if (!commands)
-		{
-			free(processed_input);
-			free(input);
-			continue ;
-		}
 		num_commands = count_words(processed_input, '|');
-		shell = allocate_shell_commands(num_commands, commands);
+		shell = allocate_shell_commands(num_commands, commands); 
 		if (!shell)
 		{
-			free_str_array(commands);
 			free(processed_input);
 			free(input);
-			continue ;
+			continue;
 		}
 		execute_pipeline(shell, envp);
+		printf("exit status: %d\n", g_last_exit_status);
 		free_shell(shell);
 		free_str_array(commands);
 		free(processed_input);

@@ -37,6 +37,7 @@ CFILES = ft_isdigit.c \
 		ft_putnbr_fd.c \
 		ft_strcmp.c \
 		ft_strncpy.c \
+		ft_str_replace.c \
 		../get_next_line/gnl.c
 
 BONUS = ft_lstadd_back_bonus.c \

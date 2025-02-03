@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ahramada.h                                         :+:      :+:    :+:   */
+/*   parsing.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
+/*   By: abdsalah <abdsalah@std.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 20:30:00 by ahramada          #+#    #+#             */
-/*   Updated: 2025/02/01 19:59:48 by ahramada         ###   ########.fr       */
+/*   Updated: 2025/02/03 16:33:23 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,8 @@ t_shell			*allocate_shell_commands(int num_commands, char **shell_command);
 void			free_shell(t_shell *shell);
 const char		*get_token_type_name(t_token_type type);
 void			print_shell(t_shell *shell);
-char			*ft_str_replace(const char *str, const char *old, const char *new);
+char			*ft_str_replace(const char *str, const char *old, const char *);
 char			*preprocess_input(char *input);
+void			free_str_array(char **arr);
 
 #endif /* PARSING_H */
