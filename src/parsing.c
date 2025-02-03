@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@std.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 01:23:07 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/03 16:31:25 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/03 18:30:52 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,9 @@
 # include <sys/wait.h>
 # include <sys/stat.h>
 # include <sys/types.h>
-# include <errno.h>
 # include "../libft/libft.h"
 # include <readline/readline.h>
 # include <readline/history.h>
-# include <signal.h>
 # include <bits/sigaction.h>
 
 
@@ -210,6 +208,8 @@ static int allocate_command_structure(t_shell *shell, int cmd_index, char **comm
 	if (!shell->commands[cmd_index])
 		return (0);
 	shell->commands[cmd_index]->token_count = count_words(command_strings[cmd_index], ' ');
+	if (shell->commands[cmd_index]->token_count == 0)
+		return (0);
 	shell->commands[cmd_index]->tokens = malloc(sizeof(t_token *) * (shell->commands[cmd_index]->token_count + 1));
 	if (!shell->commands[cmd_index]->tokens)
 		return (0);
