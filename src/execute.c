@@ -3,14 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
+/*   By: abdsalah <abdsalah@std.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 01:23:07 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/03 18:37:52 by ahramada         ###   ########.fr       */
+/*   Updated: 2025/02/03 20:12:52 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/parsing.h"
+#include "../include/minishell.h"
+#include <time.h>
+#include <unistd.h>
 
 int g_last_exit_status = 0;
 
@@ -71,28 +73,36 @@ static char	**build_command_argv(t_command *cmd)
 	return (argv);
 }
 
-
 static void	get_redirections(t_command *cmd, int *in_fd, int *out_fd)
 {
 	int	i = 0;
 
+	if (!cmd || !in_fd || !out_fd)
+		return ;
 	*in_fd = STDIN_FILENO;
 	*out_fd = STDOUT_FILENO;
 	while (i < cmd->token_count)
 	{
+		if (cmd->tokens[i] == NULL)
+		{
+			i++;
+			continue ;
+		}
 		if (cmd->tokens[i]->type == REDIRECT_IN)
 		{
-			if (i + 1 < cmd->token_count)
+			if (i + 1 < cmd->token_count && cmd->tokens[i + 1])
 			{
 				i++;
 				*in_fd = open(cmd->tokens[i]->value, O_RDONLY);
 				if (*in_fd < 0)
 					perror(cmd->tokens[i]->value);
 			}
+			else
+				fprintf(stderr, "minishell: syntax error near unexpected token `newline'\n");
 		}
 		else if (cmd->tokens[i]->type == REDIRECT_OUT)
 		{
-			if (i + 1 < cmd->token_count)
+			if (i + 1 < cmd->token_count && cmd->tokens[i + 1])
 			{
 				i++;
 				*out_fd = open(cmd->tokens[i]->value,
@@ -100,10 +110,12 @@ static void	get_redirections(t_command *cmd, int *in_fd, int *out_fd)
 				if (*out_fd < 0)
 					perror(cmd->tokens[i]->value);
 			}
+			else
+				fprintf(stderr, "minishell: syntax error near unexpected token `newline'\n");
 		}
 		else if (cmd->tokens[i]->type == REDIRECT_APPEND)
 		{
-			if (i + 1 < cmd->token_count)
+			if (i + 1 < cmd->token_count && cmd->tokens[i + 1])
 			{
 				i++;
 				*out_fd = open(cmd->tokens[i]->value,
@@ -111,10 +123,41 @@ static void	get_redirections(t_command *cmd, int *in_fd, int *out_fd)
 				if (*out_fd < 0)
 					perror(cmd->tokens[i]->value);
 			}
+			else
+				fprintf(stderr, "minishell: syntax error near unexpected token `newline'\n");
+		}
+		if (cmd->tokens[i]->type == HEREDOC)
+		{
+			if (i + 1 < cmd->token_count)
+			{
+				i++;
+				int pipe_fds[2];
+				if (pipe(pipe_fds) == -1)
+				{
+					perror("pipe");
+					exit(EXIT_FAILURE);
+				}
+				char *line;
+				while (1)
+				{
+					line = readline("> ");
+					if (!line || ft_strcmp(line, cmd->tokens[i]->value) == 0)
+					{
+						free(line);
+						break;
+					}
+					write(pipe_fds[1], line, ft_strlen(line));
+					write(pipe_fds[1], "\n", 1);
+					free(line);
+				}
+				close(pipe_fds[1]);
+				*in_fd = pipe_fds[0];
+			}
 		}
 		i++;
 	}
 }
+
 
 void	free_str_array(char **arr)
 {
@@ -176,8 +219,47 @@ static char *find_command_path(char *cmd, char **envp)
     }
     return (NULL);
 }
+int builtins(char **arg, t_env **envp)
+{
+	if (ft_strcmp(arg[0], "echo") == 0)
+		return (1);
+	if (ft_strcmp(arg[0], "cd") == 0)
+		return (1);
+	if (ft_strcmp(arg[0], "pwd") == 0)
+		return (1);
+	if (ft_strcmp(arg[0], "export") == 0)
+		return (1);
+	if (ft_strcmp(arg[0], "unset") == 0)
+		return (1);
+	if (ft_strcmp(arg[0], "env") == 0)
+		return (1);
+	if (ft_strcmp(arg[0], "exit") == 0)
+		return (1);
+	return (0);
 
-static void	execute_pipeline(t_shell *shell, char **envp)
+}
+
+int exec_builtins(char **args, t_env **envp)
+{
+	if (ft_strcmp(args[0], "echo") == 0)
+		return (1);
+	if (ft_strcmp(args[0], "cd") == 0)
+		return (ft_cd(args[1], envp));
+	if (ft_strcmp(args[0], "pwd") == 0)
+		return (1);
+	if (ft_strcmp(args[0], "export") == 0)
+		return (1);
+	if (ft_strcmp(args[0], "unset") == 0)
+		return (1);
+	if (ft_strcmp(args[0], "env") == 0)
+		return (1);
+	if (ft_strcmp(args[0], "exit") == 0)
+		return (1);
+	return (0);
+
+}
+
+void	execute_pipeline(t_exec *shell, t_env **envp)
 {
 	int     i;
 	int 	prev_fd ;
@@ -186,82 +268,98 @@ static void	execute_pipeline(t_shell *shell, char **envp)
     int     in_fd, out_fd;
     char    **argv;
     char    *cmd_path;
-	int	wstatus;
-	int	pipe_created;
+	int		wstatus;
+	int		pipe_created;
+	
+	char **envp_str = envp_to_str(*envp);
 	i = 0;
 	prev_fd=-1;
     while (i < shell->command_count) 
 	{
         
         get_redirections(shell->commands[i], &in_fd, &out_fd);
-        if (i > 0 && prev_fd != -1)
-            in_fd = prev_fd;
-        pipe_created = 0;
-        if (i < shell->command_count - 1) {
-            if (pipe(pipe_fd) == -1) {
-                perror("pipe");
-                exit(EXIT_FAILURE);
-            }
-            pipe_created = 1;
-        }
-        pid = fork();
-        if (pid < 0) {
-            perror("fork");
+		argv = build_command_argv(shell->commands[i]);
+        if (!argv || !argv[0])
+		{
+            fprintf(stderr, "minishell: invalid command\n");
             exit(EXIT_FAILURE);
         }
-        if (pid == 0)
+		if (builtins(argv, envp) && shell->command_count == 1 )
 		{
-            if (in_fd != STDIN_FILENO)
-                dup2(in_fd, STDIN_FILENO);
-            if (pipe_created)
-			{
-                if (out_fd == STDOUT_FILENO)
-                    out_fd = pipe_fd[1];
-            }
-            if (out_fd != STDOUT_FILENO)
-                dup2(out_fd, STDOUT_FILENO);
-            if (prev_fd != -1)
-                close(prev_fd);
-            if (pipe_created)
-			{
-                close(pipe_fd[0]);
-                close(pipe_fd[1]);
-            }
-            argv = build_command_argv(shell->commands[i]);
-            if (!argv || !argv[0])
-			{
-                fprintf(stderr, "minishell: invalid command\n");
-                exit(EXIT_FAILURE);
-            }
-            cmd_path = find_command_path(argv[0], envp);
-            if (!cmd_path)
-			{
-                fprintf(stderr, "%s: command not found\n", argv[0]);
-    			free_str_array(argv);
-                exit(127);
-            }
-            execve(cmd_path, argv, envp);
-            perror("execve");
-			free_str_array(argv);
-            free(cmd_path);
-    
-            exit(EXIT_FAILURE);
-        }
-        if (in_fd != STDIN_FILENO && in_fd != prev_fd)
-            close(in_fd);
-        if (out_fd != STDOUT_FILENO)
-            close(out_fd);
-        if (prev_fd != -1)
-            close(prev_fd);
-        if (pipe_created)
+				exec_builtins(argv, envp);
+				return ;
+		}
+		else 
 		{
-            close(pipe_fd[1]);
-            prev_fd = pipe_fd[0];
-        }
-		else
-		{
-            prev_fd = -1;
-        }
+			if (i > 0 && prev_fd != -1)
+				in_fd = prev_fd;
+			pipe_created = 0;
+			if (i < shell->command_count - 1) {
+				if (pipe(pipe_fd) == -1) {
+					perror("pipe");
+					exit(EXIT_FAILURE);
+				}
+				pipe_created = 1;
+			}
+			pid = fork();
+			if (pid < 0) {
+				perror("fork");
+				exit(EXIT_FAILURE);
+			}
+			if (pid == 0)
+			{
+				if (in_fd != STDIN_FILENO)
+					dup2(in_fd, STDIN_FILENO);
+				if (pipe_created)
+				{
+					if (out_fd == STDOUT_FILENO)
+						out_fd = pipe_fd[1];
+				}
+				if (out_fd != STDOUT_FILENO)
+					dup2(out_fd, STDOUT_FILENO);
+				if (prev_fd != -1)
+					close(prev_fd);
+				if (pipe_created)
+				{
+					close(pipe_fd[0]);
+					close(pipe_fd[1]);
+				}
+				argv = build_command_argv(shell->commands[i]);
+				if (!argv || !argv[0])
+				{
+					fprintf(stderr, "minishell: invalid command\n");
+					exit(EXIT_FAILURE);
+				}
+				
+				cmd_path = find_command_path(argv[0], envp_str);
+				if (!cmd_path)
+				{
+					fprintf(stderr, "%s: command not found\n", argv[0]);
+					free_str_array(argv);
+					exit(127);
+				}
+				execve(cmd_path, argv, envp_str);
+				perror("execve");
+				free_str_array(argv);
+				free(cmd_path);
+				exit(EXIT_FAILURE);
+			}
+			if (in_fd != STDIN_FILENO && in_fd != prev_fd)
+				close(in_fd);
+			if (out_fd != STDOUT_FILENO)
+				close(out_fd);
+			if (prev_fd != -1)
+				close(prev_fd);
+			if (pipe_created)
+			{
+				close(pipe_fd[1]);
+				prev_fd = pipe_fd[0];
+			}
+			else
+			{
+				prev_fd = -1;
+        	}
+		}
 		i++;
     }
 	pid_t wpid;
@@ -276,45 +374,4 @@ static void	execute_pipeline(t_shell *shell, char **envp)
 		}
 	}
 
-}
-
-int	main(int argc, char **argv, char **envp)
-{
-	char	*input;
-	char	*processed_input;
-	char	**commands;
-	int		num_commands;
-	t_shell	*shell;
-
-	(void)argc;
-	(void)argv;
-	while (1)
-	{
-		input = readline("\033[1;32mminishell>\033[0m ");
-		if (!input)
-		{
-			printf("exit\n");
-			break ;
-		}
-		if (*input)
-			add_history(input);
-		processed_input = preprocess_input(input);
-		commands = ft_split(processed_input, '|');
-		num_commands = count_words(processed_input, '|');
-		shell = allocate_shell_commands(num_commands, commands); 
-		if (!shell)
-		{
-			free(processed_input);
-			free(input);
-			continue;
-		}
-		execute_pipeline(shell, envp);
-		printf("exit status: %d\n", g_last_exit_status);
-		free_shell(shell);
-		free_str_array(commands);
-		free(processed_input);
-		free(input);
-	}
-	clear_history();
-	return (0);
 }
