@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abdsalah <abdsalah@std.42amman.com>        +#+  +:+       +#+        */
+/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 01:23:07 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/03 20:12:52 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/03 21:39:48 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,62 +16,46 @@
 
 int g_last_exit_status = 0;
 
-static int	is_redirect_token(int type)
-{
-	return (type == REDIRECT_IN || type == REDIRECT_OUT ||
-			type == REDIRECT_APPEND || type == HEREDOC);
+static int is_redirect_operator(int type) {
+    return (type == REDIRECT_IN ||
+            type == REDIRECT_OUT ||
+            type == REDIRECT_APPEND ||
+            type == HEREDOC);
 }
-
-static int	count_command_arguments(t_command *cmd)
+static char **build_command_argv(t_command *cmd) 
 {
-	int	i;
-	int	count;
-
-	count = 0;
-	i = 0;
-	while (i < cmd->token_count)
+    int i = 0, j = 0, count = 0;
+    while (i < cmd->token_count)
 	{
-		if (is_redirect_token(cmd->tokens[i]->type))
-		{
-			i += 2;
-			continue ;
-		}
-		count++;
-		i++;
-	}
-	return (count);
-}
-
-static char	**build_command_argv(t_command *cmd)
-{
-	int		count;
-	int		i;
-	int		j;
-	char	**argv;
-
-	count = count_command_arguments(cmd);
-	argv = malloc(sizeof(char *) * (count + 1));
-	if (!argv)
-		return (NULL);
-	i = -1;
-	j = 0;
-	while (++i < cmd->token_count)
+        if (is_redirect_operator(cmd->tokens[i]->type))
+            i += 2; 
+        else {
+            count++;
+            i++;
+        }
+    }
+    char **argv = malloc(sizeof(char *) * (count + 1));
+    if (!argv) return NULL;
+    i = 0;
+    j = 0;
+    while (i < cmd->token_count)
 	{
-		if (is_redirect_token(cmd->tokens[i]->type))
-		{
-			i += 2;
-			continue ;
-		}
-		argv[j++] = ft_strdup(cmd->tokens[i]->value);
-		if (!argv[j - 1])
-		{
-			free_str_array(argv);
-			return (NULL);
-		}
-	}
-	argv[j] = NULL;
-	return (argv);
+        if (is_redirect_operator(cmd->tokens[i]->type)) {
+            i += 2;
+            continue;
+        }
+        argv[j] = ft_strdup(cmd->tokens[i]->value);
+        if (!argv[j]) {
+            free_str_array(argv);
+            return NULL;
+        }
+        j++;
+        i++;
+    }
+    argv[j] = NULL;
+    return argv;
 }
+
 
 static void	get_redirections(t_command *cmd, int *in_fd, int *out_fd)
 {
@@ -199,7 +183,7 @@ static char *find_command_path(char *cmd, char **envp)
     int     i;
 
     if (ft_strchr(cmd, '/'))
-        return (ft_strdup(cmd));// null check
+        return (ft_strdup(cmd));
     i = -1;
     while (envp[++i])
     {
@@ -259,119 +243,101 @@ int exec_builtins(char **args, t_env **envp)
 
 }
 
-void	execute_pipeline(t_exec *shell, t_env **envp)
-{
-	int     i;
-	int 	prev_fd ;
-    int     pipe_fd[2];
-    int     pid;
-    int     in_fd, out_fd;
-    char    **argv;
-    char    *cmd_path;
-	int		wstatus;
-	int		pipe_created;
-	
-	char **envp_str = envp_to_str(*envp);
-	i = 0;
-	prev_fd=-1;
-    while (i < shell->command_count) 
-	{
-        
-        get_redirections(shell->commands[i], &in_fd, &out_fd);
-		argv = build_command_argv(shell->commands[i]);
-        if (!argv || !argv[0])
-		{
+void execute_pipeline(t_exec *shell_exec, t_env **envp) {
+    int i = 0;
+    int prev_fd = -1;
+    int pipe_fd[2];
+    int pid;
+    int in_fd, out_fd;
+    char **argv;
+    char *cmd_path;
+    int pipe_created;
+    char **envp_str = envp_to_str(*envp);
+    if (!envp_str) {
+        fprintf(stderr, "Error converting env to string array\n");
+        return;
+    }
+    
+    while (i < shell_exec->command_count) {
+        get_redirections(shell_exec->commands[i], &in_fd, &out_fd);
+        argv = build_command_argv(shell_exec->commands[i]);
+        if (!argv || !argv[0]) {
             fprintf(stderr, "minishell: invalid command\n");
             exit(EXIT_FAILURE);
         }
-		if (builtins(argv, envp) && shell->command_count == 1 )
-		{
-				exec_builtins(argv, envp);
-				return ;
-		}
-		else 
-		{
-			if (i > 0 && prev_fd != -1)
-				in_fd = prev_fd;
-			pipe_created = 0;
-			if (i < shell->command_count - 1) {
-				if (pipe(pipe_fd) == -1) {
-					perror("pipe");
-					exit(EXIT_FAILURE);
-				}
-				pipe_created = 1;
-			}
-			pid = fork();
-			if (pid < 0) {
-				perror("fork");
-				exit(EXIT_FAILURE);
-			}
-			if (pid == 0)
-			{
-				if (in_fd != STDIN_FILENO)
-					dup2(in_fd, STDIN_FILENO);
-				if (pipe_created)
-				{
-					if (out_fd == STDOUT_FILENO)
-						out_fd = pipe_fd[1];
-				}
-				if (out_fd != STDOUT_FILENO)
-					dup2(out_fd, STDOUT_FILENO);
-				if (prev_fd != -1)
-					close(prev_fd);
-				if (pipe_created)
-				{
-					close(pipe_fd[0]);
-					close(pipe_fd[1]);
-				}
-				argv = build_command_argv(shell->commands[i]);
-				if (!argv || !argv[0])
-				{
-					fprintf(stderr, "minishell: invalid command\n");
-					exit(EXIT_FAILURE);
-				}
-				
-				cmd_path = find_command_path(argv[0], envp_str);
-				if (!cmd_path)
-				{
-					fprintf(stderr, "%s: command not found\n", argv[0]);
-					free_str_array(argv);
-					exit(127);
-				}
-				execve(cmd_path, argv, envp_str);
-				perror("execve");
-				free_str_array(argv);
-				free(cmd_path);
-				exit(EXIT_FAILURE);
-			}
-			if (in_fd != STDIN_FILENO && in_fd != prev_fd)
-				close(in_fd);
-			if (out_fd != STDOUT_FILENO)
-				close(out_fd);
-			if (prev_fd != -1)
-				close(prev_fd);
-			if (pipe_created)
-			{
-				close(pipe_fd[1]);
-				prev_fd = pipe_fd[0];
-			}
-			else
-			{
-				prev_fd = -1;
-        	}
-		}
-		i++;
+        if (builtins(argv, envp) && shell_exec->command_count == 1) {
+            exec_builtins(argv, envp);
+            free_str_array(argv);
+            return;
+        } else {
+            if (i > 0 && prev_fd != -1)
+                in_fd = prev_fd;
+            pipe_created = 0;
+            if (i < shell_exec->command_count - 1) {
+                if (pipe(pipe_fd) == -1) {
+                    perror("pipe");
+                    exit(EXIT_FAILURE);
+                }
+                pipe_created = 1;
+            }
+            pid = fork();
+            if (pid < 0) {
+                perror("fork");
+                exit(EXIT_FAILURE);
+            }
+            if (pid == 0) {
+                if (in_fd != STDIN_FILENO)
+                    dup2(in_fd, STDIN_FILENO);
+                if (pipe_created) {
+                    if (out_fd == STDOUT_FILENO)
+                        out_fd = pipe_fd[1];
+                }
+                if (out_fd != STDOUT_FILENO)
+                    dup2(out_fd, STDOUT_FILENO);
+                if (prev_fd != -1)
+                    close(prev_fd);
+                if (pipe_created) {
+                    close(pipe_fd[0]);
+                    close(pipe_fd[1]);
+                }
+                argv = build_command_argv(shell_exec->commands[i]);
+                if (!argv || !argv[0]) {
+                    fprintf(stderr, "minishell: invalid command\n");
+                    exit(EXIT_FAILURE);
+                }
+                cmd_path = find_command_path(argv[0], envp_str);
+                if (!cmd_path) {
+                    fprintf(stderr, "%s: command not found\n", argv[0]);
+                    free_str_array(argv);
+                    exit(127);
+                }
+                execve(cmd_path, argv, envp_str);
+                perror("execve");
+                free_str_array(argv);
+                free(cmd_path);
+                exit(EXIT_FAILURE);
+            }
+            if (in_fd != STDIN_FILENO && in_fd != prev_fd)
+                close(in_fd);
+            if (out_fd != STDOUT_FILENO)
+                close(out_fd);
+            if (prev_fd != -1)
+                close(prev_fd);
+            if (pipe_created) {
+                close(pipe_fd[1]);
+                prev_fd = pipe_fd[0];
+            } else {
+                prev_fd = -1;
+            }
+        }
+        i++;
     }
-	pid_t wpid;
-	while ((wpid = wait(&wstatus)) > 0 || (wpid == -1 && errno == EINTR))
-	{
-		if (wpid == pid) 
-		{
-			if (WIFEXITED(wstatus))
-				g_last_exit_status = WEXITSTATUS(wstatus);
-			else if (WIFSIGNALED(wstatus))
-				g_last_exit_status = 128 + WTERMSIG(wstatus);
-		}
-	}
-
+    int wstatus;
+    while (wait(&wstatus) > 0) {
+        if (WIFEXITED(wstatus))
+            g_last_exit_status = WEXITSTATUS(wstatus);
+        else if (WIFSIGNALED(wstatus))
+            g_last_exit_status = 128 + WTERMSIG(wstatus);
+    }
+    free_str_array(envp_str);
 }

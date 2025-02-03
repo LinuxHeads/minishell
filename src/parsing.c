@@ -276,7 +276,7 @@ t_exec	*allocate_shell_commands(int num_commands, char **shell_command)
 	t_exec	*shell;
 	int		i;
 
-	if (!(shell = malloc(sizeof(t_shell))))
+	if (!(shell = malloc(sizeof(t_exec))))
 		return (NULL);
 	if (!(shell->commands = malloc(sizeof(t_command *) *
 		(num_commands + 1))))
