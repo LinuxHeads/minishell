@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@std.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 01:23:07 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/03 16:31:09 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/03 17:22:04 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -243,12 +243,17 @@ static void	execute_pipeline(t_shell *shell, char **envp)
 			prev_fd = -1;
 		i++;
 	}
-	while (wait(&wstatus) != pid) 
-		; // Loop until the last process finishes
-	if (WIFEXITED(wstatus)) 
-		g_last_exit_status = WEXITSTATUS(wstatus);
-	else if (WIFSIGNALED(wstatus))
-		g_last_exit_status = 128 + WTERMSIG(wstatus);
+	pid_t wpid;
+	while ((wpid = wait(&wstatus)) > 0 || (wpid == -1 && errno == EINTR))
+	{
+		if (wpid == pid) 
+		{
+			if (WIFEXITED(wstatus))
+				g_last_exit_status = WEXITSTATUS(wstatus);
+			else if (WIFSIGNALED(wstatus))
+				g_last_exit_status = 128 + WTERMSIG(wstatus);
+		}
+	}
 
 }
 
