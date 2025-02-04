@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abdsalah <abdsalah@std.42amman.com>        +#+  +:+       +#+        */
+/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/01 10:42:42 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/03 16:32:01 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/04 04:06:53 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,9 +55,9 @@ int					ft_tolower(int c);
 int					ft_toupper(int c);
 char				*ft_strmapi(char const *s, char (*f)(unsigned int, char));
 void				ft_striteri(char *s, void (*f)(unsigned int, char *));
-void				ft_putchar_fd(char c, int fd);
-void				ft_putstr_fd(char *s, int fd);
-void				ft_putendl_fd(char *s, int fd);
+void				ft_putchar_fd(const char c, int fd);
+void				ft_putstr_fd(const char *s, int fd);
+void				ft_putendl_fd(const char *s, int fd);
 
 // Linked list
 typedef struct s_list
@@ -77,4 +77,4 @@ int					ft_lstsize(t_list *lst);
 t_list				*ft_lstmap(t_list *lst, void *(*f)(void *),
 						void (*del)(void *));
 
-#endif // LIBFT_H
+#endif
