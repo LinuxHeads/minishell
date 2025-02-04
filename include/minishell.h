@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 19:24:00 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/04 20:05:51 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/04 23:02:06 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -205,7 +205,7 @@ int		ft_setenv(const char *name, const char *value, t_env **env_list);
 /* 
 ** ft_pwd: Built-in pwd command to print the current directory path.
 */
-int        ft_pwd(char **args);
+int        ft_pwd(void);
 
 /* ************************************************************************** */
 /*                            MINISHELL INITIALIZATION                         */
