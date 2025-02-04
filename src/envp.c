@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/29 20:18:07 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/01 23:21:07 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/04 03:39:10 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,7 +112,7 @@ char **envp_to_str(t_env *env)
 
 
 
-void ft_setenv(const char *name, const char *value, t_env **env_list)
+int ft_setenv(const char *name, const char *value, t_env **env_list)
 {
     t_env *env = *env_list;
     t_env *new;
@@ -124,8 +124,15 @@ void ft_setenv(const char *name, const char *value, t_env **env_list)
         {
             free(env->value);
             // If value is NULL, set env->value to NULL (no '=')
-            env->value = value ? ft_strdup(value) : NULL;
-            return;
+            if (value)
+            {
+                env->value = ft_strdup(value);
+                if (!env->value)
+                    return (0);
+            }
+            else
+                env->value = NULL;
+            return (1);
         }
         env = env->next;
     }
@@ -133,12 +140,12 @@ void ft_setenv(const char *name, const char *value, t_env **env_list)
     // Create a new entry
     new = malloc(sizeof(t_env));
     if (!new)
-        return;
+        return (0);
     new->name = ft_strdup(name);
     if (!new->name)
     {
         free(new);
-        return;
+        return (0);
     }
     // If value is NULL, the variable has no '=' (e.g., `export VAR`)
     new->value = value ? ft_strdup(value) : NULL;
@@ -154,4 +161,5 @@ void ft_setenv(const char *name, const char *value, t_env **env_list)
             last = last->next;
         last->next = new;
     }
+    return (1);
 }
