@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
+/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 01:23:07 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/03 21:39:48 by ahramada         ###   ########.fr       */
+/*   Updated: 2025/02/04 04:43:17 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -203,7 +203,7 @@ static char *find_command_path(char *cmd, char **envp)
     }
     return (NULL);
 }
-int builtins(char **arg, t_env **envp)
+int builtins(char **arg)
 {
 	if (ft_strcmp(arg[0], "echo") == 0)
 		return (1);
@@ -223,27 +223,27 @@ int builtins(char **arg, t_env **envp)
 
 }
 
-int exec_builtins(char **args, t_env **envp)
+int exec_builtins(char **args, t_shell *shell)
 {
 	if (ft_strcmp(args[0], "echo") == 0)
 		return (1);
 	if (ft_strcmp(args[0], "cd") == 0)
-		return (ft_cd(args[1], envp));
+		return (ft_cd(args + 1, &shell->env_list));
 	if (ft_strcmp(args[0], "pwd") == 0)
-		return (1);
+		return (ft_pwd(args + 1));
 	if (ft_strcmp(args[0], "export") == 0)
-		return (1);
+		return (ft_export(args + 1, &shell->env_list));
 	if (ft_strcmp(args[0], "unset") == 0)
-		return (1);
+		return (ft_unset(args + 1, &shell->env_list));
 	if (ft_strcmp(args[0], "env") == 0)
-		return (1);
+		return (ft_env(args + 1, shell));
 	if (ft_strcmp(args[0], "exit") == 0)
 		return (1);
 	return (0);
 
 }
 
-void execute_pipeline(t_exec *shell_exec, t_env **envp) {
+void execute_pipeline(t_shell **shell) {
     int i = 0;
     int prev_fd = -1;
     int pipe_fd[2];
@@ -252,28 +252,28 @@ void execute_pipeline(t_exec *shell_exec, t_env **envp) {
     char **argv;
     char *cmd_path;
     int pipe_created;
-    char **envp_str = envp_to_str(*envp);
-    if (!envp_str) {
+    (*shell)->envp = envp_to_str((*shell)->env_list);
+    if (!(*shell)->envp || !(*shell)->envp[0]) {
         fprintf(stderr, "Error converting env to string array\n");
         return;
     }
     
-    while (i < shell_exec->command_count) {
-        get_redirections(shell_exec->commands[i], &in_fd, &out_fd);
-        argv = build_command_argv(shell_exec->commands[i]);
+    while (i < (*shell)->parser->command_count) {
+        get_redirections((*shell)->parser->commands[i], &in_fd, &out_fd);
+        argv = build_command_argv((*shell)->parser->commands[i]);
         if (!argv || !argv[0]) {
             fprintf(stderr, "minishell: invalid command\n");
             exit(EXIT_FAILURE);
         }
-        if (builtins(argv, envp) && shell_exec->command_count == 1) {
-            exec_builtins(argv, envp);
+        if (builtins(argv) && (*shell)->parser->command_count == 1) {
+            exec_builtins(argv, *shell);
             free_str_array(argv);
             return;
         } else {
             if (i > 0 && prev_fd != -1)
                 in_fd = prev_fd;
             pipe_created = 0;
-            if (i < shell_exec->command_count - 1) {
+            if (i < (*shell)->parser->command_count - 1) {
                 if (pipe(pipe_fd) == -1) {
                     perror("pipe");
                     exit(EXIT_FAILURE);
@@ -300,18 +300,18 @@ void execute_pipeline(t_exec *shell_exec, t_env **envp) {
                     close(pipe_fd[0]);
                     close(pipe_fd[1]);
                 }
-                argv = build_command_argv(shell_exec->commands[i]);
+                argv = build_command_argv((*shell)->parser->commands[i]);
                 if (!argv || !argv[0]) {
                     fprintf(stderr, "minishell: invalid command\n");
                     exit(EXIT_FAILURE);
                 }
-                cmd_path = find_command_path(argv[0], envp_str);
+                cmd_path = find_command_path(argv[0], (*shell)->envp);
                 if (!cmd_path) {
                     fprintf(stderr, "%s: command not found\n", argv[0]);
                     free_str_array(argv);
                     exit(127);
                 }
-                execve(cmd_path, argv, envp_str);
+                execve(cmd_path, argv, (*shell)->envp);
                 perror("execve");
                 free_str_array(argv);
                 free(cmd_path);
@@ -339,5 +339,5 @@ void execute_pipeline(t_exec *shell_exec, t_env **envp) {
         else if (WIFSIGNALED(wstatus))
             g_last_exit_status = 128 + WTERMSIG(wstatus);
     }
-    free_str_array(envp_str);
+    // free_str_array((*shell)->envp);
 }
