@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/29 20:18:07 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/04 05:46:09 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/04 20:21:47 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,71 +109,6 @@ char **envp_to_str(t_env *env)
     envp[i] = NULL;
     return (envp);
 }
-
-
-
-// int ft_setenv(const char *name, const char *value, t_env **env_list)
-// {
-//     t_env *env = *env_list;
-//     t_env *new;
-
-//     // Check if the variable already exists
-//     while (env)
-//     {
-//         if (ft_strcmp(env->name, name) == 0)
-//         {
-//             free(env->value);
-//             // If value is NULL, set env->value to NULL (no '=')
-//             if (value)
-//             {
-//                 env->value = ft_strdup(value);
-//                 if (!env->value)
-//                     return (0);
-//             }
-//             else
-//                 env->value = NULL;
-//             return (1);
-//         }
-//         env = env->next;
-//     }
-
-//     // Create a new entry
-//     new = malloc(sizeof(t_env));
-//     if (!new)
-//         return (0);
-//     new->name = ft_strdup(name);
-//     if (!new->name)
-//     {
-//         free(new);
-//         return (0);
-//     }
-//     // If value is NULL, the variable has no '=' (e.g., `export VAR`)
-//     if (value)
-//     {
-//         new->value = ft_strdup(value);
-//         if (!new->value)
-//         {
-//             free(new->name);
-//             free(new);
-//             return (0);
-//         }
-//     }
-//     else
-//         new->value = NULL;
-//     new->next = NULL;
-
-//     // Append to the end of the list to preserve order
-//     if (!*env_list)
-//         *env_list = new;
-//     else
-//     {
-//         t_env *last = *env_list;
-//         while (last->next)
-//             last = last->next;
-//         last->next = new;
-//     }
-//     return (1);
-// }
 
 /* --- Updates existing environment variable --- */
 static int update_existing_env(t_env *env, const char *value)
