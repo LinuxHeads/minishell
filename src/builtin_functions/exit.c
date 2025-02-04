@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 15:30:45 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/04 20:21:31 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/04 23:00:14 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ int ft_exit(char **args, t_shell *shell)
     {
         if (ft_isnumber(args[0]))
         {
-            shell->exit_status = (char)ft_atoi(args[0]);
+            shell->exit_status = ft_atoi(args[0]) % 256;
             free_envp_list(shell->env_list);
             free_str_array(shell->envp);
             free(shell->parser);
