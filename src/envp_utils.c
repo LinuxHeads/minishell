@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   envp_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abdsalah <abdsalah@std.42amman.com>        +#+  +:+       +#+        */
+/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 23:20:22 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/03 19:07:21 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/04 03:41:32 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,12 @@ void printstr_envp(char **envp)
 		printf("%s\n", envp[i]);
 		i++;
 	}
+}
+void free_envp_node(t_env *env)
+{
+	free(env->name);
+	free(env->value);
+	free(env);
 }
 
 void free_envp_list(t_env *env)
