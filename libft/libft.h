@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/01 10:42:42 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/04 04:06:53 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/04 20:12:08 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ int					ft_isalnum(int c);
 int					ft_isalpha(int c);
 int					ft_isascii(int c);
 int					ft_isdigit(int c);
+int					ft_isnumber(char *str);
 int					ft_isprint(int c);
 char				*ft_itoa(int n);
 void				ft_putnbr_fd(int n, int fd);
