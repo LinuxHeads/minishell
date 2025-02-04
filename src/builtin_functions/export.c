@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 15:42:39 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/04 04:16:38 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/04 06:13:09 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,13 +74,18 @@ static int split_var(const char *arg, char **key, char **value)
  *
  * Returns 0 on success, 1 on failure.
  */
-int ft_export(char **args, t_env **env_list)
+int ft_export(char **args, t_env **env_list)// TO-DO : when no args are passed, print all env vars in sorted order
 {
     char *key;
     char *value;
     int i;
 
     i = -1;
+    if (!args[0])
+    {
+        print_envp(*env_list);// should be sorted
+        return (0);
+    }
     while (args[++i])
     {
         if (syntax_error(args[i]))
@@ -101,3 +106,4 @@ int ft_export(char **args, t_env **env_list)
     }
     return (0);
 }
+
