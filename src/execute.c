@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 01:23:07 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/04 16:38:58 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/04 20:06:18 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -234,7 +234,7 @@ int exec_builtins(char **args, t_shell *shell)
 	if (ft_strcmp(args[0], "env") == 0)
 		return (ft_env(args + 1, shell));
 	if (ft_strcmp(args[0], "exit") == 0)
-		return (1);
+		return (ft_exit(args + 1, shell));
 	return (0);
 
 }
@@ -335,5 +335,4 @@ void execute_pipeline(t_shell **shell) {
         else if (WIFSIGNALED(wstatus))
             (*shell)->exit_status = 128 + WTERMSIG(wstatus);
     }
-    // free_str_array((*shell)->envp);
 }

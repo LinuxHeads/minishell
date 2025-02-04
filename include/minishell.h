@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 19:24:00 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/04 04:42:17 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/04 20:05:51 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@
 ** and value. The linked list structure allows dynamic management of environment
 ** variables.
 */
+extern volatile int g_signal_flag;
 
 typedef enum e_token_type
 {
@@ -168,7 +169,7 @@ int         env_length(t_env *env);
 /* 
 ** ft_exit: Built-in exit command to terminate the shell.
 */
-void        ft_exit(void);
+int ft_exit(char **args, t_shell *shell);
 
 /* 
 ** ft_echo: Built-in echo command to print arguments to stdout.
