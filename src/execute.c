@@ -6,15 +6,11 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 01:23:07 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/04 04:43:17 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/04 16:38:58 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
-#include <time.h>
-#include <unistd.h>
-
-int g_last_exit_status = 0;
 
 static int is_redirect_operator(int type) {
     return (type == REDIRECT_IN ||
@@ -335,9 +331,9 @@ void execute_pipeline(t_shell **shell) {
     int wstatus;
     while (wait(&wstatus) > 0) {
         if (WIFEXITED(wstatus))
-            g_last_exit_status = WEXITSTATUS(wstatus);
+            (*shell)->exit_status = WEXITSTATUS(wstatus);
         else if (WIFSIGNALED(wstatus))
-            g_last_exit_status = 128 + WTERMSIG(wstatus);
+            (*shell)->exit_status = 128 + WTERMSIG(wstatus);
     }
     // free_str_array((*shell)->envp);
 }
