@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 15:30:45 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/04 20:17:28 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/04 20:20:06 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ int ft_exit(char **args, t_shell *shell)
         else
         {
             ft_putstr_fd("exit: numeric argument required\n", 2);
-            return (1);
+            return (2);
         }
     }
     free_envp_list(shell->env_list);
