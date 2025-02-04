@@ -12,19 +12,19 @@
 
 #include "../include/minishell.h"
 
-static char	**ft_free(char **str, int i)
-{
-	int	j;
+// static char	**ft_free(char **str, int i)
+// {
+// 	int	j;
 
-	j = 0;
-	while (j < i)
-	{
-		free(str[j]);
-		j++;
-	}
-	free(str);
-	return (NULL);
-}
+// 	j = 0;
+// 	while (j < i)
+// 	{
+// 		free(str[j]);
+// 		j++;
+// 	}
+// 	free(str);
+// 	return (NULL);
+// }
 
 static void	skip_quote(const char **s)
 {

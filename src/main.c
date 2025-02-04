@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abdsalah <abdsalah@std.42amman.com>        +#+  +:+       +#+        */
+/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/29 20:22:52 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/03 20:49:27 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/04 05:05:56 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ void minishell_loop(t_shell *shell)
 			free(input);
 			continue;
 		}
-		execute_pipeline(shell->parser, &shell->env_list);
+		execute_pipeline(&shell);
 		free_shell(shell->parser);
 		free_str_array(commands);
 		free(processed_input);
