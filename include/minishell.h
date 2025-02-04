@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abdsalah <abdsalah@std.42amman.com>        +#+  +:+       +#+        */
+/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 19:24:00 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/03 20:30:50 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/04 04:01:01 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -178,28 +178,28 @@ void        ft_echo(void);
 /* 
 ** ft_env: Built-in env command to print environment variables to stdout.
 */
-void        ft_env(t_shell *shell);
+int    ft_env(char **args, t_shell *shell);
 
 /* 
 ** ft_cd: Built-in cd command to change the current directory.
 */
-int        ft_cd(char *args, t_env **envp);
+int        ft_cd(char **args, t_env **envp);
 
 /* 
 ** ft_export: Built-in export command to set an environment variable.
 */
-void        ft_export(char *args, t_env **env);
+int        ft_export(char **args, t_env **env);
 
 /* 
 ** ft_unset: Built-in unset command to remove an environment variable.
 */
-void    ft_unset(char *arg, t_env **env);
+int    ft_unset(char **arg, t_env **envp);
 
 /* 
 ** ft_setenv: Function to manually set an environment variable (can be used 
 ** to implement `setenv` if needed).
 */
-void        ft_setenv(const char *name, const char *value, t_env **env_list);
+int		ft_setenv(const char *name, const char *value, t_env **env_list);
 
 /* 
 ** ft_pwd: Built-in pwd command to print the current directory path.
@@ -230,6 +230,7 @@ void			print_shell(t_exec *shell);
 char			*ft_str_replace(const char *str, const char *old, const char *);
 char			*preprocess_input(char *input);
 void			free_str_array(char **arr);
-void			execute_pipeline(t_exec *shell, t_env **envp);
+void			execute_pipeline(t_shell **shell);
 void			signals_t3res(void);
+void			free_envp_node(t_env *env);
 #endif
