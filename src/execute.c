@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abdsalah <abdsalah@std.42amman.com>        +#+  +:+       +#+        */
+/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 01:23:07 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/05 20:45:53 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/05 21:33:02 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,8 @@ static void	get_redirections(t_command *cmd, int *in_fd, int *out_fd)
 			if (i + 1 < cmd->token_count && cmd->tokens[i + 1])
 			{
 				i++;
+                if((cmd->tokens[i]->value[0]=='\"' && cmd->tokens[i]->value[ft_strlen(cmd->tokens[i]->value)-1]=='\"') || (cmd->tokens[i]->value[0]=='\'' && cmd->tokens[i]->value[ft_strlen(cmd->tokens[i]->value)-1]=='\''))
+			        {cmd->tokens[i]->value=ft_substr(cmd->tokens[i]->value,1,ft_strlen(cmd->tokens[i]->value)-2);}
 				*in_fd = open(cmd->tokens[i]->value, O_RDONLY);
 				if (*in_fd < 0)
 					perror(cmd->tokens[i]->value);
@@ -89,10 +91,7 @@ static void	get_redirections(t_command *cmd, int *in_fd, int *out_fd)
 			{
 				i++;
                 if((cmd->tokens[i]->value[0]=='\"' && cmd->tokens[i]->value[ft_strlen(cmd->tokens[i]->value)-1]=='\"') || (cmd->tokens[i]->value[0]=='\'' && cmd->tokens[i]->value[ft_strlen(cmd->tokens[i]->value)-1]=='\''))
-			        {printf("value=%s\n",(cmd->tokens[i]->value));
-                    
-                        cmd->tokens[i]->value=ft_substr(cmd->tokens[i]->value,1,ft_strlen(cmd->tokens[i]->value)-2);
-                        printf("value=%s\n",(cmd->tokens[i]->value));}
+			        {cmd->tokens[i]->value=ft_substr(cmd->tokens[i]->value,1,ft_strlen(cmd->tokens[i]->value)-2);}
 				*out_fd = open(cmd->tokens[i]->value,
 					O_WRONLY | O_CREAT | O_TRUNC, 0644);
 				if (*out_fd < 0)
@@ -106,6 +105,8 @@ static void	get_redirections(t_command *cmd, int *in_fd, int *out_fd)
 			if (i + 1 < cmd->token_count && cmd->tokens[i + 1])
 			{
 				i++;
+                if((cmd->tokens[i]->value[0]=='\"' && cmd->tokens[i]->value[ft_strlen(cmd->tokens[i]->value)-1]=='\"') || (cmd->tokens[i]->value[0]=='\'' && cmd->tokens[i]->value[ft_strlen(cmd->tokens[i]->value)-1]=='\''))
+			        {cmd->tokens[i]->value=ft_substr(cmd->tokens[i]->value,1,ft_strlen(cmd->tokens[i]->value)-2);}
 				*out_fd = open(cmd->tokens[i]->value,
 					O_WRONLY | O_CREAT | O_APPEND, 0644);
 				if (*out_fd < 0)
@@ -119,6 +120,8 @@ static void	get_redirections(t_command *cmd, int *in_fd, int *out_fd)
 			if (i + 1 < cmd->token_count)
 			{
 				i++;
+                if((cmd->tokens[i]->value[0]=='\"' && cmd->tokens[i]->value[ft_strlen(cmd->tokens[i]->value)-1]=='\"') || (cmd->tokens[i]->value[0]=='\'' && cmd->tokens[i]->value[ft_strlen(cmd->tokens[i]->value)-1]=='\''))
+			        {cmd->tokens[i]->value=ft_substr(cmd->tokens[i]->value,1,ft_strlen(cmd->tokens[i]->value)-2);}
 				int pipe_fds[2];
 				if (pipe(pipe_fds) == -1)
 				{
@@ -272,7 +275,8 @@ void execute_pipeline(t_shell **shell)
     {
         get_redirections((*shell)->parser->commands[i], &in_fd, &out_fd);
         argv = build_command_argv((*shell)->parser->commands[i]);
-        expander(&argv); 
+        expander(&argv, (*shell)->env_list);
+        //printf("%s \n",argv[0]); 
         if (!argv || !argv[0])
         {
             fprintf(stderr, "minishell: invalid command\n");

@@ -3,27 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   expander.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abdsalah <abdsalah@std.42amman.com>        +#+  +:+       +#+        */
+/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 01:23:07 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/05 20:47:29 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/05 21:32:34 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 #include <stdio.h>
 
-char	*get_env_value(char *var)
-{
-	char	*value;
-
-	value = getenv(var);
-	if (value)
-		return (value);
-	return ("");
-}
-
-char	*expand_variable(const char *str, int *index)
+char	*expand_variable(const char *str, int *index, t_env *envp)
 {
 	int		start;
 	char	*var_name;
@@ -39,12 +29,12 @@ char	*expand_variable(const char *str, int *index)
 	var_name = ft_substr(str, start, *index - start);
 	if (!var_name)
 		return (NULL);
-	expanded = ft_strdup(get_env_value(var_name));
+	expanded = ft_strdup(ft_getenv(var_name, envp));
 	free(var_name);
 	return (expanded);
 }
 
-char	*expand_string(const char *str)
+char	*expand_string(const char *str, t_env *envp)
 {
 	char	*result;
 	char	*var_value;
@@ -67,7 +57,7 @@ char	*expand_string(const char *str)
 		else if (str[i] == '$' && !in_sq)
 		{
 			i++;
-			var_value = expand_variable(str, &i);
+			var_value = expand_variable(str, &i, envp);
 			if (var_value)
 			{
 				result = ft_strjoin(result, var_value);
@@ -90,7 +80,7 @@ char	*expand_string(const char *str)
 	return (result);
 }
 
-void	expander(char ***argv_ptr)
+void	expander(char ***argv_ptr, t_env *envp)
 {
 	char	**argv;
 	int		i;
@@ -100,7 +90,7 @@ void	expander(char ***argv_ptr)
 	i = 0;
 	while (argv[i] != NULL)
 	{
-		expanded = expand_string(argv[i]);
+		expanded = expand_string(argv[i], envp);
 		free(argv[i]);
 		
 		if((expanded[0]=='\"' && expanded[ft_strlen(expanded)-1]=='\"') || (expanded[0]=='\'' && expanded[ft_strlen(expanded)-1]=='\''))
