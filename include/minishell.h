@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
+/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 19:24:00 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/05 21:32:24 by ahramada         ###   ########.fr       */
+/*   Updated: 2025/02/06 00:44:19 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -201,7 +201,7 @@ int    ft_unset(char **arg, t_env **envp);
 ** to implement `setenv` if needed).
 */
 int		ft_setenv(const char *name, const char *value, t_env **env_list);
-void 	expander(char ***argv_ptr, t_env *envp);
+void	expander(char ***argv_ptr, t_shell *shell);
 /* 
 ** ft_pwd: Built-in pwd command to print the current directory path.
 */

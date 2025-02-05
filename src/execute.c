@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
+/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 01:23:07 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/06 00:05:39 by ahramada         ###   ########.fr       */
+/*   Updated: 2025/02/06 00:44:49 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -275,7 +275,7 @@ void execute_pipeline(t_shell **shell)
     {
         get_redirections((*shell)->parser->commands[i], &in_fd, &out_fd);
         argv = build_command_argv((*shell)->parser->commands[i]);
-        expander(&argv, (*shell)->env_list);
+        expander(&argv, *shell);
         //printf("%s \n",argv[0]); 
         if (!argv || !argv[0])
         {

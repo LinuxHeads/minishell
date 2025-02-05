@@ -3,24 +3,27 @@
 /*                                                        :::      ::::::::   */
 /*   expander.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
+/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 01:23:07 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/05 21:32:34 by ahramada         ###   ########.fr       */
+/*   Updated: 2025/02/06 00:48:51 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 #include <stdio.h>
 
-char	*expand_variable(const char *str, int *index, t_env *envp)
+char	*expand_variable(const char *str, int *index, t_shell *shell)
 {
 	int		start;
 	char	*var_name;
 	char	*expanded;
 
 	if (str[*index] == '?')
-		return ("ZOMBI SHOULD HAMDEL IT");
+	{
+		(*index)++;
+		return (ft_itoa(shell->exit_status));
+	}
 	start = *index;
 	while (str[*index] && (ft_isalnum(str[*index]) || str[*index] == '_'))
 		(*index)++;
@@ -29,12 +32,12 @@ char	*expand_variable(const char *str, int *index, t_env *envp)
 	var_name = ft_substr(str, start, *index - start);
 	if (!var_name)
 		return (NULL);
-	expanded = ft_strdup(ft_getenv(var_name, envp));
+	expanded = ft_strdup(ft_getenv(var_name, shell->env_list));
 	free(var_name);
 	return (expanded);
 }
 
-char	*expand_string(const char *str, t_env *envp)
+char	*expand_string(const char *str, t_shell *shell)
 {
 	char	*result;
 	char	*var_value;
@@ -57,7 +60,7 @@ char	*expand_string(const char *str, t_env *envp)
 		else if (str[i] == '$' && !in_sq)
 		{
 			i++;
-			var_value = expand_variable(str, &i, envp);
+			var_value = expand_variable(str, &i, shell);
 			if (var_value)
 			{
 				result = ft_strjoin(result, var_value);
@@ -80,7 +83,7 @@ char	*expand_string(const char *str, t_env *envp)
 	return (result);
 }
 
-void	expander(char ***argv_ptr, t_env *envp)
+void	expander(char ***argv_ptr, t_shell *shell)
 {
 	char	**argv;
 	int		i;
@@ -90,7 +93,7 @@ void	expander(char ***argv_ptr, t_env *envp)
 	i = 0;
 	while (argv[i] != NULL)
 	{
-		expanded = expand_string(argv[i], envp);
+		expanded = expand_string(argv[i], shell);
 		free(argv[i]);
 		
 		if((expanded[0]=='\"' && expanded[ft_strlen(expanded)-1]=='\"') || (expanded[0]=='\'' && expanded[ft_strlen(expanded)-1]=='\''))
