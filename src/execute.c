@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 01:23:07 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/06 02:15:31 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/06 02:30:09 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,12 +56,12 @@ static char **build_command_argv(t_command *cmd)
 }
 
 
-static void	get_redirections(t_command *cmd, int *in_fd, int *out_fd)
+static int	get_redirections(t_command *cmd, int *in_fd, int *out_fd)
 {
 	int	i = 0;
 
 	if (!cmd || !in_fd || !out_fd)
-		return ;
+		return (0);
 	*in_fd = STDIN_FILENO;
 	*out_fd = STDOUT_FILENO;
 	while (i < cmd->token_count)
@@ -81,7 +81,10 @@ static void	get_redirections(t_command *cmd, int *in_fd, int *out_fd)
 			        {cmd->tokens[i]->value=ft_substr(cmd->tokens[i]->value,1,ft_strlen(cmd->tokens[i]->value)-2);}
 				*in_fd = open(cmd->tokens[i]->value, O_RDONLY);
 				if (*in_fd < 0)
+                {
 					perror(cmd->tokens[i]->value);
+                    return (0);
+                }
 			}
 			else
 				fprintf(stderr, "minishell: syntax error near unexpected token `newline'\n");
@@ -96,7 +99,10 @@ static void	get_redirections(t_command *cmd, int *in_fd, int *out_fd)
 				*out_fd = open(cmd->tokens[i]->value,
 					O_WRONLY | O_CREAT | O_TRUNC, 0644);
 				if (*out_fd < 0)
+                {
 					perror(cmd->tokens[i]->value);
+                    return (0);
+                }
 			}
 			else
 				fprintf(stderr, "minishell: syntax error near unexpected token `newline'\n");
@@ -111,7 +117,11 @@ static void	get_redirections(t_command *cmd, int *in_fd, int *out_fd)
 				*out_fd = open(cmd->tokens[i]->value,
 					O_WRONLY | O_CREAT | O_APPEND, 0644);
 				if (*out_fd < 0)
+                {
 					perror(cmd->tokens[i]->value);
+                    return (0);                    
+                }
+                
 			}
 			else
 				fprintf(stderr, "minishell: syntax error near unexpected token `newline'\n");
@@ -148,6 +158,7 @@ static void	get_redirections(t_command *cmd, int *in_fd, int *out_fd)
 		}
 		i++;
 	}
+    return (1);
 }
 
 
@@ -275,7 +286,12 @@ void execute_pipeline(t_shell **shell)
     
     while (i < (*shell)->parser->command_count)
     {
-        get_redirections((*shell)->parser->commands[i], &in_fd, &out_fd);
+        if (!get_redirections((*shell)->parser->commands[i], &in_fd, &out_fd))
+        {
+            fprintf(stderr, "minishell: syntax error near unexpected token `newline'\n");
+            (*shell)->exit_status = 1;
+            return;
+        }
         argv = build_command_argv((*shell)->parser->commands[i]);
         expander(&argv, *shell);
         //printf("%s \n",argv[0]); 
