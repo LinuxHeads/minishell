@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   expander.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
+/*   By: abdsalah <abdsalah@std.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 01:23:07 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/05 15:08:18 by ahramada         ###   ########.fr       */
+/*   Updated: 2025/02/05 20:47:29 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
+#include <stdio.h>
 
 char	*get_env_value(char *var)
 {
@@ -101,6 +102,13 @@ void	expander(char ***argv_ptr)
 	{
 		expanded = expand_string(argv[i]);
 		free(argv[i]);
+		
+		if((expanded[0]=='\"' && expanded[ft_strlen(expanded)-1]=='\"') || (expanded[0]=='\'' && expanded[ft_strlen(expanded)-1]=='\''))
+		{
+			printf("expanded = %s\n",expanded);
+			expanded=ft_substr(expanded,1,ft_strlen(expanded)-1);
+			printf("expanded = %s\n",expanded);
+		}
 		argv[i] = expanded;
 		i++;
 	}

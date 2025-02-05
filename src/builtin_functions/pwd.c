@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   pwd.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
+/*   By: abdsalah <abdsalah@std.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/04 03:24:37 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/05 12:56:48 by ahramada         ###   ########.fr       */
+/*   Updated: 2025/02/05 19:41:28 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-int ft_pwd(void*)
+int ft_pwd(void)
 {
     char cwd[1024];
 

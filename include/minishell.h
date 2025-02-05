@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
+/*   By: abdsalah <abdsalah@std.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 19:24:00 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/05 14:36:28 by ahramada         ###   ########.fr       */
+/*   Updated: 2025/02/05 19:41:36 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -205,7 +205,7 @@ void 	expander(char ***argv_ptr);
 /* 
 ** ft_pwd: Built-in pwd command to print the current directory path.
 */
-int        ft_pwd(void *);
+int        ft_pwd(void);
 
 /* ************************************************************************** */
 /*                            MINISHELL INITIALIZATION                         */

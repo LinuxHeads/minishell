@@ -3,14 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
+/*   By: abdsalah <abdsalah@std.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 01:23:07 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/05 14:35:55 by ahramada         ###   ########.fr       */
+/*   Updated: 2025/02/05 20:45:53 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
+#include <stdio.h>
+#include <unistd.h>
 
 static int is_redirect_operator(int type) {
     return (type == REDIRECT_IN ||
@@ -63,6 +65,7 @@ static void	get_redirections(t_command *cmd, int *in_fd, int *out_fd)
 	*out_fd = STDOUT_FILENO;
 	while (i < cmd->token_count)
 	{
+
 		if (cmd->tokens[i] == NULL)
 		{
 			i++;
@@ -85,6 +88,11 @@ static void	get_redirections(t_command *cmd, int *in_fd, int *out_fd)
 			if (i + 1 < cmd->token_count && cmd->tokens[i + 1])
 			{
 				i++;
+                if((cmd->tokens[i]->value[0]=='\"' && cmd->tokens[i]->value[ft_strlen(cmd->tokens[i]->value)-1]=='\"') || (cmd->tokens[i]->value[0]=='\'' && cmd->tokens[i]->value[ft_strlen(cmd->tokens[i]->value)-1]=='\''))
+			        {printf("value=%s\n",(cmd->tokens[i]->value));
+                    
+                        cmd->tokens[i]->value=ft_substr(cmd->tokens[i]->value,1,ft_strlen(cmd->tokens[i]->value)-2);
+                        printf("value=%s\n",(cmd->tokens[i]->value));}
 				*out_fd = open(cmd->tokens[i]->value,
 					O_WRONLY | O_CREAT | O_TRUNC, 0644);
 				if (*out_fd < 0)
@@ -228,7 +236,7 @@ int exec_builtins(char **args, t_shell *shell)
 	if (ft_strcmp(args[0], "cd") == 0)
 		return (ft_cd(args + 1, &shell->env_list));
 	if (ft_strcmp(args[0], "pwd") == 0)
-		return (ft_pwd(args + 1));
+		return (ft_pwd());
 	if (ft_strcmp(args[0], "export") == 0)
 		return (ft_export(args + 1, &shell->env_list));
 	if (ft_strcmp(args[0], "unset") == 0)
@@ -241,7 +249,8 @@ int exec_builtins(char **args, t_shell *shell)
 
 }
 
-void execute_pipeline(t_shell **shell) {
+void execute_pipeline(t_shell **shell)
+{
     int i = 0;
     int prev_fd = -1;
     int pipe_fd[2];
@@ -250,29 +259,54 @@ void execute_pipeline(t_shell **shell) {
     char **argv;
     char *cmd_path;
     int pipe_created;
+    int last_pid;
+    
     (*shell)->envp = envp_to_str((*shell)->env_list);
-    if (!(*shell)->envp || !(*shell)->envp[0]) {
+    if (!(*shell)->envp || !(*shell)->envp[0])
+    {
         fprintf(stderr, "Error converting env to string array\n");
         return;
     }
     
-    while (i < (*shell)->parser->command_count) {
+    while (i < (*shell)->parser->command_count)
+    {
         get_redirections((*shell)->parser->commands[i], &in_fd, &out_fd);
         argv = build_command_argv((*shell)->parser->commands[i]);
         expander(&argv); 
-        if (!argv || !argv[0]) {
+        if (!argv || !argv[0])
+        {
             fprintf(stderr, "minishell: invalid command\n");
             exit(EXIT_FAILURE);
         }
-        if (builtins(argv) && (*shell)->parser->command_count == 1) {
+        if (builtins(argv) && (*shell)->parser->command_count == 1)
+        {
+            int fd1 = -1;
+            int fd2 = -1;
+
+            if (out_fd != STDOUT_FILENO)
+            {
+                fd1 = dup(STDOUT_FILENO);
+                fd2 = dup(STDIN_FILENO);
+                dup2(out_fd, STDOUT_FILENO);
+            }
             exec_builtins(argv, *shell);
             free_str_array(argv);
+            if (out_fd != STDOUT_FILENO)
+            {
+                dup2(fd1, STDOUT_FILENO);
+                close(fd1);
+                close(fd2);
+                close(out_fd);
+            }
             return;
-        } else {
+        } 
+        else
+        {
             if (i > 0 && prev_fd != -1)
                 in_fd = prev_fd;
             pipe_created = 0;
-            if (i < (*shell)->parser->command_count - 1) {
+            if (i < (*shell)->parser->command_count - 1)
+            {
                 if (pipe(pipe_fd) == -1) {
                     perror("pipe");
                     exit(EXIT_FAILURE);
@@ -280,11 +314,13 @@ void execute_pipeline(t_shell **shell) {
                 pipe_created = 1;
             }
             pid = fork();
-            if (pid < 0) {
+            if (pid < 0)
+            {
                 perror("fork");
                 exit(EXIT_FAILURE);
             }
-            if (pid == 0) {
+            if (pid == 0)
+            {
                 if (in_fd != STDIN_FILENO)
                     dup2(in_fd, STDIN_FILENO);
                 if (pipe_created) {
@@ -299,13 +335,19 @@ void execute_pipeline(t_shell **shell) {
                     close(pipe_fd[0]);
                     close(pipe_fd[1]);
                 }
-                argv = build_command_argv((*shell)->parser->commands[i]);
                 if (!argv || !argv[0]) {
                     fprintf(stderr, "minishell: invalid command\n");
                     exit(EXIT_FAILURE);
                 }
+                if (builtins(argv))
+                {
+                    (*shell)->exit_status = exec_builtins(argv, *shell);
+                    free_str_array(argv);
+                    exit((*shell)->exit_status);
+                }
                 cmd_path = find_command_path(argv[0], (*shell)->envp);
-                if (!cmd_path) {
+                if (!cmd_path)
+                {
                     fprintf(stderr, "%s: command not found\n", argv[0]);
                     free_str_array(argv);
                     exit(127);
@@ -332,10 +374,12 @@ void execute_pipeline(t_shell **shell) {
         i++;
     }
     int wstatus;
-    while (wait(&wstatus) > 0) {
+    while ((last_pid = wait(&wstatus)) > 0) {
+        if (last_pid == pid)
+        {
         if (WIFEXITED(wstatus))
             (*shell)->exit_status = WEXITSTATUS(wstatus);
         else if (WIFSIGNALED(wstatus))
             (*shell)->exit_status = 128 + WTERMSIG(wstatus);
-    }
+    }}
 }
