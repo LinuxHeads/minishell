@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 15:42:39 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/04 06:13:09 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/06 01:50:43 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,11 @@
  */
 static int syntax_error(const char *arg)
 {
+    const char *equal_sign;
+    size_t len;
+    size_t i;
+
+    // Check if the first character is a digit or an '='
     if (ft_isdigit(arg[0]) || arg[0] == '=')
     {
         ft_putstr_fd("export: `", 2);
@@ -27,8 +32,27 @@ static int syntax_error(const char *arg)
         ft_putstr_fd("': not a valid identifier\n", 2);
         return (0);
     }
+    // Only check the key part (up to the '=' if it exists)
+    equal_sign = ft_strchr(arg, '=');
+    if (equal_sign)
+        len = equal_sign - arg;
+    else
+        len = ft_strlen(arg);
+    i = 0;
+    while (i < len)
+    {
+        if (!ft_isalnum(arg[i]) && arg[i] != '_')
+        {
+            ft_putstr_fd("export: `", 2);
+            ft_putstr_fd(arg, 2);
+            ft_putstr_fd("': not a valid identifier\n", 2);
+            return (0);
+        }
+        i++;
+    }
     return (1);
 }
+
 
 /**
  * split_var - Splits the argument into key and value based on '='.
