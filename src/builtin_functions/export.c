@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 15:42:39 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/06 01:50:43 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/06 02:45:04 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,6 +127,8 @@ int ft_export(char **args, t_env **env_list)// TO-DO : when no args are passed, 
             if (value)
                 free(value);
         }
+        else
+            return (1);
     }
     return (0);
 }
