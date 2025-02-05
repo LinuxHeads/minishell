@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 01:23:07 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/06 00:44:49 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/06 02:15:31 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ static int is_redirect_operator(int type) {
             type == REDIRECT_APPEND ||
             type == HEREDOC);
 }
+
 static char **build_command_argv(t_command *cmd) 
 {
     int i = 0, j = 0, count = 0;
@@ -263,6 +264,7 @@ void execute_pipeline(t_shell **shell)
     char *cmd_path;
     int pipe_created;
     int last_pid;
+    int wstatus;
     
     (*shell)->envp = envp_to_str((*shell)->env_list);
     if (!(*shell)->envp || !(*shell)->envp[0])
@@ -360,6 +362,18 @@ void execute_pipeline(t_shell **shell)
                 perror("execve");
                 free_str_array(argv);
                 free(cmd_path);
+                if (pipe_created)
+                    close(pipe_fd[1]);
+                if (in_fd != STDIN_FILENO)
+                    close(in_fd);
+                if (out_fd != STDOUT_FILENO)
+                    close(out_fd);
+                if (prev_fd != -1)
+                    close(prev_fd);
+                if (errno == ENOENT)
+                    exit(127);
+                if (errno == EACCES)
+                    exit(126);
                 exit(EXIT_FAILURE);
             }
             if (in_fd != STDIN_FILENO && in_fd != prev_fd)
@@ -377,7 +391,6 @@ void execute_pipeline(t_shell **shell)
         }
         i++;
     }
-    int wstatus;
     while ((last_pid = wait(&wstatus)) > 0) {
         if (last_pid == pid)
         {

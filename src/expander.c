@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 01:23:07 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/06 00:58:38 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/06 02:07:47 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,10 @@ char	*expand_variable(const char *str, int *index, t_shell *shell)
 	var_name = ft_substr(str, start, *index - start);
 	if (!var_name)
 		return (NULL);
-	expanded = ft_strdup(ft_getenv(var_name, shell->env_list));
+	char *env_val = ft_getenv(var_name, shell->env_list);
+	if (!env_val)
+		env_val = "";  // Use an empty string if the variable is not found
+	expanded = ft_strdup(env_val);
 	free(var_name);
 	return (expanded);
 }
@@ -75,7 +78,9 @@ char	*expand_string(const char *str, t_shell *shell)
 				return (NULL);
 			var_value[0] = str[i];
 			var_value[1] = '\0';
-			result = ft_strjoin(result, var_value);
+			char *tmp = ft_strjoin(result, var_value);
+			free(result);
+			result = tmp;
 			free(var_value);
 		}
 		i++;
@@ -95,13 +100,21 @@ void	expander(char ***argv_ptr, t_shell *shell)
 	{
 		expanded = expand_string(argv[i], shell);
 		free(argv[i]);
-		
-		if((expanded[0]=='\"' && expanded[ft_strlen(expanded)-1]=='\"') || (expanded[0]=='\'' && expanded[ft_strlen(expanded)-1]=='\''))
+		if (!expanded)
 		{
-			printf("expanded = %s\n",expanded);
-			expanded=ft_substr(expanded,1,ft_strlen(expanded)-1);
-			printf("expanded = %s\n",expanded);
+			*argv_ptr = NULL;
+			return ;
 		}
+		size_t len = ft_strlen(expanded);
+		if (len >= 2 &&
+			((expanded[0]=='\"' && expanded[len-1]=='\"') ||
+			(expanded[0]=='\'' && expanded[len-1]=='\'')))
+		{
+			char *tmp = ft_substr(expanded, 1, len - 2);
+			free(expanded);
+			expanded = tmp;
+		}
+
 		argv[i] = expanded;
 		i++;
 	}

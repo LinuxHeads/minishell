@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/29 20:22:52 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/06 01:51:39 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/06 01:57:42 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,12 +15,12 @@
 
 void init_minishell(t_shell *shell, char **envp)//$SHLVL
 {
-	if (!isatty(STDIN_FILENO))
-    {
-        // If not a TTY, print an error and exit
-        fprintf(stderr, "Error: Minishell must be run in a terminal (TTY)\n");
-        exit(1);
-    }
+	// if (!isatty(STDIN_FILENO))
+    // {
+    //     // If not a TTY, print an error and exit
+    //     fprintf(stderr, "Error: Minishell must be run in a terminal (TTY)\n");
+    //     exit(1);
+    // }
 	shell->env_list = init_envp(envp);
     if (!shell->env_list)
 	{
