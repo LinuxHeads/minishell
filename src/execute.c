@@ -6,7 +6,7 @@
 /*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 01:23:07 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/05 21:33:02 by ahramada         ###   ########.fr       */
+/*   Updated: 2025/02/06 00:05:39 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -293,7 +293,7 @@ void execute_pipeline(t_shell **shell)
                 fd2 = dup(STDIN_FILENO);
                 dup2(out_fd, STDOUT_FILENO);
             }
-            exec_builtins(argv, *shell);
+            (*shell)->exit_status = exec_builtins(argv, *shell);
             free_str_array(argv);
             if (out_fd != STDOUT_FILENO)
             {

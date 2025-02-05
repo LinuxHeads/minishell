@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abdsalah <abdsalah@std.42amman.com>        +#+  +:+       +#+        */
+/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 15:40:45 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/05 20:36:43 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/06 00:05:23 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,5 +36,5 @@ int ft_echo(char **args)
 	{
         printf("\n");
 	}
-	return (1);
+	return (0);
 }
