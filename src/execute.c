@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 01:23:07 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/06 02:30:09 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/06 02:52:16 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -286,11 +286,13 @@ void execute_pipeline(t_shell **shell)
     
     while (i < (*shell)->parser->command_count)
     {
+        // get_redirections((*shell)->parser->commands[i], &in_fd, &out_fd);
         if (!get_redirections((*shell)->parser->commands[i], &in_fd, &out_fd))
         {
-            fprintf(stderr, "minishell: syntax error near unexpected token `newline'\n");
+            // fprintf(stderr, "minishell: syntax error near unexpected token `newline'\n);
             (*shell)->exit_status = 1;
-            return;
+            i++;
+            continue;
         }
         argv = build_command_argv((*shell)->parser->commands[i]);
         expander(&argv, *shell);
@@ -386,10 +388,10 @@ void execute_pipeline(t_shell **shell)
                     close(out_fd);
                 if (prev_fd != -1)
                     close(prev_fd);
+                if (errno == EACCES || errno == EISDIR)
+                    exit(126);
                 if (errno == ENOENT)
                     exit(127);
-                if (errno == EACCES)
-                    exit(126);
                 exit(EXIT_FAILURE);
             }
             if (in_fd != STDIN_FILENO && in_fd != prev_fd)
