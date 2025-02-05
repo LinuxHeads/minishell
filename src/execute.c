@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 01:23:07 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/04 20:06:18 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/05 14:35:55 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -219,10 +219,12 @@ int builtins(char **arg)
 
 }
 
+
+
 int exec_builtins(char **args, t_shell *shell)
 {
 	if (ft_strcmp(args[0], "echo") == 0)
-		return (1);
+		return (ft_echo(args));
 	if (ft_strcmp(args[0], "cd") == 0)
 		return (ft_cd(args + 1, &shell->env_list));
 	if (ft_strcmp(args[0], "pwd") == 0)
@@ -257,6 +259,7 @@ void execute_pipeline(t_shell **shell) {
     while (i < (*shell)->parser->command_count) {
         get_redirections((*shell)->parser->commands[i], &in_fd, &out_fd);
         argv = build_command_argv((*shell)->parser->commands[i]);
+        expander(&argv); 
         if (!argv || !argv[0]) {
             fprintf(stderr, "minishell: invalid command\n");
             exit(EXIT_FAILURE);

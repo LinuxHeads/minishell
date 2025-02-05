@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 19:24:00 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/04 23:02:06 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/05 14:36:28 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -174,7 +174,7 @@ int ft_exit(char **args, t_shell *shell);
 /* 
 ** ft_echo: Built-in echo command to print arguments to stdout.
 */
-void        ft_echo(void);
+int ft_echo(char **args);
 
 /* 
 ** ft_env: Built-in env command to print environment variables to stdout.
@@ -201,11 +201,11 @@ int    ft_unset(char **arg, t_env **envp);
 ** to implement `setenv` if needed).
 */
 int		ft_setenv(const char *name, const char *value, t_env **env_list);
-
+void 	expander(char ***argv_ptr);
 /* 
 ** ft_pwd: Built-in pwd command to print the current directory path.
 */
-int        ft_pwd(void);
+int        ft_pwd(void *);
 
 /* ************************************************************************** */
 /*                            MINISHELL INITIALIZATION                         */
