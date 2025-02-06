@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 06:21:46 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/06 06:58:43 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/06 18:51:19 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,7 @@ static char *find_executable_in_paths(char **cmd, char **paths, char **full_path
     }
     return (NULL);
 }
-
-char *find_command_path(char *cmd, char **envp)
+char			*find_command_path(char *cmd, char **envp)
 {
     char    *path_var;
     char    **paths;
@@ -40,7 +39,11 @@ char *find_command_path(char *cmd, char **envp)
     int     i;
 
     if (ft_strchr(cmd, '/'))
-        return (ft_strdup(cmd));// null check
+        return (ft_strdup(cmd));
+
+    if (access(cmd, X_OK) == 0)
+        return (ft_strdup(cmd));
+
     i = -1;
     while (envp[++i])
     {
@@ -60,6 +63,8 @@ char *find_command_path(char *cmd, char **envp)
     }
     return (NULL);
 }
+
+
 int is_builtin(char **arg)
 {
 	if (ft_strcmp(arg[0], "echo") == 0)

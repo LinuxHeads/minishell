@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 07:16:41 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/06 07:28:19 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/06 18:44:30 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,8 +97,8 @@ t_token_type	identify_token_type(char *token, t_next_token *decide)
 	type = identify_redirection_tokens(token, decide);
 	if (type != ARGUMENT)
 		return (type);
-	type = identify_special_tokens(token);
+	type = identify_sequential_tokens(decide);
 	if (type != ARGUMENT)
 		return (type);
-	return (identify_sequential_tokens(decide));
+	return (identify_special_tokens(token));
 }

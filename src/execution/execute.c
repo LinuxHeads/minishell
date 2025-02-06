@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 01:23:07 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/06 06:23:38 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/06 18:21:46 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -160,10 +160,15 @@ void execute_pipeline(t_shell **shell)
             // fprintf(stderr, "minishell: syntax error near unexpected token `newline'\n);
             (*shell)->exit_status = 1;
             i++;
+            // if (in_fd != STDIN_FILENO)
+            //     close(in_fd);
+            // if (out_fd != STDOUT_FILENO)
+            //     close (out_fd);
             continue;
         }
         argv = build_command_argv((*shell)->parser->commands[i]);
         expander(&argv, *shell);
+       
         //printf("%s \n",argv[0]); 
         if (!argv || !argv[0])
         {
@@ -243,6 +248,14 @@ void execute_pipeline(t_shell **shell)
                     fprintf(stderr, "%s: command not found\n", argv[0]);
                     free_str_array(argv);
                     exit(127);
+                }
+                struct stat path_stat;
+                if (stat(cmd_path, &path_stat) == 0 && S_ISDIR(path_stat.st_mode))
+                {
+                    fprintf(stderr, "%s: is a directory\n", cmd_path);
+                    free_str_array(argv);
+                    free(cmd_path);
+                    exit(126);
                 }
                 execve(cmd_path, argv, (*shell)->envp);
                 perror("execve");
