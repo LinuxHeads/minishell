@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 15:42:39 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/06 02:45:04 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/06 03:13:13 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@ static int syntax_error(const char *arg)
     size_t len;
     size_t i;
 
-    // Check if the first character is a digit or an '='
     if (ft_isdigit(arg[0]) || arg[0] == '=')
     {
         ft_putstr_fd("export: `", 2);
@@ -32,14 +31,13 @@ static int syntax_error(const char *arg)
         ft_putstr_fd("': not a valid identifier\n", 2);
         return (0);
     }
-    // Only check the key part (up to the '=' if it exists)
     equal_sign = ft_strchr(arg, '=');
     if (equal_sign)
         len = equal_sign - arg;
     else
         len = ft_strlen(arg);
-    i = 0;
-    while (i < len)
+    i = -1;
+    while (++i < len)
     {
         if (!ft_isalnum(arg[i]) && arg[i] != '_')
         {
@@ -48,7 +46,6 @@ static int syntax_error(const char *arg)
             ft_putstr_fd("': not a valid identifier\n", 2);
             return (0);
         }
-        i++;
     }
     return (1);
 }
@@ -132,4 +129,5 @@ int ft_export(char **args, t_env **env_list)// TO-DO : when no args are passed, 
     }
     return (0);
 }
+
 
