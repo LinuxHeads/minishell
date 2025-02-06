@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 19:24:00 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/06 00:44:19 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/06 06:25:40 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -234,4 +234,8 @@ void			free_str_array(char **arr);
 void			execute_pipeline(t_shell **shell);
 void			signals_t3res(void);
 void			free_envp_node(t_env *env);
+char			**build_command_argv(t_command *cmd);
+char			*find_command_path(char *cmd, char **envp);
+int				is_builtin(char **arg);
+int				exec_builtins(char **args, t_shell *shell);
 #endif
