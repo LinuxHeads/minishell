@@ -5,13 +5,12 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/29 20:22:52 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/06 21:08:49 by ahramada         ###   ########.fr       */
+/*   Created: 2025/01/30 01:23:07 by abdsalah          #+#    #+#             */
+/*   Updated: 2025/02/06 22:50:20 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
-
 
 int	ft_strisspace(const char *str)
 {
@@ -22,13 +21,12 @@ int	ft_strisspace(const char *str)
 	i = 0;
 	while (str[i])
 	{
-		if (str[i] != ' ' || str[i] != '\t')
+		if (str[i] != ' ' && (str[i] < '\t' || str[i] > '\r'))
 			return (0);
 		i++;
 	}
 	return (1);
 }
-
 
 static char	*ft_strtrim_spaces(const char *s)
 {
@@ -113,15 +111,13 @@ char	*expand_variable(const char *str, int *index, t_shell *shell)
 {
 	int		start;
 	char	*var_name;
-	char	*expanded;
-	char	*tmp;
 	char	*env_val;
+	char	*expanded;
 
 	if (str[*index] == '?')
 	{
 		(*index)++;
-		tmp = ft_itoa(shell->exit_status);
-		return (tmp);
+		return (ft_itoa(shell->exit_status));
 	}
 	start = *index;
 	while (str[*index] && (ft_isalnum(str[*index]) || str[*index] == '_'))
@@ -139,32 +135,48 @@ char	*expand_variable(const char *str, int *index, t_shell *shell)
 	return (expanded);
 }
 
-
-static int	is_entirely_env_var(char *arg)
+static char	*remove_closed_double_quotes(const char *s)
 {
-	int i = 0;
-	int count_dollar = 0;
+	size_t	len;
+	size_t	i;
+	size_t	j;
+	char	*res;
 
-	if (!arg)
-		return (0);
-	
-	if ((arg[0] == '\"' && arg[ft_strlen(arg)-1] == '\"')
-		|| (arg[0] == '\'' && arg[ft_strlen(arg)-1] == '\''))
+	if (!s)
+		return (NULL);
+	len = ft_strlen(s);
+	res = malloc(len + 1);
+	if (!res)
+		return (NULL);
+	i = 0;
+	j = 0;
+	while (i < len)
 	{
-		arg++;
-		arg[ft_strlen(arg)-1] = '\0';
+		if (s[i] == '"')
+		{
+			size_t k = i + 1;
+			while (k < len && s[k] != '"')
+				k++;
+			if (k < len && s[k] == '"')
+			{
+				i++;
+				while (i < k)
+					res[j++] = s[i++];
+				i = k + 1;
+			}
+			else
+			{
+				res[j++] = s[i++];
+			}
+		}
+		else
+		{
+			res[j++] = s[i++];
+		}
 	}
-
-	/* count how many '$' chars are in the string */
-	while (arg[i])
-	{
-		if (arg[i] == '$')
-			count_dollar++;
-		i++;
-	}
-	return (count_dollar == 1);
+	res[j] = '\0';
+	return (res);
 }
-
 
 char	*expand_string(const char *str, t_shell *shell)
 {
@@ -309,30 +321,6 @@ void	expander(char ***argv_ptr, t_shell *shell)
 			}
 			expanded = tmp;
 		}
-		if (is_entirely_env_var(old_arg))
-		{
-			char *trimmed = ft_strtrim_spaces(expanded);
-			free(expanded);
-			if (!trimmed)
-			{
-				argv[i] = NULL;
-				return ;
-			}
-			if (ft_strisspace(trimmed))
-			{
-				free(trimmed);
-				remove_arg(&argv, i);
-				continue ;
-			}
-			char *compressed = compress_spaces(trimmed);
-			free(trimmed);
-			if (!compressed)
-			{
-				argv[i] = NULL;
-				return ;
-			}
-			expanded = compressed;
-		}
 		if (ft_strisspace(expanded))
 		{
 			free(expanded);
@@ -345,16 +333,34 @@ void	expander(char ***argv_ptr, t_shell *shell)
 		i++;
 	}
 	*argv_ptr = argv;
+	i = 0;
+	while (argv[i])
+	{
+		char *no_closed_quotes = remove_closed_double_quotes(argv[i]);
+		if (no_closed_quotes)
+		{
+			free(argv[i]);
+			argv[i] = no_closed_quotes;
+		}
+		i++;
+	}
 }
 
 void	expander_test(char **argv, t_shell *shell)
 {
 	char	*expanded;
-	char	*tmp;
 	size_t	len;
 
 	if (!ft_strchr(*argv, '$'))
+	{
+		char *no_closed_quotes = remove_closed_double_quotes(*argv);
+		if (no_closed_quotes)
+		{
+			free(*argv);
+			*argv = no_closed_quotes;
+		}
 		return ;
+	}
 	expanded = expand_string(*argv, shell);
 	free(*argv);
 	if (!expanded)
@@ -365,12 +371,27 @@ void	expander_test(char **argv, t_shell *shell)
 		|| (expanded[0] == '\'' && expanded[len - 1] == '\'')
 	))
 	{
-		tmp = ft_substr(expanded, 1, len - 2);
+		char *tmp = ft_substr(expanded, 1, len - 2);
 		free(expanded);
 		if (!tmp)
 			return ;
 		expanded = tmp;
 	}
+	if (ft_strisspace(expanded))
+	{
+		free(expanded);
+		*argv = NULL;
+		return ;
+	}
 	*argv = preprocess_input_test(expanded);
 	free(expanded);
+	if (*argv)
+	{
+		char *no_closed_quotes = remove_closed_double_quotes(*argv);
+		if (no_closed_quotes)
+		{
+			free(*argv);
+			*argv = no_closed_quotes;
+		}
+	}
 }
