@@ -3,14 +3,110 @@
 /*                                                        :::      ::::::::   */
 /*   expander.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/30 01:23:07 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/06 20:07:50 by abdsalah         ###   ########.fr       */
+/*   Created: 2025/01/29 20:22:52 by abdsalah          #+#    #+#             */
+/*   Updated: 2025/02/06 20:47:02 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+
 #include "../include/minishell.h"
+
+int	ft_strisspace(const char *str)
+{
+	int	i;
+
+	if (!str || !*str)
+		return (1);
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] != ' ' && (str[i] < '\t' || str[i] > '\r'))
+			return (0);
+		i++;
+	}
+	return (1);
+}
+
+static char	*ft_strtrim_spaces(const char *s)
+{
+	int		start;
+	int		end;
+	char	*trim;
+	int		i;
+
+	if (!s)
+		return (NULL);
+	start = 0;
+	while (s[start] && s[start] == ' ')
+		start++;
+	end = ft_strlen(s) - 1;
+	while (end >= start && s[end] == ' ')
+		end--;
+	if (end < start)
+		return (ft_strdup(""));
+	trim = malloc(end - start + 2);
+	if (!trim)
+		return (NULL);
+	i = 0;
+	while (start <= end)
+		trim[i++] = s[start++];
+	trim[i] = '\0';
+	return (trim);
+}
+
+char	*compress_spaces(const char *str)
+{
+	char	*new_str;
+	int		i;
+	int		j;
+	int		in_space;
+
+	if (!str)
+		return (NULL);
+	new_str = malloc(ft_strlen(str) + 1);
+	if (!new_str)
+		return (NULL);
+	i = 0;
+	j = 0;
+	in_space = 0;
+	while (str[i])
+	{
+		if (str[i] == ' ')
+		{
+			if (!in_space)
+			{
+				new_str[j++] = ' ';
+				in_space = 1;
+			}
+		}
+		else
+		{
+			new_str[j++] = str[i];
+			in_space = 0;
+		}
+		i++;
+	}
+	new_str[j] = '\0';
+	return (new_str);
+}
+
+static void	remove_arg(char ***argv_ptr, int index)
+{
+	char	**argv;
+	int		i;
+
+	argv = *argv_ptr;
+	i = index;
+	free(argv[i]);
+	while (argv[i + 1])
+	{
+		argv[i] = argv[i + 1];
+		i++;
+	}
+	argv[i] = NULL;
+}
 
 char	*expand_variable(const char *str, int *index, t_shell *shell)
 {
@@ -19,13 +115,11 @@ char	*expand_variable(const char *str, int *index, t_shell *shell)
 	char	*expanded;
 	char	*tmp;
 	char	*env_val;
-	
+
 	if (str[*index] == '?')
 	{
 		(*index)++;
 		tmp = ft_itoa(shell->exit_status);
-		if (!tmp)
-			return (NULL);
 		return (tmp);
 	}
 	start = *index;
@@ -34,25 +128,16 @@ char	*expand_variable(const char *str, int *index, t_shell *shell)
 	if (start == *index)
 	{
 		tmp = ft_strdup("$");
-		if (!tmp)
-			return (NULL);
 		return (tmp);
 	}
 	var_name = ft_substr(str, start, *index - start);
 	if (!var_name)
-	{
 		return (NULL);
-	}
 	env_val = ft_getenv(var_name, shell->env_list);
-	if (!env_val)
-		env_val = "";  // Use an empty string if the variable is not found
-	expanded = ft_strdup(env_val);
-	if (!expanded)
-	{
-		free(var_name);
-		return (NULL);
-	}
 	free(var_name);
+	if (!env_val)
+		env_val = "";
+	expanded = ft_strdup(env_val);
 	return (expanded);
 }
 
@@ -64,7 +149,7 @@ char	*expand_string(const char *str, t_shell *shell)
 	int		in_sq;
 	int		in_dq;
 	char	*tmp;
-	
+
 	result = ft_strdup("");
 	if (!result)
 		return (NULL);
@@ -73,46 +158,63 @@ char	*expand_string(const char *str, t_shell *shell)
 	in_dq = 0;
 	while (str[i])
 	{
-    if (str[i] == '\'' && !in_dq)      
-        in_sq = !in_sq;
-    else if (str[i] == '"' && !in_sq)    
-        in_dq = !in_dq;
-    else if (str[i] == '$' && !in_sq)
+		if (str[i] == '\'' && !in_dq)
+			in_sq = !in_sq;
+		else if (str[i] == '"' && !in_sq)
+			in_dq = !in_dq;
+		else if (str[i] == '$' && !in_sq)
 		{
 			i++;
 			var_value = expand_variable(str, &i, shell);
 			if (var_value)
 			{
+				if (!in_dq)
+				{
+					char *trim = ft_strtrim_spaces(var_value);
+					free(var_value);
+					if (!trim)
+					{
+						free(result);
+						return (NULL);
+					}
+					if (ft_strisspace(trim))
+					{
+						free(trim);
+						continue ;
+					}
+					var_value = compress_spaces(trim);
+					free(trim);
+					if (!var_value)
+					{
+						free(result);
+						return (NULL);
+					}
+				}
 				tmp = ft_strjoin(result, var_value);
+				free(var_value);
 				if (!tmp)
 				{
 					free(result);
-					free(var_value);
 					return (NULL);
 				}
 				free(result);
 				result = tmp;
-				free(var_value);
 			}
 			continue ;
 		}
 		else
 		{
-			var_value = (char *)malloc(2);
-			if (!var_value)
-				return (NULL);
-			var_value[0] = str[i];
-			var_value[1] = '\0';
-			tmp = ft_strjoin(result, var_value);
+			char c[2];
+			c[0] = str[i];
+			c[1] = '\0';
+			tmp = ft_strjoin(result, c);
 			if (!tmp)
 			{
 				free(result);
-				free(var_value);
 				return (NULL);
 			}
 			free(result);
 			result = tmp;
-			free(var_value);
 		}
 		i++;
 	}
@@ -144,63 +246,70 @@ char	*preprocess_input_test(char *input)
 void	expander(char ***argv_ptr, t_shell *shell)
 {
 	char	**argv;
-	int		i;
 	char	*expanded;
-	size_t len;
 	char	*tmp;
-	
+	char	*old_arg;
+	size_t	len;
+	int		i;
+
 	argv = *argv_ptr;
 	i = 0;
-	while (argv[i] != NULL)
+	while (argv[i])
 	{
-		expanded = expand_string(argv[i], shell);
-		free(argv[i]);
+		old_arg = argv[i];
+		expanded = expand_string(old_arg, shell);
 		if (!expanded)
-			return ; // *argv_ptr = NULL was here
+		{
+			argv[i] = NULL;
+			return ;
+		}
 		len = ft_strlen(expanded);
-		if (len >= 2 &&
-			((expanded[0]=='\"' && expanded[len-1]=='\"') ||
-			(expanded[0]=='\'' && expanded[len-1]=='\'')))
+		if (len >= 2 && ((expanded[0] == '\"' && expanded[len - 1] == '\"')
+			|| (expanded[0] == '\'' && expanded[len - 1] == '\'')))
 		{
 			tmp = ft_substr(expanded, 1, len - 2);
 			free(expanded);
 			if (!tmp)
+			{
+				argv[i] = NULL;
 				return ;
+			}
 			expanded = tmp;
 		}
+		if (ft_strisspace(expanded))
+		{
+			free(expanded);
+			remove_arg(&argv, i);
+			continue ;
+		}
+		free(old_arg);
 		argv[i] = preprocess_input_test(expanded);
+		free(expanded);
 		i++;
 	}
+	*argv_ptr = argv;
 }
 
 void	expander_test(char **argv, t_shell *shell)
 {
-	// char	**argv;
-	// int		i;
 	char	*expanded;
-	size_t len;
 	char	*tmp;
-	
-	// argv = *argv_ptr;
-	// i = 0;
-    expanded = expand_string(*argv, shell);
-    free(*argv);
-    if (!expanded)
-        return ; // *argv_ptr = NULL was here
-    len = ft_strlen(expanded);
-    if (len >= 2 &&
-        ((expanded[0]=='\"' && expanded[len-1]=='\"') ||
-        (expanded[0]=='\'' && expanded[len-1]=='\'')))
-    {
-        tmp = ft_substr(expanded, 1, len - 2);
-        free(expanded);
-        if (!tmp)
-            return ;
-        expanded = tmp;
-    }
-    // argv[i] = preprocess_input_test(expanded);
-    *argv = preprocess_input_test(expanded);
+	size_t	len;
 
-    // i++;
+	expanded = expand_string(*argv, shell);
+	free(*argv);
+	if (!expanded)
+		return ;
+	len = ft_strlen(expanded);
+	if (len >= 2 && ((expanded[0] == '\"' && expanded[len - 1] == '\"')
+		|| (expanded[0] == '\'' && expanded[len - 1] == '\'')))
+	{
+		tmp = ft_substr(expanded, 1, len - 2);
+		free(expanded);
+		if (!tmp)
+			return ;
+		expanded = tmp;
+	}
+	*argv = preprocess_input_test(expanded);
+	free(expanded);
 }
-
