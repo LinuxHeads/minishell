@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 07:13:16 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/06 07:21:38 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/06 07:25:43 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,20 +54,18 @@ void	free_shell(t_exec *shell)
 
 const char	*get_token_type_name(t_token_type type)
 {
-	const char	*names[] = {
-		"COMMAND", "ARGUMENT", "PIPE", "REDIRECT_IN", "REDIRECT_OUT",
-		"REDIRECT_APPEND", "HEREDOC", "HEREDOC_DELI", "ENV_VAR",
-		"DOLLAR_SIGN", "SINGLE_QUOTE", "DOUBLE_QUOTE",
-		"INPUT_FILE", "OUTPUT_FILE"
-	};
+	const char	*names[] = {"COMMAND", "ARGUMENT", "PIPE", "REDIRECT_IN",
+			"REDIRECT_OUT", "REDIRECT_APPEND", "HEREDOC", "HEREDOC_DELI",
+			"ENV_VAR", "DOLLAR_SIGN", "SINGLE_QUOTE", "DOUBLE_QUOTE",
+			"INPUT_FILE", "OUTPUT_FILE"};
 
 	return (names[type]);
 }
 
 void	print_shell(t_exec *shell)
 {
-	int	i;
-	int	j;
+	int i;
+	int j;
 
 	printf("Parsed Shell Commands:\n");
 	i = 0;

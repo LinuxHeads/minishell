@@ -6,13 +6,14 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 07:16:41 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/06 07:17:10 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/06 07:28:19 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-static t_token_type	identify_redirection_tokens(char *token, t_next_token *decide)
+static t_token_type	identify_redirection_tokens(char *token,
+		t_next_token *decide)
 {
 	if (ft_strcmp(token, ">>") == 0)
 	{
@@ -40,10 +41,15 @@ static t_token_type	identify_redirection_tokens(char *token, t_next_token *decid
 /* --- Helper to identify special tokens --- */
 static t_token_type	identify_special_tokens(char *token)
 {
-	size_t len = ft_strlen(token);
+	size_t	len;
 
+	len = ft_strlen(token);
 	if (token[0] == '$')
-		return (len == 1 ? DOLLAR_SIGN : ENV_VAR);
+	{
+		if (len == 1)
+			return (DOLLAR_SIGN);
+		return (ENV_VAR);
+	}
 	if (token[0] == '\'' && token[len - 1] == '\'')
 		return (SINGLE_QUOTE);
 	if (token[0] == '"' && token[len - 1] == '"')
@@ -51,8 +57,9 @@ static t_token_type	identify_special_tokens(char *token)
 	return (ARGUMENT);
 }
 
-/* --- Helper to identify sequential tokens (like input/output files, commands) --- */
-static t_token_type identify_sequential_tokens(t_next_token *decide)
+/* --- Helper to identify sequential tokens (like input/output files,
+	commands) --- */
+static t_token_type	identify_sequential_tokens(t_next_token *decide)
 {
 	if (decide->here_doc == 1)
 	{
@@ -80,7 +87,7 @@ static t_token_type identify_sequential_tokens(t_next_token *decide)
 /* --- Main function to identify token type --- */
 t_token_type	identify_token_type(char *token, t_next_token *decide)
 {
-	t_token_type type;
+	t_token_type	type;
 
 	if (ft_strcmp(token, "|") == 0)
 	{
@@ -93,6 +100,5 @@ t_token_type	identify_token_type(char *token, t_next_token *decide)
 	type = identify_special_tokens(token);
 	if (type != ARGUMENT)
 		return (type);
-	return identify_sequential_tokens(decide);
+	return (identify_sequential_tokens(decide));
 }
-
