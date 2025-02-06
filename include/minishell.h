@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 19:24:00 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/06 15:36:32 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/06 19:46:00 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -203,6 +203,8 @@ int    ft_unset(char **arg, t_env **envp);
 int		ft_setenv(const char *name, const char *value, t_env **env_list);
 
 void	expander(char ***argv_ptr, t_shell *shell);
+void	expander_test(char **argv, t_shell *shell);
+
 /* 
 ** ft_pwd: Built-in pwd command to print the current directory path.
 */

@@ -6,13 +6,13 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 01:23:07 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/06 18:21:46 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/06 20:00:21 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-static int	get_redirections(t_command *cmd, int *in_fd, int *out_fd)
+static int	get_redirections(t_command *cmd, int *in_fd, int *out_fd, t_shell *shell)
 {
 	int	i = 0;
 
@@ -33,6 +33,7 @@ static int	get_redirections(t_command *cmd, int *in_fd, int *out_fd)
 			if (i + 1 < cmd->token_count && cmd->tokens[i + 1])
 			{
 				i++;
+                expander_test(&cmd->tokens[i]->value, shell);
                 if((cmd->tokens[i]->value[0]=='\"' && cmd->tokens[i]->value[ft_strlen(cmd->tokens[i]->value)-1]=='\"') || (cmd->tokens[i]->value[0]=='\'' && cmd->tokens[i]->value[ft_strlen(cmd->tokens[i]->value)-1]=='\''))
 			        {cmd->tokens[i]->value=ft_substr(cmd->tokens[i]->value,1,ft_strlen(cmd->tokens[i]->value)-2);}
 				*in_fd = open(cmd->tokens[i]->value, O_RDONLY);
@@ -50,6 +51,7 @@ static int	get_redirections(t_command *cmd, int *in_fd, int *out_fd)
 			if (i + 1 < cmd->token_count && cmd->tokens[i + 1])
 			{
 				i++;
+                expander_test(&cmd->tokens[i]->value, shell);
                 if((cmd->tokens[i]->value[0]=='\"' && cmd->tokens[i]->value[ft_strlen(cmd->tokens[i]->value)-1]=='\"') || (cmd->tokens[i]->value[0]=='\'' && cmd->tokens[i]->value[ft_strlen(cmd->tokens[i]->value)-1]=='\''))
 			        {cmd->tokens[i]->value=ft_substr(cmd->tokens[i]->value,1,ft_strlen(cmd->tokens[i]->value)-2);}
 				*out_fd = open(cmd->tokens[i]->value,
@@ -68,6 +70,7 @@ static int	get_redirections(t_command *cmd, int *in_fd, int *out_fd)
 			if (i + 1 < cmd->token_count && cmd->tokens[i + 1])
 			{
 				i++;
+                expander_test(&cmd->tokens[i]->value, shell);
                 if((cmd->tokens[i]->value[0]=='\"' && cmd->tokens[i]->value[ft_strlen(cmd->tokens[i]->value)-1]=='\"') || (cmd->tokens[i]->value[0]=='\'' && cmd->tokens[i]->value[ft_strlen(cmd->tokens[i]->value)-1]=='\''))
 			        {cmd->tokens[i]->value=ft_substr(cmd->tokens[i]->value,1,ft_strlen(cmd->tokens[i]->value)-2);}
 				*out_fd = open(cmd->tokens[i]->value,
@@ -154,20 +157,18 @@ void execute_pipeline(t_shell **shell)
     
     while (i < (*shell)->parser->command_count)
     {
-        // get_redirections((*shell)->parser->commands[i], &in_fd, &out_fd);
-        if (!get_redirections((*shell)->parser->commands[i], &in_fd, &out_fd))
-        {
-            // fprintf(stderr, "minishell: syntax error near unexpected token `newline'\n);
-            (*shell)->exit_status = 1;
-            i++;
-            // if (in_fd != STDIN_FILENO)
-            //     close(in_fd);
-            // if (out_fd != STDOUT_FILENO)
-            //     close (out_fd);
-            continue;
-        }
         argv = build_command_argv((*shell)->parser->commands[i]);
         expander(&argv, *shell);
+        if (!get_redirections((*shell)->parser->commands[i], &in_fd, &out_fd, *shell))
+        {
+            (*shell)->exit_status = 1;
+            i++;
+            if (in_fd != STDIN_FILENO)
+                close(in_fd);
+            if (out_fd != STDOUT_FILENO)
+                close (out_fd);
+            continue;
+        }
        
         //printf("%s \n",argv[0]); 
         if (!argv || !argv[0])
