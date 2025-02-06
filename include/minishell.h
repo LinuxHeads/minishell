@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 19:24:00 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/06 07:33:50 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/06 15:36:32 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -240,4 +240,5 @@ char			*find_command_path(char *cmd, char **envp);
 int				is_builtin(char **arg);
 int				exec_builtins(char **args, t_shell *shell);
 char			**ft_splitter(const char *s, char c);
+void			ft_setup_shlvl(t_env **envp);
 #endif

@@ -24,6 +24,7 @@ SRC =  	parsing/parsing.c \
 		envp/ft_getenv.c  \
 		envp/ft_setenv.c \
 		envp/init_envp.c \
+		envp/shlvl.c \
 		builtin_functions/cd.c \
 		builtin_functions/echo.c \
 		builtin_functions/env.c \
