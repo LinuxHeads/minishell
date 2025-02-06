@@ -9,10 +9,24 @@ LIBFT = $(LIBFT_DIR)/libft.a
 SRC_DIR = src
 OBJS_DIR = objs
 
-SRC =  parsing.c execute.c  envp.c envp_utils.c main.c signals.c \
-	builtin_functions/cd.c builtin_functions/echo.c builtin_functions/env.c \
-	builtin_functions/export.c builtin_functions/pwd.c builtin_functions/unset.c \
-	builtin_functions/exit.c expander.c
+SRC =  parsing.c \
+		execute.c \
+		main.c \
+		signals.c \
+		envp/envp_errors.c \
+		envp/envp_to_str.c \
+		envp/envp_utils.c \
+		envp/ft_getenv.c  \
+		envp/ft_setenv.c \
+		envp/init_envp.c \
+		builtin_functions/cd.c \
+		builtin_functions/echo.c \
+		builtin_functions/env.c \
+		builtin_functions/export.c \
+		builtin_functions/pwd.c \
+		builtin_functions/unset.c \
+		builtin_functions/exit.c \
+		expander.c
 
 # Automatically find the full paths of the source files
 SRCS = $(addprefix $(SRC_DIR)/, $(SRC))
