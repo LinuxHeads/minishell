@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expander.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
+/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 01:23:07 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/06 22:50:20 by ahramada         ###   ########.fr       */
+/*   Updated: 2025/02/06 23:08:03 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,48 +135,51 @@ char	*expand_variable(const char *str, int *index, t_shell *shell)
 	return (expanded);
 }
 
-static char	*remove_closed_double_quotes(const char *s)
+char *remove_closed_quotes(const char *s)
 {
-	size_t	len;
-	size_t	i;
-	size_t	j;
-	char	*res;
+    size_t len;
+    size_t i;
+    size_t j;
+    char   *res;
 
-	if (!s)
-		return (NULL);
-	len = ft_strlen(s);
-	res = malloc(len + 1);
-	if (!res)
-		return (NULL);
-	i = 0;
-	j = 0;
-	while (i < len)
-	{
-		if (s[i] == '"')
-		{
-			size_t k = i + 1;
-			while (k < len && s[k] != '"')
-				k++;
-			if (k < len && s[k] == '"')
-			{
-				i++;
-				while (i < k)
-					res[j++] = s[i++];
-				i = k + 1;
-			}
-			else
-			{
-				res[j++] = s[i++];
-			}
-		}
-		else
-		{
-			res[j++] = s[i++];
-		}
-	}
-	res[j] = '\0';
-	return (res);
+    if (!s)
+        return NULL;
+    len = strlen(s);
+    res = malloc(len + 1);
+    if (!res)
+        return NULL;
+
+    i = 0;
+    j = 0;
+    while (i < len)
+    {
+        if (s[i] == '\'' || s[i] == '"')
+        {
+            char quote = s[i];
+            size_t k = i + 1;
+            while (k < len && s[k] != quote)
+                k++;
+            if (k < len && s[k] == quote)
+            {
+                i++;
+                while (i < k)
+                    res[j++] = s[i++];
+                i = k + 1;
+            }
+            else
+            {
+                res[j++] = s[i++];
+            }
+        }
+        else
+        {
+            res[j++] = s[i++];
+        }
+    }
+    res[j] = '\0';
+    return res;
 }
+
 
 char	*expand_string(const char *str, t_shell *shell)
 {
@@ -336,12 +339,13 @@ void	expander(char ***argv_ptr, t_shell *shell)
 	i = 0;
 	while (argv[i])
 	{
-		char *no_closed_quotes = remove_closed_double_quotes(argv[i]);
+		char *no_closed_quotes = remove_closed_quotes(argv[i]);
 		if (no_closed_quotes)
 		{
 			free(argv[i]);
 			argv[i] = no_closed_quotes;
 		}
+		argv[i] = preprocess_input_test(argv[i]);
 		i++;
 	}
 }
@@ -353,7 +357,7 @@ void	expander_test(char **argv, t_shell *shell)
 
 	if (!ft_strchr(*argv, '$'))
 	{
-		char *no_closed_quotes = remove_closed_double_quotes(*argv);
+		char *no_closed_quotes = remove_closed_quotes(*argv);
 		if (no_closed_quotes)
 		{
 			free(*argv);
@@ -387,7 +391,7 @@ void	expander_test(char **argv, t_shell *shell)
 	free(expanded);
 	if (*argv)
 	{
-		char *no_closed_quotes = remove_closed_double_quotes(*argv);
+		char *no_closed_quotes = remove_closed_quotes(*argv);
 		if (no_closed_quotes)
 		{
 			free(*argv);
