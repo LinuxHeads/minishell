@@ -26,8 +26,9 @@ static void	skip_quote(const char **s)
 
 static size_t	get_sep(const char *s, char c)
 {
-	size_t	count = 0;
+	size_t	count;
 
+	count = 0;
 	while (*s)
 	{
 		while (*s && *s == c)
@@ -93,6 +94,7 @@ char	**ft_splitter(const char *s, char c)
 	size_t		count;
 	size_t		index;
 	const char	*ptr;
+	char		*token;
 
 	if (!s)
 		return (NULL);
@@ -104,7 +106,7 @@ char	**ft_splitter(const char *s, char c)
 	ptr = s;
 	while (1)
 	{
-		char *token = get_token(&ptr, c);
+		token = get_token(&ptr, c);
 		if (!token)
 			break ;
 		result[index++] = token;
