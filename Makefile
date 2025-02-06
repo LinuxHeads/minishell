@@ -31,7 +31,7 @@ SRC =  	parsing/parsing.c \
 		builtin_functions/pwd.c \
 		builtin_functions/unset.c \
 		builtin_functions/exit.c \
-		expander.c
+		expander/expander.c
 
 # Automatically find the full paths of the source files
 SRCS = $(addprefix $(SRC_DIR)/, $(SRC))
