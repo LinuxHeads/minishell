@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/01 10:42:42 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/04 20:12:08 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/06 04:47:24 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,8 @@ char				*ft_strnstr(const char *big, const char *little,
 						size_t len);
 char				*ft_strrchr(const char *s, int c);
 char				*ft_substr(char const *s, unsigned int start, size_t len);
-char				*ft_str_replace(const char *str, const char *old, const char *);
+char				*ft_str_replace(const char *str, const char *old,
+						const char *new_str);
 int					ft_tolower(int c);
 int					ft_toupper(int c);
 char				*ft_strmapi(char const *s, char (*f)(unsigned int, char));

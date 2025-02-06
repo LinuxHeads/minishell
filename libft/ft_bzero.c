@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 14:20:45 by abdsalah          #+#    #+#             */
-/*   Updated: 2024/08/30 15:24:17 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/06 04:46:24 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,13 @@
 
 void	ft_bzero(void *s, size_t n)
 {
-    unsigned char	*ptr;
+	unsigned char	*ptr;
 
-    ptr = s;
-    if (n < 1)
-        return ;
-    while (n--)
-    {
-        ptr[n] = 0;
-    }
+	ptr = s;
+	if (n < 1)
+		return ;
+	while (n--)
+	{
+		ptr[n] = 0;
+	}
 }

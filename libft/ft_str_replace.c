@@ -14,10 +14,13 @@
 
 static int	count_occurrences(const char *str, const char *old)
 {
-	int count = 0;
-	int i = 0;
-	int old_len = ft_strlen(old);
-	
+	int	count;
+	int	i;
+	int	old_len;
+
+	count = 0;
+	i = 0;
+	old_len = ft_strlen(old);
 	while (str[i])
 	{
 		if (ft_strncmp(&str[i], old, old_len) == 0)
@@ -31,14 +34,14 @@ static int	count_occurrences(const char *str, const char *old)
 	return (count);
 }
 
-static void	replace_occurrences(char *result, const char *str, 
-								const char *old, const char *new)
+static void	replace_occurrences(char *result, const char *str, const char *old,
+		const char *new)
 {
 	int	i;
 	int	j;
-	int old_len;
-	int new_len;
-	
+	int	old_len;
+	int	new_len;
+
 	i = 0;
 	j = 0;
 	old_len = ft_strlen(old);
@@ -76,7 +79,8 @@ char	*ft_str_replace(const char *str, const char *old, const char *new)
 		if (!result)
 			return (NULL);
 	}
-	new_str_size = ft_strlen(str) + count * (ft_strlen(new) - ft_strlen(old)) + 1;
+	new_str_size = ft_strlen(str) + count * (ft_strlen(new) - ft_strlen(old))
+		+ 1;
 	result = malloc(new_str_size);
 	if (!result)
 		return (NULL);
