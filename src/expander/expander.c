@@ -6,12 +6,12 @@
 /*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/29 20:22:52 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/06 20:47:02 by ahramada         ###   ########.fr       */
+/*   Updated: 2025/02/06 21:08:49 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-
 #include "../include/minishell.h"
+
 
 int	ft_strisspace(const char *str)
 {
@@ -22,12 +22,13 @@ int	ft_strisspace(const char *str)
 	i = 0;
 	while (str[i])
 	{
-		if (str[i] != ' ' && (str[i] < '\t' || str[i] > '\r'))
+		if (str[i] != ' ' || str[i] != '\t')
 			return (0);
 		i++;
 	}
 	return (1);
 }
+
 
 static char	*ft_strtrim_spaces(const char *s)
 {
@@ -126,10 +127,7 @@ char	*expand_variable(const char *str, int *index, t_shell *shell)
 	while (str[*index] && (ft_isalnum(str[*index]) || str[*index] == '_'))
 		(*index)++;
 	if (start == *index)
-	{
-		tmp = ft_strdup("$");
-		return (tmp);
-	}
+		return (ft_strdup("$"));
 	var_name = ft_substr(str, start, *index - start);
 	if (!var_name)
 		return (NULL);
@@ -140,6 +138,33 @@ char	*expand_variable(const char *str, int *index, t_shell *shell)
 	expanded = ft_strdup(env_val);
 	return (expanded);
 }
+
+
+static int	is_entirely_env_var(char *arg)
+{
+	int i = 0;
+	int count_dollar = 0;
+
+	if (!arg)
+		return (0);
+	
+	if ((arg[0] == '\"' && arg[ft_strlen(arg)-1] == '\"')
+		|| (arg[0] == '\'' && arg[ft_strlen(arg)-1] == '\''))
+	{
+		arg++;
+		arg[ft_strlen(arg)-1] = '\0';
+	}
+
+	/* count how many '$' chars are in the string */
+	while (arg[i])
+	{
+		if (arg[i] == '$')
+			count_dollar++;
+		i++;
+	}
+	return (count_dollar == 1);
+}
+
 
 char	*expand_string(const char *str, t_shell *shell)
 {
@@ -243,6 +268,7 @@ char	*preprocess_input_test(char *input)
 	return (new_input);
 }
 
+
 void	expander(char ***argv_ptr, t_shell *shell)
 {
 	char	**argv;
@@ -257,6 +283,11 @@ void	expander(char ***argv_ptr, t_shell *shell)
 	while (argv[i])
 	{
 		old_arg = argv[i];
+		if (!ft_strchr(old_arg, '$'))
+		{
+			i++;
+			continue;
+		}
 		expanded = expand_string(old_arg, shell);
 		if (!expanded)
 		{
@@ -264,8 +295,10 @@ void	expander(char ***argv_ptr, t_shell *shell)
 			return ;
 		}
 		len = ft_strlen(expanded);
-		if (len >= 2 && ((expanded[0] == '\"' && expanded[len - 1] == '\"')
-			|| (expanded[0] == '\'' && expanded[len - 1] == '\'')))
+		if (len >= 2 && (
+			(expanded[0] == '\"' && expanded[len - 1] == '\"')
+			|| (expanded[0] == '\'' && expanded[len - 1] == '\'')
+		))
 		{
 			tmp = ft_substr(expanded, 1, len - 2);
 			free(expanded);
@@ -275,6 +308,30 @@ void	expander(char ***argv_ptr, t_shell *shell)
 				return ;
 			}
 			expanded = tmp;
+		}
+		if (is_entirely_env_var(old_arg))
+		{
+			char *trimmed = ft_strtrim_spaces(expanded);
+			free(expanded);
+			if (!trimmed)
+			{
+				argv[i] = NULL;
+				return ;
+			}
+			if (ft_strisspace(trimmed))
+			{
+				free(trimmed);
+				remove_arg(&argv, i);
+				continue ;
+			}
+			char *compressed = compress_spaces(trimmed);
+			free(trimmed);
+			if (!compressed)
+			{
+				argv[i] = NULL;
+				return ;
+			}
+			expanded = compressed;
 		}
 		if (ft_strisspace(expanded))
 		{
@@ -296,13 +353,17 @@ void	expander_test(char **argv, t_shell *shell)
 	char	*tmp;
 	size_t	len;
 
+	if (!ft_strchr(*argv, '$'))
+		return ;
 	expanded = expand_string(*argv, shell);
 	free(*argv);
 	if (!expanded)
 		return ;
 	len = ft_strlen(expanded);
-	if (len >= 2 && ((expanded[0] == '\"' && expanded[len - 1] == '\"')
-		|| (expanded[0] == '\'' && expanded[len - 1] == '\'')))
+	if (len >= 2 && (
+		(expanded[0] == '\"' && expanded[len - 1] == '\"')
+		|| (expanded[0] == '\'' && expanded[len - 1] == '\'')
+	))
 	{
 		tmp = ft_substr(expanded, 1, len - 2);
 		free(expanded);
