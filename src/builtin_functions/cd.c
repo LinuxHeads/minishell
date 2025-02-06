@@ -6,14 +6,12 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/04 04:33:45 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/06 07:39:43 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/06 20:17:16 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-// Helper: Validate the arguments for cd
-// Returns 0 if arguments are valid; otherwise, prints an error and returns 1.
 static int	validate_cd_args(char **args)
 {
 	if (args && args[0] && args[1])
@@ -24,14 +22,10 @@ static int	validate_cd_args(char **args)
 	return (1);
 }
 
-// Helper: Determine the target path based on args and environment
-// Returns a pointer to the target path string (which may come from the environment),
-// or NULL if there is an error (and prints an error message).
 static char	*get_target_path(char **args, t_env **envp)
 {
 	char	*path;
 
-	// If no argument is provided, use HOME
 	if (!args || !args[0])
 	{
 		path = ft_getenv("HOME", *envp);
@@ -39,7 +33,6 @@ static char	*get_target_path(char **args, t_env **envp)
 			write(2, "cd: HOME not set\n", 17);
 		return (path);
 	}
-	// If the argument is "-", use OLDPWD
 	else if (ft_strcmp(args[0], "-") == 0)
 	{
 		path = ft_getenv("OLDPWD", *envp);
@@ -47,12 +40,9 @@ static char	*get_target_path(char **args, t_env **envp)
 			write(2, "cd: OLDPWD not set\n", 19);
 		return (path);
 	}
-	// Otherwise, the target is the argument itself
 	return (args[0]);
 }
 
-// Helper: Save current working directory and return a strdup-ed copy
-// Returns a new allocated string representing the current directory or NULL on failure.
 static char	*save_current_directory(void)
 {
 	char	cwd[1024];
@@ -69,9 +59,6 @@ static char	*save_current_directory(void)
 	return (oldpwd);
 }
 
-// Helper: Update the environment variables PWD and OLDPWD after changing directory
-// Uses 'oldpwd' as the previous working directory and updates PWD to the new cwd.
-// If getcwd fails for PWD, it falls back to the 'path' provided.
 static int	update_env_variables(t_env **envp, char *oldpwd, char *path)
 {
 	char	cwd[1024];
@@ -100,7 +87,6 @@ static int	update_env_variables(t_env **envp, char *oldpwd, char *path)
 	return (1);
 }
 
-// The main cd function refactored into helper functions
 int	ft_cd(char **args, t_env **envp)
 {
 	char	*path;

@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/04 03:24:37 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/06 03:01:58 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/06 20:15:49 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int	ft_pwd(void)
 {
-	char cwd[1024];
+	char	cwd[1024];
 
 	if (getcwd(cwd, sizeof(cwd)) != NULL)
 	{
