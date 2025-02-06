@@ -9,7 +9,10 @@ LIBFT = $(LIBFT_DIR)/libft.a
 SRC_DIR = src
 OBJS_DIR = objs
 
-SRC =  parsing.c \
+SRC =  	parsing/parsing.c \
+		parsing/splitter.c \
+		parsing/identify_token.c \
+		parsing/utils.c \
 		main.c \
 		signals.c \
 		execution/execute.c \
