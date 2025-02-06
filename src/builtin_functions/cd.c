@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/04 04:33:45 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/06 02:58:45 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/06 07:39:43 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,6 @@ static int	update_env_variables(t_env **envp, char *oldpwd, char *path)
 	}
 	if (!getcwd(cwd, sizeof(cwd)))
 	{
-		// If getcwd fails, fall back to using path (though this may be relative)
 		if (!ft_setenv("PWD", path, envp))
 		{
 			free(oldpwd);
