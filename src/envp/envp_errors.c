@@ -1,48 +1,45 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   envp_utils.c                                       :+:      :+:    :+:   */
+/*   envp_errors.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/01 23:20:22 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/06 05:10:00 by abdsalah         ###   ########.fr       */
+/*   Created: 2025/02/06 05:09:35 by abdsalah          #+#    #+#             */
+/*   Updated: 2025/02/06 05:09:49 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/minishell.h"
+#include "../../include/minishell.h"
 
-int	env_length(t_env *env)
+void	free_envp_node(t_env *env)
 {
-	int	i;
-
-	i = 0;
-	while (env)
-	{
-		i++;
-		env = env->next;
-	}
-	return (i);
+	free(env->name);
+	free(env->value);
+	free(env);
 }
 
-void	print_envp(t_env *env)
+void	free_envp_list(t_env *env)
 {
+	t_env	*tmp;
+
 	while (env)
 	{
-		if (env->value != NULL)
-			printf("%s=%s\n", env->name, env->value);
+		tmp = env;
 		env = env->next;
+		free_envp_node(tmp);
 	}
 }
 
-void	printstr_envp(char **envp)
+void	free_envp_array(char **envp)
 {
 	int	i;
 
 	i = 0;
 	while (envp[i])
 	{
-		printf("%s\n", envp[i]);
+		free(envp[i]);
 		i++;
 	}
+	free(envp);
 }
