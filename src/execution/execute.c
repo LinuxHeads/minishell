@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 01:23:07 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/06 20:00:21 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/06 23:59:33 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ static int	get_redirections(t_command *cmd, int *in_fd, int *out_fd, t_shell *sh
 				*in_fd = open(cmd->tokens[i]->value, O_RDONLY);
 				if (*in_fd < 0)
                 {
+	                *in_fd = STDIN_FILENO;
 					perror(cmd->tokens[i]->value);
                     return (0);
                 }
@@ -58,6 +59,7 @@ static int	get_redirections(t_command *cmd, int *in_fd, int *out_fd, t_shell *sh
 					O_WRONLY | O_CREAT | O_TRUNC, 0644);
 				if (*out_fd < 0)
                 {
+	                *out_fd = STDOUT_FILENO;
 					perror(cmd->tokens[i]->value);
                     return (0);
                 }
@@ -77,6 +79,7 @@ static int	get_redirections(t_command *cmd, int *in_fd, int *out_fd, t_shell *sh
 					O_WRONLY | O_CREAT | O_APPEND, 0644);
 				if (*out_fd < 0)
                 {
+	                *out_fd = STDOUT_FILENO;
 					perror(cmd->tokens[i]->value);
                     return (0);                    
                 }
@@ -147,6 +150,8 @@ void execute_pipeline(t_shell **shell)
     int pipe_created;
     int last_pid;
     int wstatus;
+    int redir_flag;
+    
     
     (*shell)->envp = envp_to_str((*shell)->env_list);
     if (!(*shell)->envp || !(*shell)->envp[0])
@@ -159,17 +164,12 @@ void execute_pipeline(t_shell **shell)
     {
         argv = build_command_argv((*shell)->parser->commands[i]);
         expander(&argv, *shell);
+        redir_flag = 0;
         if (!get_redirections((*shell)->parser->commands[i], &in_fd, &out_fd, *shell))
         {
             (*shell)->exit_status = 1;
-            i++;
-            if (in_fd != STDIN_FILENO)
-                close(in_fd);
-            if (out_fd != STDOUT_FILENO)
-                close (out_fd);
-            continue;
+            redir_flag = 1;
         }
-       
         //printf("%s \n",argv[0]); 
         if (!argv || !argv[0])
         {
@@ -180,7 +180,15 @@ void execute_pipeline(t_shell **shell)
         {
             int fd1 = -1;
             int fd2 = -1;
-
+            
+            if (redir_flag)
+            {
+                if (in_fd != STDIN_FILENO)
+                    close(in_fd);
+                if (out_fd != STDOUT_FILENO)
+                    close(out_fd);
+                return;
+            }
             if (out_fd != STDOUT_FILENO)
             {
                 fd1 = dup(STDOUT_FILENO);
@@ -200,8 +208,8 @@ void execute_pipeline(t_shell **shell)
         } 
         else
         {
-            if (i > 0 && prev_fd != -1)
-                in_fd = prev_fd;
+            if (i > 0 && prev_fd != -1 && in_fd == STDIN_FILENO)
+                 {in_fd = prev_fd;}
             pipe_created = 0;
             if (i < (*shell)->parser->command_count - 1)
             {
@@ -219,6 +227,18 @@ void execute_pipeline(t_shell **shell)
             }
             if (pid == 0)
             {
+                if (redir_flag)
+                {
+                    if (in_fd != STDIN_FILENO)
+                        close(in_fd);
+                    if (out_fd != STDOUT_FILENO)
+                        close(out_fd);
+                    if (pipe_created) {
+                     close(pipe_fd[0]);
+                     close(pipe_fd[1]);
+                    }
+                    exit(EXIT_FAILURE);
+                }
                 if (in_fd != STDIN_FILENO)
                     dup2(in_fd, STDIN_FILENO);
                 if (pipe_created) {
