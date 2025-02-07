@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 06:21:46 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/06 18:51:19 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/07 18:56:25 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ static char *find_executable_in_paths(char **cmd, char **paths, char **full_path
     }
     return (NULL);
 }
+
 char			*find_command_path(char *cmd, char **envp)
 {
     char    *path_var;

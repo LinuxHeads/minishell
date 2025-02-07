@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 19:24:00 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/07 18:45:56 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/08 01:47:41 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -244,4 +244,7 @@ int				exec_builtins(char **args, t_shell *shell);
 char			**ft_splitter(const char *s, char c);
 int				ft_setup_shlvl(t_env **envp);
 void			free_shell(t_exec *shell);
+int				get_redirections(t_command *cmd, int *in_fd, int *out_fd, t_shell *shell);
+char			*trim_quotes(char *value);
+void			ft_heredoc(int pipe_fds[2], t_command *cmd, int i);
 #endif

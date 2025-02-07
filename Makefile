@@ -18,6 +18,8 @@ SRC =  	parsing/parsing.c \
 		execution/execute.c \
 		execution/build_args.c \
 		execution/find_cmd.c \
+		execution/redirections.c \
+		execution/redir_utils.c \
 		envp/envp_errors.c \
 		envp/envp_to_str.c \
 		envp/envp_utils.c \
