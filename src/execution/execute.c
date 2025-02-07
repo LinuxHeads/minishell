@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 01:23:07 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/06 23:59:33 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/07 17:44:58 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,7 +136,20 @@ void	free_str_array(char **arr)
 	}
 	free(arr);
 }
-
+static int has_valid_command(t_command *cmd)
+{
+    int i;
+    if (!cmd || !cmd->tokens || cmd->token_count == 0)
+        return (0);
+    i=0;
+    while (i < cmd->token_count)
+    {
+        if (cmd->tokens[i] && cmd->tokens[i]->type == COMMAND)
+            return (1);
+        i++;
+    }
+    return (0);
+}
 
 void execute_pipeline(t_shell **shell)
 {
@@ -162,13 +175,30 @@ void execute_pipeline(t_shell **shell)
     
     while (i < (*shell)->parser->command_count)
     {
+
         argv = build_command_argv((*shell)->parser->commands[i]);
-        expander(&argv, *shell);
+        if(!expander(&argv, *shell))
+        {
+            i++;
+            continue;
+        }
         redir_flag = 0;
         if (!get_redirections((*shell)->parser->commands[i], &in_fd, &out_fd, *shell))
         {
             (*shell)->exit_status = 1;
             redir_flag = 1;
+        }
+        if (!has_valid_command((*shell)->parser->commands[i]))
+        {
+            if (!get_redirections((*shell)->parser->commands[i], &in_fd, &out_fd, *shell))
+            {
+                (*shell)->exit_status = 1;
+                redir_flag = 1;
+            }
+            // close(in_fd);
+            // close(out_fd);
+            i++;
+            continue;
         }
         //printf("%s \n",argv[0]); 
         if (!argv || !argv[0])

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expander.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 01:23:07 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/06 23:08:03 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/07 17:44:53 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -242,6 +242,7 @@ char	*expand_string(const char *str, t_shell *shell)
 			}
 			continue ;
 		}
+		
 		else
 		{
 			char c[2];
@@ -284,7 +285,7 @@ char	*preprocess_input_test(char *input)
 }
 
 
-void	expander(char ***argv_ptr, t_shell *shell)
+int	expander(char ***argv_ptr, t_shell *shell)
 {
 	char	**argv;
 	char	*expanded;
@@ -304,10 +305,10 @@ void	expander(char ***argv_ptr, t_shell *shell)
 			continue;
 		}
 		expanded = expand_string(old_arg, shell);
-		if (!expanded)
+		if (!expanded || ft_strisspace(expanded))
 		{
 			argv[i] = NULL;
-			return ;
+			return 0;
 		}
 		len = ft_strlen(expanded);
 		if (len >= 2 && (
@@ -320,7 +321,7 @@ void	expander(char ***argv_ptr, t_shell *shell)
 			if (!tmp)
 			{
 				argv[i] = NULL;
-				return ;
+				return 0;
 			}
 			expanded = tmp;
 		}
@@ -348,6 +349,7 @@ void	expander(char ***argv_ptr, t_shell *shell)
 		argv[i] = preprocess_input_test(argv[i]);
 		i++;
 	}
+	return 1;
 }
 
 void	expander_test(char **argv, t_shell *shell)
