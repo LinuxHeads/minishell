@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
+/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 19:24:00 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/07 17:25:36 by ahramada         ###   ########.fr       */
+/*   Updated: 2025/02/07 18:45:56 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -242,5 +242,6 @@ char			*find_command_path(char *cmd, char **envp);
 int				is_builtin(char **arg);
 int				exec_builtins(char **args, t_shell *shell);
 char			**ft_splitter(const char *s, char c);
-int			ft_setup_shlvl(t_env **envp);
+int				ft_setup_shlvl(t_env **envp);
+void			free_shell(t_exec *shell);
 #endif
