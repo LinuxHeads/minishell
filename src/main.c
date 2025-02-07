@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/29 20:22:52 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/06 15:37:43 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/07 18:01:54 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,12 +15,12 @@
 
 void init_minishell(t_shell *shell, char **envp)//$SHLVL
 {
-	if (!isatty(STDIN_FILENO))
-    {
-        // If not a TTY, print an error and exit
-        fprintf(stderr, "Error: Minishell must be run in a terminal (TTY)\n");
-        exit(1);
-    }
+	// if (!isatty(STDIN_FILENO))
+    // {
+    //     // If not a TTY, print an error and exit
+    //     fprintf(stderr, "Error: Minishell must be run in a terminal (TTY)\n");
+    //     exit(1);
+    // }
 	shell->env_list = init_envp(envp);
     if (!shell->env_list)
 	{
@@ -57,7 +57,7 @@ void minishell_loop(t_shell *shell)
 		if (*input)
 			add_history(input);
 		processed_input = preprocess_input(input);
-		commands = ft_split(processed_input, '|');
+		commands = ft_splitter(processed_input, '|');
 		num_commands = count_words(processed_input, '|');
 		shell->parser = allocate_shell_commands(num_commands, commands); 
 		if (!shell->parser)
@@ -66,6 +66,7 @@ void minishell_loop(t_shell *shell)
 			free(input);
 			continue;
 		}
+		//print_shell(shell->parser); //if we need to print the commands 
 		execute_pipeline(&shell);
 		free_shell(shell->parser);
 		free_str_array(commands);
