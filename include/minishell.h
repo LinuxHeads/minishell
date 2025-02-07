@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 19:24:00 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/06 22:55:09 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/07 17:25:36 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -202,7 +202,7 @@ int    ft_unset(char **arg, t_env **envp);
 */
 int		ft_setenv(const char *name, const char *value, t_env **env_list);
 
-void	expander(char ***argv_ptr, t_shell *shell);
+int	expander(char ***argv_ptr, t_shell *shell);
 void	expander_test(char **argv, t_shell *shell);
 
 /* 

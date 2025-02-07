@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_getenv.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 04:51:24 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/06 05:08:52 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/07 17:37:01 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,5 +20,5 @@ char	*ft_getenv(const char *name, t_env *env)
 			return (env->value);
 		env = env->next;
 	}
-	return (NULL);
+	return ("");
 }

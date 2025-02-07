@@ -6,7 +6,7 @@
 /*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 01:23:07 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/07 17:44:53 by ahramada         ###   ########.fr       */
+/*   Updated: 2025/02/07 18:25:43 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -308,6 +308,7 @@ int	expander(char ***argv_ptr, t_shell *shell)
 		if (!expanded || ft_strisspace(expanded))
 		{
 			argv[i] = NULL;
+			//remove_arg(&argv, i);
 			return 0;
 		}
 		len = ft_strlen(expanded);
@@ -321,6 +322,7 @@ int	expander(char ***argv_ptr, t_shell *shell)
 			if (!tmp)
 			{
 				argv[i] = NULL;
+				//remove_arg(&argv, i);
 				return 0;
 			}
 			expanded = tmp;
