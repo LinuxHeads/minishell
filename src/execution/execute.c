@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 01:23:07 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/08 07:43:56 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/08 07:47:57 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,20 +23,18 @@ int create_pipe(int *pipe_fd, int i, t_shell **shell)
     }
     return (1);
 }
-void    check_error(int redir_flag, int *in_fd, int *out_fd, int pipe_created, int *pipe_fd)
+
+void    exit_error(int *in_fd, int *out_fd, int pipe_created, int *pipe_fd)
 {
-    if (redir_flag)
-    {
-        if (*in_fd != STDIN_FILENO)
-            close(*in_fd);
-        if (*out_fd != STDOUT_FILENO)
-            close(*out_fd);
-        if (pipe_created) {
-            close(pipe_fd[0]);
-            close(pipe_fd[1]);
-        }
-        exit(EXIT_FAILURE);
+    if (*in_fd != STDIN_FILENO)
+        close(*in_fd);
+    if (*out_fd != STDOUT_FILENO)
+        close(*out_fd);
+    if (pipe_created) {
+        close(pipe_fd[0]);
+        close(pipe_fd[1]);
     }
+    exit(EXIT_FAILURE);
 }
 
 void exec_in_child(int i, t_shell **shell, int *pid, int *in_fd, int *out_fd, char **argv, int redir_flag, int *prev_fd)
@@ -63,7 +61,8 @@ void exec_in_child(int i, t_shell **shell, int *pid, int *in_fd, int *out_fd, ch
             fprintf(stderr, "minishell: invalid command\n");
             exit(EXIT_FAILURE);
         }
-        check_error(redir_flag, in_fd, out_fd, pipe_created, pipe_fd);
+        if (redir_flag)
+            exit_error(in_fd, out_fd, pipe_created, pipe_fd);
         if (*in_fd != STDIN_FILENO)
             dup2(*in_fd, STDIN_FILENO);
         if (pipe_created) {
