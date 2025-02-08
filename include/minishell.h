@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: abdsalah <abdsalah@std.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 19:24:00 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/08 04:39:31 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/08 20:47:00 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 # include <sys/stat.h>
 # include <sys/types.h>
 # include <errno.h>
+# include <termios.h>
 
 /* Libft and Readline library includes */
 # include "../libft/libft.h"
@@ -118,7 +119,7 @@ typedef struct s_shell
 ** signals_t3res: Sets up signal handling for interactive shell. Handles SIGINT 
 ** (Ctrl+C) by calling the function `handle_sigint` and ignoring SIGQUIT (Ctrl+\).
 */
-void        signals_t3res(void);
+void        signals_t3res(int mode);
 
 /* ************************************************************************** */
 /*                            ENVIRONMENT VARIABLES                           */
@@ -169,17 +170,17 @@ int         env_length(t_env *env);
 /* 
 ** ft_exit: Built-in exit command to terminate the shell.
 */
-int ft_exit(char **args, t_shell *shell);
+int			ft_exit(char **args, t_shell *shell);
 
 /* 
 ** ft_echo: Built-in echo command to print arguments to stdout.
 */
-int ft_echo(char **args);
+int			ft_echo(char **args);
 
 /* 
 ** ft_env: Built-in env command to print environment variables to stdout.
 */
-int    ft_env(char **args, t_shell *shell);
+int    		ft_env(char **args, t_shell *shell);
 
 /* 
 ** ft_cd: Built-in cd command to change the current directory.
@@ -235,7 +236,6 @@ char			*ft_str_replace(const char *str, const char *old, const char *);
 char			*preprocess_input(char *input);
 void			free_str_array(char **arr);
 void			execute_pipeline(t_shell **shell);
-void			signals_t3res(void);
 void			free_envp_node(t_env *env);
 char			**build_command_argv(t_command *cmd);
 char			*find_command_path(char *cmd, char **envp);
@@ -250,4 +250,5 @@ void			ft_heredoc(int pipe_fds[2], t_command *cmd, int i);
 int    			ft_lstsize_env(t_env *env_list);
 t_env			*ft_copy_env(t_env *env);
 void			ft_sort_env(t_env **env);
+void			reset_signals(void);
 #endif

@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
+/*   By: abdsalah <abdsalah@std.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 01:23:07 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/08 13:23:55 by ahramada         ###   ########.fr       */
+/*   Updated: 2025/02/08 20:37:23 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/minishell.h"
+#include "../../include/minishell.h"
 
 int create_pipe(int *pipe_fd, int i, t_shell **shell)
 {
@@ -56,6 +56,7 @@ void exec_in_child(int i, t_shell **shell, int *pid, int *in_fd, int *out_fd, ch
     }
     if (*pid == 0)
     {
+        reset_signals();
         if (!argv || !argv[0])
         {
             fprintf(stderr, "minishell: invalid command\n");
@@ -223,7 +224,7 @@ void execute_pipeline(t_shell **shell)
         fprintf(stderr, "Error converting env to string array\n");
         return;
     }
-    
+    signals_t3res(1);
     while (i < (*shell)->parser->command_count)
     {
 

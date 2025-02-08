@@ -3,24 +3,28 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
+/*   By: abdsalah <abdsalah@std.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/29 20:22:52 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/08 13:27:35 by ahramada         ###   ########.fr       */
+/*   Updated: 2025/02/08 20:47:31 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
+#include <termios.h>
+#include <unistd.h>
 
 
 void init_minishell(t_shell *shell, char **envp)//$SHLVL
 {
-	// if (!isatty(STDIN_FILENO))
-    // {
-    //     // If not a TTY, print an error and exit
-    //     fprintf(stderr, "Error: Minishell must be run in a terminal (TTY)\n");
-    //     exit(1);
-    // }
+	struct termios term;
+	tcgetattr(STDIN_FILENO, &term);
+	if (!isatty(STDIN_FILENO) || !isatty(STDOUT_FILENO) || !isatty(STDERR_FILENO))
+    {
+        // If not a TTY, print an error and exit
+        fprintf(stderr, "Error: Minishell must be run in a terminal (TTY)\n");
+        exit(1);
+    }
 	shell->env_list = init_envp(envp);
     if (!shell->env_list)
 	{
@@ -66,7 +70,7 @@ void minishell_loop(t_shell *shell)
 			free(input);
 			continue;
 		}
-		print_shell(shell->parser); //if we need to print the commands 
+		// print_shell(shell->parser); //if we need to print the commands 
 		execute_pipeline(&shell);
 		free_shell(shell->parser);
 		free_str_array(commands);
@@ -82,7 +86,7 @@ int main(int argc, char **argv, char **envp)
 	(void)argv;
 	t_shell shell;
 	init_minishell(&shell, envp);
-	signals_t3res();
+	signals_t3res(0);
 	minishell_loop(&shell);
 	free_envp_list(shell.env_list);
 	free_envp_array(shell.envp);
