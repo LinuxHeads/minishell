@@ -6,7 +6,7 @@
 /*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 01:23:07 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/08 13:23:47 by ahramada         ###   ########.fr       */
+/*   Updated: 2025/02/08 13:55:42 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -211,6 +211,7 @@ char	*expand_string(const char *str, t_shell *shell)
 				if (!in_dq)
 				{
 					char *trim = ft_strtrim_spaces(var_value);
+					//printf("%s\n",trim);
 					free(var_value);
 					if (!trim)
 					{
@@ -242,7 +243,6 @@ char	*expand_string(const char *str, t_shell *shell)
 			}
 			continue ;
 		}
-		
 		else
 		{
 			char c[2];
@@ -281,9 +281,9 @@ char	*preprocess_input_test(char *input)
 	tmp = new_input;
 	new_input = ft_str_replace(tmp, " << ", "<<");
 	free(tmp);
-	tmp = new_input;
-	new_input = ft_str_replace(tmp, " $", "$");
-	free(tmp);
+	// tmp = new_input;
+	// new_input = ft_str_replace(tmp, " $", "$");
+	// free(tmp);
 	return (new_input);
 }
 
