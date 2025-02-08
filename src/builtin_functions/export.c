@@ -6,11 +6,23 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 15:42:39 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/06 07:40:52 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/08 05:03:38 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
+
+static int ft_printenv_sorted(t_env *env_list)
+{
+	t_env *tmp;
+
+	tmp = ft_copy_env(env_list);
+	if (!tmp)
+		return (0);
+	ft_sort_env(&tmp);
+	print_envp(tmp);
+	return (1);
+}
 
 /**
  * syntax_error - Checks if the given argument is a valid identifier.
@@ -26,9 +38,7 @@ static int	syntax_error(const char *arg)
 
 	if (ft_isdigit(arg[0]) || arg[0] == '=')
 	{
-		ft_putstr_fd("export: `", 2);
-		ft_putstr_fd(arg, 2);
-		ft_putstr_fd("': not a valid identifier\n", 2);
+		fprintf(stderr, "minishell: export: `%s': not a valid identifier\n", arg);
 		return (0);
 	}
 	equal_sign = ft_strchr(arg, '=');
@@ -41,9 +51,7 @@ static int	syntax_error(const char *arg)
 	{
 		if (!ft_isalnum(arg[i]) && arg[i] != '_')
 		{
-			ft_putstr_fd("export: `", 2);
-			ft_putstr_fd(arg, 2);
-			ft_putstr_fd("': not a valid identifier\n", 2);
+			fprintf(stderr, "minishell: export: `%s': not a valid identifier\n", arg);
 			return (0);
 		}
 	}
@@ -58,34 +66,35 @@ static int	syntax_error(const char *arg)
  *
  * Returns 1 on success, 0 on failure.
  */
-static int	split_var(const char *arg, char **key, char **value)
+static int split_var(const char *arg, char **key, char **value)
 {
-	char	*equal_sign;
-	int		key_len;
+    char *equal_sign;
+    int key_len;
 
-	equal_sign = ft_strchr(arg, '=');
-	if (equal_sign)
-	{
-		key_len = equal_sign - arg;
-		*key = ft_substr(arg, 0, key_len);
-		if (!*key)
-			return (0);
-		*value = ft_strdup(equal_sign + 1);
-		if (!*value)
-		{
-			free(*key);
-			return (0);
-		}
-	}
-	else
-	{
-		*key = ft_strdup(arg);
-		if (!*key)
-			return (0);
+    equal_sign = ft_strchr(arg, '=');
+    if (equal_sign)
+    {
+        key_len = equal_sign - arg;
+        *key = ft_substr(arg, 0, key_len);
+        if (!*key)
+            return (0);
+        *value = ft_strdup(equal_sign + 1);
+        if (!*value)
+        {
+            free(*key);
+            return (0);
+        }
+    }
+    else
+    {
+        *key = ft_strdup(arg);
+        if (!*key)
+            return (0);
 		*value = NULL;
 	}
-	return (1);
+    return (1);
 }
+
 
 /**
  * ft_export - Implements the export builtin.
@@ -103,7 +112,8 @@ int	ft_export(char **args, t_env **env_list) // TO-DO : when no args are passed,
 	i = -1;
 	if (!args[0])
 	{
-		print_envp(*env_list); // should be sorted
+		if (!ft_printenv_sorted(*env_list)) // should be sorted
+			return (1);
 		return (0);
 	}
 	while (args[++i])
@@ -112,12 +122,14 @@ int	ft_export(char **args, t_env **env_list) // TO-DO : when no args are passed,
 		{
 			if (!split_var(args[i], &key, &value))
 				return (1);
-			if (!ft_setenv(key, value, env_list))
+			if (value)
 			{
-				free(key);
-				if (value)
+				if (!ft_setenv(key, value, env_list))
+				{
+					free(key);
 					free(value);
-				return (1);
+					return (1);
+				}
 			}
 			free(key);
 			if (value)
