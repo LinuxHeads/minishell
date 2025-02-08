@@ -6,13 +6,28 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 01:23:07 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/08 00:46:49 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/08 07:14:32 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
+void    wait_for_children(t_shell *shell, int pid)
+{
+    int wstatus;
+    int last_pid;
+    
+    while ((last_pid = wait(&wstatus)) > 0) {
+    if (last_pid == pid)
+    {
+        if (WIFEXITED(wstatus))
+            shell->exit_status = WEXITSTATUS(wstatus);
+        else if (WIFSIGNALED(wstatus))
+            shell->exit_status = 128 + WTERMSIG(wstatus);
+        }
+    }
 
+}
 
 void	free_str_array(char **arr)
 {
@@ -26,6 +41,7 @@ void	free_str_array(char **arr)
 	}
 	free(arr);
 }
+
 static int has_valid_command(t_command *cmd)
 {
     int i;
@@ -51,8 +67,6 @@ void execute_pipeline(t_shell **shell)
     char **argv;
     char *cmd_path;
     int pipe_created;
-    int last_pid;
-    int wstatus;
     int redir_flag;
     
     
@@ -129,7 +143,9 @@ void execute_pipeline(t_shell **shell)
         else
         {
             if (i > 0 && prev_fd != -1 && in_fd == STDIN_FILENO)
-                 {in_fd = prev_fd;}
+            {
+                in_fd = prev_fd;
+            }
             pipe_created = 0;
             if (i < (*shell)->parser->command_count - 1)
             {
@@ -231,12 +247,5 @@ void execute_pipeline(t_shell **shell)
         }
         i++;
     }
-    while ((last_pid = wait(&wstatus)) > 0) {
-        if (last_pid == pid)
-        {
-        if (WIFEXITED(wstatus))
-            (*shell)->exit_status = WEXITSTATUS(wstatus);
-        else if (WIFSIGNALED(wstatus))
-            (*shell)->exit_status = 128 + WTERMSIG(wstatus);
-    }}
+    wait_for_children(*shell, pid);
 }
