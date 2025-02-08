@@ -6,7 +6,7 @@
 /*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/29 20:22:52 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/08 12:18:53 by ahramada         ###   ########.fr       */
+/*   Updated: 2025/02/08 13:27:35 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ void minishell_loop(t_shell *shell)
 
 	while (1)
 	{
-		input = readline("\033[1;32mminishell>\033[0m ");
+		input = readline("\001\033[32m\002ZOMBI>\001\033[33m\002 ");
 		if (!input)
 		{
 			printf("exit\n");

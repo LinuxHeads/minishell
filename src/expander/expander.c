@@ -6,7 +6,7 @@
 /*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 01:23:07 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/08 12:18:09 by ahramada         ###   ########.fr       */
+/*   Updated: 2025/02/08 13:23:47 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -281,6 +281,9 @@ char	*preprocess_input_test(char *input)
 	tmp = new_input;
 	new_input = ft_str_replace(tmp, " << ", "<<");
 	free(tmp);
+	tmp = new_input;
+	new_input = ft_str_replace(tmp, " $", "$");
+	free(tmp);
 	return (new_input);
 }
 
@@ -309,7 +312,7 @@ int	expander(char ***argv_ptr, t_shell *shell)
 		{
 			argv[i] = NULL;
 			//remove_arg(&argv, i);
-			return 0;
+			// return 0;
 		}
 		len = ft_strlen(expanded);
 		if (len >= 2 && (
@@ -323,7 +326,7 @@ int	expander(char ***argv_ptr, t_shell *shell)
 			{
 				argv[i] = NULL;
 				//remove_arg(&argv, i);
-				return 0;
+				// return 0;
 			}
 			expanded = tmp;
 		}
@@ -340,6 +343,7 @@ int	expander(char ***argv_ptr, t_shell *shell)
 	}
 	*argv_ptr = argv;
 	i = 0;
+	int check=0;
 	while (argv[i])
 	{
 		char *no_closed_quotes = remove_closed_quotes(argv[i]);
@@ -349,9 +353,10 @@ int	expander(char ***argv_ptr, t_shell *shell)
 			argv[i] = no_closed_quotes;
 		}
 		argv[i] = preprocess_input_test(argv[i]);
+		check=1;
 		i++;
 	}
-	return 1;
+	return check;
 }
 
 void	expander_test(char **argv, t_shell *shell)
