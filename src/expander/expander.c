@@ -6,7 +6,7 @@
 /*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 01:23:07 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/09 01:09:03 by ahramada         ###   ########.fr       */
+/*   Updated: 2025/02/09 01:44:46 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ static int		ft_tablen(char **tab);
 static char		**replace_token_with_tokens(char **argv, int index,
 					char **new_tokens);
 static int		is_all_spaces(const char *s);
+static char		*remove_outer_quotes(const char *s);
 
 static int	is_all_spaces(const char *s)
 {
@@ -31,6 +32,18 @@ static int	is_all_spaces(const char *s)
 		i++;
 	}
 	return (1);
+}
+
+
+static char	*remove_outer_quotes(const char *s)
+{
+	size_t	len;
+
+	len = ft_strlen(s);
+	if (len >= 2 && ((s[0] == '\"' && s[len - 1] == '\"') ||
+					 (s[0] == '\'' && s[len - 1] == '\'')))
+		return (ft_substr(s, 1, len - 2));
+	return (ft_strdup(s));
 }
 
 int	ft_strisspace(const char *str)
@@ -71,11 +84,7 @@ static char	*ft_strtrim_spaces(const char *s)
 		return (NULL);
 	i = 0;
 	while (start <= end)
-	{
-		trim[i] = s[start];
-		i++;
-		start++;
-	}
+		trim[i++] = s[start++];
 	trim[i] = '\0';
 	return (trim);
 }
@@ -101,15 +110,13 @@ char	*compress_spaces(const char *str)
 		{
 			if (!in_space)
 			{
-				new_str[j] = ' ';
-				j++;
+				new_str[j++] = ' ';
 				in_space = 1;
 			}
 		}
 		else
 		{
-			new_str[j] = str[i];
-			j++;
+			new_str[j++] = str[i];
 			in_space = 0;
 		}
 		i++;
@@ -223,47 +230,32 @@ char	*expand_variable(const char *str, int *index, t_shell *shell)
 }
 
 
-char	*expand_string_fixed(const char *str, t_shell *shell,
-				int *is_fully_unquoted)
+char	*expand_string(const char *str, t_shell *shell)
 {
 	char	*result;
 	char	*tmp;
 	int		i;
 	int		start;
 	int		fully_unquoted;
-	int		only_quotes;
 	char	*temp2;
 
-	only_quotes = 1;
-	i = 0;
-	while (str[i])
 	{
-		if (str[i] != '\'' && str[i] != '"' && str[i] != ' ')
+		int	j = 0;
+		int	only = 1;
+		while (str[j])
 		{
-			only_quotes = 0;
-			break ;
-		}
-		i++;
-	}
-	if (only_quotes)
-	{
-
-		temp2 = malloc(ft_strlen(str) + 1);
-		if (!temp2)
-			return (NULL);
-		i = 0;
-		start = 0;
-		while (str[i])
-		{
-			if (str[i] != '\'' && str[i] != '"')
+			if (str[j] != '\'' && str[j] != '"' && str[j] != ' ')
 			{
-				temp2[start] = str[i];
-				start++;
+				only = 0;
+				break ;
 			}
-			i++;
+			j++;
 		}
-		temp2[start] = '\0';
-		return (ft_strdup(temp2));
+		if (only)
+		{
+			temp2 = remove_outer_quotes(str);
+			return (ft_strdup(temp2));
+		}
 	}
 	result = ft_strdup("");
 	if (!result)
@@ -275,14 +267,14 @@ char	*expand_string_fixed(const char *str, t_shell *shell,
 		if (str[i] == '\'')
 		{
 			fully_unquoted = 0;
-			i++; 
+			i++;
 			start = i;
 			while (str[i] && str[i] != '\'')
 				i++;
 			tmp = ft_substr(str, start, i - start);
 			if (!is_all_spaces(tmp))
 			{
-				char	*comp = compress_spaces(tmp);
+				char *comp = compress_spaces(tmp);
 				free(tmp);
 				tmp = comp;
 			}
@@ -315,7 +307,7 @@ char	*expand_string_fixed(const char *str, t_shell *shell,
 					}
 					else
 					{
-						char	c[2];
+						char c[2];
 
 						c[0] = tmp[j];
 						c[1] = '\0';
@@ -325,7 +317,7 @@ char	*expand_string_fixed(const char *str, t_shell *shell,
 				}
 				if (!is_all_spaces(expanded_segment))
 				{
-					char	*temp_compressed = compress_spaces(expanded_segment);
+					char *temp_compressed = compress_spaces(expanded_segment);
 					free(expanded_segment);
 					expanded_segment = temp_compressed;
 				}
@@ -334,7 +326,7 @@ char	*expand_string_fixed(const char *str, t_shell *shell,
 			}
 			free(tmp);
 			if (str[i] == '"')
-				i++;
+				i++; 
 		}
 		else
 		{
@@ -355,6 +347,152 @@ char	*expand_string_fixed(const char *str, t_shell *shell,
 						j++;
 						expanded_segment = ft_strjoin(expanded_segment,
 							expand_variable(tmp, &j, shell));
+					}
+					else
+					{
+						char c[2];
+
+						c[0] = tmp[j];
+						c[1] = '\0';
+						j++;
+						expanded_segment = ft_strjoin(expanded_segment, c);
+					}
+				}
+				result = ft_strjoin(result, expanded_segment);
+				free(expanded_segment);
+			}
+			free(tmp);
+		}
+	}
+	if (fully_unquoted)
+	{
+		tmp = ft_strtrim_spaces(result);
+		free(result);
+		result = compress_spaces(tmp);
+		free(tmp);
+	}
+	return (result);
+}
+
+
+char	*expand_string_fixed(const char *str, t_shell *shell, int *is_fully_unquoted)
+{
+	char	*result;
+	char	*tmp;
+	int		i;
+	int		start;
+	int		fully_unquoted;
+	char	*temp2;
+
+	{
+		int	j = 0;
+		int	only = 1;
+		while (str[j])
+		{
+			if (str[j] != '\'' && str[j] != '"' && str[j] != ' ')
+			{
+				only = 0;
+				break ;
+			}
+			j++;
+		}
+		if (only)
+		{
+			
+			temp2 = remove_outer_quotes(str);
+			return (ft_strdup(temp2));
+		}
+	}
+	result = ft_strdup("");
+	if (!result)
+		return (NULL);
+	i = 0;
+	fully_unquoted = 1;
+	while (str[i])
+	{
+		if (str[i] == '\'')
+		{
+			fully_unquoted = 0;
+			i++;
+			start = i;
+			while (str[i] && str[i] != '\'')
+				i++;
+			tmp = ft_substr(str, start, i - start);
+			if (!is_all_spaces(tmp))
+			{
+				char	*comp = compress_spaces(tmp);
+				free(tmp);
+				tmp = comp;
+			}
+			result = ft_strjoin(result, tmp);
+			free(tmp);
+			if (str[i] == '\'')
+				i++;
+		}
+		else if (str[i] == '"')
+		{
+			fully_unquoted = 0;
+			i++; 
+			start = i;
+			while (str[i] && str[i] != '"')
+				i++;
+			tmp = ft_substr(str, start, i - start);
+			{
+				char	*expanded_segment;
+				int		j;
+
+				expanded_segment = ft_strdup("");
+				j = 0;
+				while (tmp[j])
+				{
+					if (tmp[j] == '$')
+					{
+						j++;
+						expanded_segment = ft_strjoin(expanded_segment,
+								expand_variable(tmp, &j, shell));
+					}
+					else
+					{
+						char	c[2];
+
+						c[0] = tmp[j];
+						c[1] = '\0';
+						j++;
+						expanded_segment = ft_strjoin(expanded_segment, c);
+					}
+				}
+				if (!is_all_spaces(expanded_segment))
+				{
+					char	*temp_compressed = compress_spaces(expanded_segment);
+					free(expanded_segment);
+					expanded_segment = temp_compressed;
+				}
+				result = ft_strjoin(result, expanded_segment);
+				free(expanded_segment);
+			}
+			free(tmp);
+			if (str[i] == '"')
+				i++; 
+		}
+		else
+		{
+			start = i;
+			while (str[i] && str[i] != '\'' && str[i] != '"')
+				i++;
+			tmp = ft_substr(str, start, i - start);
+			{
+				char	*expanded_segment;
+				int		j;
+
+				expanded_segment = ft_strdup("");
+				j = 0;
+				while (tmp[j])
+				{
+					if (tmp[j] == '$')
+					{
+						j++;
+						expanded_segment = ft_strjoin(expanded_segment,
+								expand_variable(tmp, &j, shell));
 					}
 					else
 					{
@@ -383,6 +521,8 @@ char	*expand_string_fixed(const char *str, t_shell *shell,
 	return (result);
 }
 
+
+
 char	*preprocess_input_test(char *input)
 {
 	char	*new_input;
@@ -390,20 +530,21 @@ char	*preprocess_input_test(char *input)
 
 	if (!input)
 		return (NULL);
-	new_input = ft_str_replace(input, " > ", ">");
+	new_input = ft_str_replace(input, " >> ", ">>");
 	if (!new_input)
 		return (NULL);
 	tmp = new_input;
-	new_input = ft_str_replace(tmp, " < ", "<");
-	free(tmp);
-	tmp = new_input;
-	new_input = ft_str_replace(tmp, " >> ", ">>");
-	free(tmp);
-	tmp = new_input;
 	new_input = ft_str_replace(tmp, " << ", "<<");
+	free(tmp);
+	tmp = new_input;
+	new_input = ft_str_replace(tmp, " > ", ">");
+	free(tmp);
+	tmp = new_input;
+	new_input = ft_str_replace(tmp, " < ", "<");
 	free(tmp);
 	return (new_input);
 }
+
 
 int	expander(char ***argv_ptr, t_shell *shell)
 {
@@ -419,49 +560,24 @@ int	expander(char ***argv_ptr, t_shell *shell)
 	i = 0;
 	while (argv[i])
 	{
-		if ((argv[i][0] == '"' || argv[i][0] == '\'') &&
-    argv[i][1] == argv[i][0])
-{
-    int j = 0;
-    int has_alpha = 0;
 
-    while (argv[i][j])
-    {
-        if (ft_isalpha(argv[i][j]))
-        {
-            has_alpha = 1;
-            break;
-        }
-        j++;
-    }
-
-    if (!has_alpha)
-    {
-        i++;
-        continue;
-    }
-}
-
-		if (i == 0 && (argv[i][0] == '"' || argv[i][0] == '\''))
+		if (i == 0 && (argv[i][0] == '"' || argv[i][0] == '\'') &&
+			argv[i][ft_strlen(argv[i]) - 1] == argv[i][0])
 		{
 			tmp = ft_substr(argv[i], 1, ft_strlen(argv[i]) - 2);
 			if (is_all_spaces(tmp))
 			{
 				free(argv[i]);
-				argv[i] = tmp;
+				argv[i] = ft_strdup(tmp);
+				free(tmp);
 				i++;
 				continue ;
 			}
 			free(tmp);
 		}
-		if (ft_strisspace(argv[i]))
-		{
-			i++;
-			continue ;
-		}
 		old_arg = argv[i];
 		expanded = expand_string_fixed(old_arg, shell, &fully_unquoted);
-		if (!expanded || ft_strisspace(expanded))
+		if (!expanded || (fully_unquoted && ft_strisspace(expanded)))
 		{
 			free(expanded);
 			remove_arg(&argv, i);
@@ -494,8 +610,9 @@ int	expander(char ***argv_ptr, t_shell *shell)
 		else
 		{
 			tmp = preprocess_input_test(expanded);
-			free(expanded);
-			free(argv[i]);
+			//printf("fff");
+			// free(expanded);
+			// free(argv[i]);
 			argv[i] = tmp;
 		}
 		i++;
