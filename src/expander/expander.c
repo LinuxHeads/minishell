@@ -6,7 +6,7 @@
 /*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 01:23:07 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/07 18:25:43 by ahramada         ###   ########.fr       */
+/*   Updated: 2025/02/08 12:18:09 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -403,3 +403,64 @@ void	expander_test(char **argv, t_shell *shell)
 		}
 	}
 }
+
+
+// void	expander_test(char **argv, t_shell *shell)
+// {
+
+// 	char	*expanded;
+// 	char	*tmp;
+
+// 	size_t	len;
+
+
+
+// 		if (!ft_strchr(argv[0], '$'))
+// 		{
+// 			return;
+// 		}
+// 		expanded = expand_string(argv[0], shell);
+// 		if (!expanded || ft_strisspace(expanded))
+// 		{
+// 			argv[0]= NULL;
+// 			//remove_arg(&argv, i);
+// 			return;
+// 		}
+// 		len = ft_strlen(expanded);
+// 		if (len >= 2 && (
+// 			(expanded[0] == '\"' && expanded[len - 1] == '\"')
+// 			|| (expanded[0] == '\'' && expanded[len - 1] == '\'')
+// 		))
+// 		{
+// 			tmp = ft_substr(expanded, 1, len - 2);
+// 			free(expanded);
+// 			if (!tmp)
+// 			{
+// 				argv[0]= NULL;
+// 				//remove_arg(&argv, i);
+// 				return;
+// 			}
+// 			expanded = tmp;
+// 		}
+// 		if (ft_strisspace(expanded))
+// 		{
+// 			free(expanded);
+// 			remove_arg(&argv, 0);
+// 			return;
+// 		}
+
+// 		argv[0] = preprocess_input_test(expanded);
+// 		free(expanded);
+
+// 		char *no_closed_quotes = remove_closed_quotes(argv[0]);
+// 		if (no_closed_quotes)
+// 		{
+// 			free(argv[0]);
+// 			argv[0]= no_closed_quotes;
+// 		}
+// 		argv[0]= preprocess_input_test(argv[0]);
+		
+
+	
+	
+// }

@@ -6,7 +6,7 @@
 /*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/29 20:22:52 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/07 18:01:54 by ahramada         ###   ########.fr       */
+/*   Updated: 2025/02/08 12:18:53 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ void minishell_loop(t_shell *shell)
 			free(input);
 			continue;
 		}
-		//print_shell(shell->parser); //if we need to print the commands 
+		print_shell(shell->parser); //if we need to print the commands 
 		execute_pipeline(&shell);
 		free_shell(shell->parser);
 		free_str_array(commands);
