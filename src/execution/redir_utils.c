@@ -3,19 +3,35 @@
 /*                                                        :::      ::::::::   */
 /*   redir_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: abdsalah <abdsalah@std.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/08 01:44:02 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/08 01:48:09 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/09 16:49:54 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
+void close_heredoc(int signum)
+{
+	g_signal_flag = signum;
+	close(0);
+}
+
+void reset_signals_heredoc(void)
+{
+	struct sigaction sa;
+	
+	sa.sa_handler = &close_heredoc;
+	sa.sa_flags = SA_RESTART;
+	sigaction(SIGINT, &sa, NULL);
+}
+
 void	ft_heredoc(int pipe_fds[2], t_command *cmd, int i)
 {
 	char	*line;
-
+	
+	reset_signals_heredoc();
 	while (1)
 	{
 		line = readline("> ");
@@ -28,6 +44,11 @@ void	ft_heredoc(int pipe_fds[2], t_command *cmd, int i)
 		write(pipe_fds[1], "\n", 1);
 		free(line);
 	}
+	signals_t3res(0);
+	if (g_signal_flag == SIGINT)
+		write(1, "\n", 1);
+	dup2(2, 0);
+	
 }
 
 char	*trim_quotes(char *value)
