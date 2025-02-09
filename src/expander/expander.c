@@ -332,6 +332,7 @@ static char	**replace_token_with_tokens(char **argv, int index,
 	free(argv);
 	return (new_argv);
 }
+
 int count_enclosed_quotes(const char *str)
 {
     int count = 0;
@@ -380,10 +381,10 @@ int	expander(char ***argv_ptr, t_shell *shell)
 			continue;
 		}
 
-		int had_quote = (ft_strchr(old_arg, '\'') || ft_strchr(old_arg, '"')) ? 1 : 0;
-        int had_quote_another = (old_arg[1]=='\'' || old_arg[1]=='\"' ) ? 1 : 0;
+		// int had_quote = (ft_strchr(old_arg, '\'') || ft_strchr(old_arg, '"')) ? 1 : 0;
+        // int had_quote_another = (old_arg[1]=='\'' || old_arg[1]=='\"' ) ? 1 : 0;
         int encl = count_enclosed_quotes(old_arg);
-        printf("HAD ? %d\n",had_quote);
+        // printf("HAD ? %d\n",had_quote);
 		expanded = expand_string(old_arg, shell);
 		if (!expanded || ft_strisspace(expanded))
 		{
