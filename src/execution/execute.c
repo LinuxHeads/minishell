@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@std.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 01:23:07 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/09 16:45:32 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/09 17:09:10 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -245,6 +245,7 @@ void execute_pipeline(t_shell **shell)
         {
             g_signal_flag = 0;
             i++;
+            (*shell)->exit_status = 130;
             continue;
         }
         if (!has_valid_command((*shell)->parser->commands[i]))
