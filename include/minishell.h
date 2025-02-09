@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@std.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 19:24:00 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/08 20:47:00 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/09 14:58:05 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@
 ** and value. The linked list structure allows dynamic management of environment
 ** variables.
 */
-extern volatile int g_signal_flag;
+extern int g_signal_flag;
 
 typedef enum e_token_type
 {
