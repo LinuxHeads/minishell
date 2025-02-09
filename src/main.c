@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abdsalah <abdsalah@std.42amman.com>        +#+  +:+       +#+        */
+/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/29 20:22:52 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/09 17:02:49 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/10 00:54:43 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,11 @@ int	g_signal_flag;
 
 void init_minishell(t_shell *shell, char **envp)//$SHLVL
 {
-	if (!isatty(STDIN_FILENO) || !isatty(STDOUT_FILENO) || !isatty(STDERR_FILENO))
-    {
-        fprintf(stderr, "Error: Minishell must be run in a terminal (TTY)\n");
-        exit(1);
-    }
+	// if (!isatty(STDIN_FILENO) || !isatty(STDOUT_FILENO) || !isatty(STDERR_FILENO))
+    // {
+    //     fprintf(stderr, "Error: Minishell must be run in a terminal (TTY)\n");
+    //     exit(1);
+    // }
 	shell->env_list = init_envp(envp);
     if (!shell->env_list)
 	{
@@ -69,6 +69,7 @@ void minishell_loop(t_shell *shell)
 		}
 		// print_shell(shell->parser); //if we need to print the commands 
 		execute_pipeline(&shell);
+        signals_t3res(0);
 		free_shell(shell->parser);
 		free_str_array(commands);
 		free(processed_input);

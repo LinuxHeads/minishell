@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abdsalah <abdsalah@std.42amman.com>        +#+  +:+       +#+        */
+/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 01:23:07 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/09 17:09:10 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/10 00:54:37 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -224,7 +224,7 @@ void execute_pipeline(t_shell **shell)
         fprintf(stderr, "Error converting env to string array\n");
         return;
     }
-    signals_t3res(0);
+    signals_t3res(1);
     while (i < (*shell)->parser->command_count)
     {
 
