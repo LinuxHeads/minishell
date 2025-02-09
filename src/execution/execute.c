@@ -224,7 +224,7 @@ void execute_pipeline(t_shell **shell)
         fprintf(stderr, "Error converting env to string array\n");
         return;
     }
-    signals_t3res(1);
+    signals_t3res(0);
     while (i < (*shell)->parser->command_count)
     {
 
