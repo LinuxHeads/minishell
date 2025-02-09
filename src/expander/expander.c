@@ -6,7 +6,7 @@
 /*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 01:23:07 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/09 15:01:34 by ahramada         ###   ########.fr       */
+/*   Updated: 2025/02/09 20:26:18 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,7 +135,7 @@ char	*expand_variable(const char *str, int *index, t_shell *shell)
 	return (expanded);
 }
 
-char *remove_closed_quotes(const char *s)
+char *remove_outer_closed_quotes(const char *s)
 {
     size_t len;
     size_t i;
@@ -151,35 +151,29 @@ char *remove_closed_quotes(const char *s)
 
     i = 0;
     j = 0;
-    while (i < len)
+    if ((s[0] == '\'' || s[0] == '"') && s[len - 1] == s[0])
     {
-        if (s[i] == '\'' || s[i] == '"')
+        char quote = s[0];
+        size_t k = 1;
+        while (k < len - 1)
         {
-            char quote = s[i];
-            size_t k = i + 1;
-            while (k < len && s[k] != quote)
-                k++;
-            if (k < len && s[k] == quote)
-            {
-                i++;
-                while (i < k)
-                    res[j++] = s[i++];
-                i = k + 1;
-            }
-            else
-            {
-                res[j++] = s[i++];
-            }
+            if (s[k] == quote)
+                break;
+            k++;
         }
-        else
+        if (k == len - 1)
         {
-            res[j++] = s[i++];
+            i = 1;
+            len--; 
         }
     }
+
+    while (i < len)
+        res[j++] = s[i++];
+    
     res[j] = '\0';
     return res;
 }
-
 
 char	*expand_string(const char *str, t_shell *shell)
 {
@@ -286,7 +280,75 @@ char	*preprocess_input_test(char *input)
 	// free(tmp);
 	return (new_input);
 }
+// echo "USER"
+// echo 'USER'
+// echo '"USER"'
+// echo "'USER'"
 
+// echo "$USER"
+// echo '$USER'
+// echo '"$USER"'
+// echo "'$USER'"
+
+static int	ft_tablen(char **tab)
+{
+	int	i;
+
+	i = 0;
+	while (tab && tab[i])
+		i++;
+	return (i);
+}
+
+static char	**replace_token_with_tokens(char **argv, int index,
+					char **new_tokens)
+{
+	int		old_count;
+	int		new_count;
+	int		total;
+	char	**new_argv;
+	int		i;
+	int		j;
+	int		pos;
+
+	old_count = ft_tablen(argv);
+	new_count = ft_tablen(new_tokens);
+	total = old_count - 1 + new_count;
+	new_argv = malloc(sizeof(char *) * (total + 1));
+	if (!new_argv)
+		return (NULL);
+	pos = 0;
+	i = 0;
+	while (i < index)
+	{
+		new_argv[pos] = ft_strdup(argv[i]);
+		pos++;
+		i++;
+	}
+	j = 0;
+	while (j < new_count)
+	{
+		new_argv[pos] = ft_strdup(new_tokens[j]);
+		pos++;
+		j++;
+	}
+	i = index + 1;
+	while (i < old_count)
+	{
+		new_argv[pos] = ft_strdup(argv[i]);
+		pos++;
+		i++;
+	}
+	new_argv[pos] = NULL;
+	i = 0;
+	while (i < old_count)
+	{
+		free(argv[i]);
+		i++;
+	}
+	free(argv);
+	return (new_argv);
+}
 
 int	expander(char ***argv_ptr, t_shell *shell)
 {
@@ -304,32 +366,42 @@ int	expander(char ***argv_ptr, t_shell *shell)
 		old_arg = argv[i];
 		if (!ft_strchr(old_arg, '$'))
 		{
+			char *no_closed_quotes = remove_outer_closed_quotes(argv[i]);
+			if (no_closed_quotes)
+			{
+			free(argv[i]);
+			argv[i] = no_closed_quotes;
+			}
+			argv[i] = preprocess_input_test(argv[i]);
 			i++;
 			continue;
 		}
+		printf("old_arg = %s\n",old_arg);
 		expanded = expand_string(old_arg, shell);
+		printf("expanded = %s\n",expanded);
 		if (!expanded || ft_strisspace(expanded))
 		{
 			argv[i] = NULL;
 			//remove_arg(&argv, i);
 			// return 0;
 		}
-		len = ft_strlen(expanded);
-		if (len >= 2 && (
-			(expanded[0] == '\"' && expanded[len - 1] == '\"')
-			|| (expanded[0] == '\'' && expanded[len - 1] == '\'')
-		))
-		{
-			tmp = ft_substr(expanded, 1, len - 2);
-			free(expanded);
-			if (!tmp)
-			{
-				argv[i] = NULL;
-				//remove_arg(&argv, i);
-				// return 0;
-			}
-			expanded = tmp;
-		}
+		// len = ft_strlen(expanded);
+		// if (len >= 2 && (
+		// 	(expanded[0] == '\"' && expanded[len - 1] == '\"')
+		// 	|| (expanded[0] == '\'' && expanded[len - 1] == '\'')
+		// ))
+		// {
+		// 	tmp = ft_substr(expanded, 1, len - 2);
+		// 	free(expanded);
+		// 	if (!tmp)
+		// 	{
+		// 		argv[i] = NULL;
+		// 		//remove_arg(&argv, i);
+		// 		// return 0;
+		// 	}
+		// 	expanded = tmp;
+		// }
+
 		if (ft_strisspace(expanded))
 		{
 			free(expanded);
@@ -341,21 +413,27 @@ int	expander(char ***argv_ptr, t_shell *shell)
 		free(expanded);
 		i++;
 	}
+	int j =i;
 	*argv_ptr = argv;
 	i = 0;
 	int check=0;
 	while (argv[i])
 	{
-		char *no_closed_quotes = remove_closed_quotes(argv[i]);
-		if (no_closed_quotes)
-		{
-			free(argv[i]);
-			argv[i] = no_closed_quotes;
-		}
-		argv[i] = preprocess_input_test(argv[i]);
-		check=1;
+		// char *no_closed_quotes = remove_outer_closed_quotes(argv[i]);
+		// if (no_closed_quotes)
+		// {
+		// 	free(argv[i]);
+		// 	argv[i] = no_closed_quotes;
+		// }
+		// argv[i] = preprocess_input_test(argv[i]);
+		//	argv[i]=remove_outer_closed_quotes(argv[i]);
+	
+		check=1;	
+		//char **ss=ft_split(argv[i],' ');
+		//*argv_ptr = replace_token_with_tokens(argv,j,ss);
 		i++;
 	}
+	argv = *argv_ptr;
 	return check;
 }
 
@@ -366,7 +444,7 @@ void	expander_test(char **argv, t_shell *shell)
 
 	if (!ft_strchr(*argv, '$'))
 	{
-		char *no_closed_quotes = remove_closed_quotes(*argv);
+		char *no_closed_quotes = remove_outer_closed_quotes(*argv);
 		if (no_closed_quotes)
 		{
 			free(*argv);
@@ -400,7 +478,7 @@ void	expander_test(char **argv, t_shell *shell)
 	free(expanded);
 	if (*argv)
 	{
-		char *no_closed_quotes = remove_closed_quotes(*argv);
+		char *no_closed_quotes = remove_outer_closed_quotes(*argv);
 		if (no_closed_quotes)
 		{
 			free(*argv);
