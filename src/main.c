@@ -6,22 +6,18 @@
 /*   By: abdsalah <abdsalah@std.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/29 20:22:52 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/08 20:47:31 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/09 17:02:49 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
-#include <termios.h>
-#include <unistd.h>
 
+int	g_signal_flag;
 
 void init_minishell(t_shell *shell, char **envp)//$SHLVL
 {
-	struct termios term;
-	tcgetattr(STDIN_FILENO, &term);
 	if (!isatty(STDIN_FILENO) || !isatty(STDOUT_FILENO) || !isatty(STDERR_FILENO))
     {
-        // If not a TTY, print an error and exit
         fprintf(stderr, "Error: Minishell must be run in a terminal (TTY)\n");
         exit(1);
     }
@@ -52,6 +48,7 @@ void minishell_loop(t_shell *shell)
 
 	while (1)
 	{
+		g_signal_flag = 0;
 		input = readline("\001\033[32m\002ZOMBI>\001\033[33m\002 ");
 		if (!input)
 		{
@@ -84,6 +81,7 @@ int main(int argc, char **argv, char **envp)
 {
 	(void)argc;
 	(void)argv;
+	g_signal_flag = 0;
 	t_shell shell;
 	init_minishell(&shell, envp);
 	signals_t3res(0);
