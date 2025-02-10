@@ -347,8 +347,10 @@ char	*expand_string(const char *str, t_shell *shell)
 			if (var_value)
 			{
 				int encl = count_enclosed_quotes(var_value);
-				if(encl==1)
+				//printf("var_value =%s\n",var_value);
+				if(encl>1)
 					var_value = remove_outer_closed_quotes(var_value);
+				//printf("var_value 2=%s\n",var_value);
 				if (!in_dq)
 				{
 					char *trim = ft_strtrim_spaces(var_value);
@@ -544,11 +546,11 @@ int	expander(char ***argv_ptr, t_shell *shell)
 	char	*tmp;
 	char	*old_arg;
 	int		i = 0;
-
+	int flag=1;
 	while (argv[i])
 	{
 		old_arg = argv[i];
-		
+		flag=1;
 	if (check(argv[i]) || check_1(argv[i]))
 	{
 		char *c = malloc(3 * sizeof(char));
@@ -593,13 +595,14 @@ int	expander(char ***argv_ptr, t_shell *shell)
 		}
 
 
-
+flag=0;
 		// int had_quote = (ft_strchr(old_arg, '\'') || ft_strchr(old_arg, '"')) ? 1 : 0;
         // int had_quote_another = (old_arg[1]=='\'' || old_arg[1]=='\"' ) ? 1 : 0;
 		
         int encl = count_enclosed_quotes(old_arg);
         // //printf("HAD ? %d\n",had_quote);
 		expanded = expand_string(old_arg, shell);
+		//printf("expanded = %s\n",expanded);
 		if (!expanded || ft_strisspace(expanded))
 		{
 			free(expanded);
@@ -616,11 +619,12 @@ int	expander(char ***argv_ptr, t_shell *shell)
 		expanded = tmp;
 
            //int j=0;
+		   //printf("encl=%d\n",encl);
 		if (!encl && ft_strchr(expanded, ' '))
 		{
 			//printf("ff");
-            char *no_closed_quotes = remove_outer_closed_quotes(expanded);
-			char **split_tokens = ft_split(no_closed_quotes, ' ');
+            //char *no_closed_quotes = remove_outer_closed_quotes(expanded);
+			char **split_tokens = ft_splitter(expanded, ' ');
             // while(split_tokens[j])
             // {
             //     if(split_tokens[j][0]=='\"' || split_tokens[j][0]== '\'')
@@ -668,7 +672,7 @@ int	expander(char ***argv_ptr, t_shell *shell)
 		}
 		else
 		{
-            if(encl!=2)
+            if(encl!=2 && encl!=0 && (!flag && encl!=1))
             { 
                 char *no_closed_quotes = remove_outer_closed_quotes(expanded);
 			    free(argv[i]);
