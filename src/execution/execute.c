@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: abdsalah <abdsalah@std.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 01:23:07 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/10 02:42:13 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/10 16:28:36 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,7 +109,6 @@ void execute_pipeline(t_shell **shell)
     signals_t3res(1);
     while (i < (*shell)->parser->command_count)
     {
-
         argv = build_command_argv((*shell)->parser->commands[i]);
         // expander(&argv, *shell);
         if(!expander(&argv, *shell))

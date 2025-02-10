@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: abdsalah <abdsalah@std.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/29 20:22:52 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/10 03:57:14 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/10 16:43:53 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,11 +48,13 @@ void minishell_loop(t_shell *shell)
 
 	while (1)
 	{
-		ioctl(STDIN_FILENO, TCFLSH, TCIFLUSH);
+		// ioctl(STDIN_FILENO, TCFLSH, TCIFLUSH);
 		g_signal_flag = 0;
+
 		input = readline("\001\033[32m\002ZOMBI>\001\033[33m\002 ");
-		if (g_signal_flag == SIGINT && (!input || !*input))
+		if (g_signal_flag == SIGINT)
         {
+			dup2 (2, 0);
             shell->exit_status = 130;
             if (input)
                 free(input);

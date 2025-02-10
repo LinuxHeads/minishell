@@ -3,25 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   signals.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: abdsalah <abdsalah@std.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 01:23:07 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/10 03:51:21 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/10 16:45:57 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-
 void handle_sigint(int sig)
 {
     g_signal_flag = sig; // Exit status for SIGINT (same as bash)
-    /* Clear current input and reset the prompt */
-    // (void)sig;
-    rl_replace_line("", 0);
-    rl_on_new_line();
     write(STDOUT_FILENO, "\n", 1);  // Move to a new line (prevents weird formatting)
-    rl_redisplay();
+    close (0);
+    
 }
 
 
