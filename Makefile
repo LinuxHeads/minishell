@@ -13,9 +13,11 @@ SRC =  	parsing/parsing.c \
 		parsing/splitter.c \
 		parsing/identify_token.c \
 		parsing/utils.c \
+		parsing/syntax.c \
 		main.c \
 		signals.c \
 		execution/execute.c \
+		execution/exec_in_child.c \
 		execution/build_args.c \
 		execution/find_cmd.c \
 		execution/redirections.c \
