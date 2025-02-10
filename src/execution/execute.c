@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abdsalah <abdsalah@std.42amman.com>        +#+  +:+       +#+        */
+/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 01:23:07 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/10 16:28:36 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/10 18:58:05 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,12 +113,18 @@ void execute_pipeline(t_shell **shell)
         // expander(&argv, *shell);
         if(!expander(&argv, *shell))
         {
+            if (!get_redirections((*shell)->parser->commands[i], &in_fd, &out_fd, *shell))
+            {
+                (*shell)->exit_status = 1;
+                redir_flag = 1;
+            }
             i++;
             continue;
         }
         redir_flag = 0;
         if (!get_redirections((*shell)->parser->commands[i], &in_fd, &out_fd, *shell))
         {
+            
             (*shell)->exit_status = 1;
             redir_flag = 1;
         }

@@ -6,7 +6,7 @@
 /*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 15:40:45 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/10 17:06:18 by ahramada         ###   ########.fr       */
+/*   Updated: 2025/02/10 18:49:55 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,10 @@ int	ft_echo(char **args)
 	i = 1;
 	newline_1 = 1;
 	if(!args[i])
+	{
 		return 0;
+
+	}
 	while (args[i] && ft_strcmp(args[i], "-n") == 0)
 	{
 		newline_1 = 0;
@@ -42,7 +45,7 @@ int	ft_echo(char **args)
 	{
 		if (newline_1)
 			printf("\n");
-			return (0);
+		return (0);
 	}
 	while (args[i])
 	{
