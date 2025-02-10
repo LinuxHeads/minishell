@@ -276,6 +276,13 @@ char	*preprocess_input_test(char *input)
 	tmp = new_input;
 	new_input = ft_str_replace(tmp, " << ", "<<");
 	free(tmp);
+	tmp = new_input;
+	new_input = ft_str_replace(tmp, " |", "|");
+	free(tmp);
+	tmp = new_input;
+	new_input = ft_str_replace(tmp, "| ", "|");
+	free(tmp);
+
 	return (new_input);
 }
 

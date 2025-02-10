@@ -129,6 +129,9 @@ char	*preprocess_input(char *input)
 	tmp = new_input;
 	new_input = ft_str_replace(tmp, "	", " ");
 	free(tmp);
+	tmp = new_input;
+	new_input = ft_str_replace(tmp, "|", " | ");
+	free(tmp);
 	// tmp = new_input;
 	// new_input = ft_str_replace(tmp, "$", " $");
 	// free(tmp);

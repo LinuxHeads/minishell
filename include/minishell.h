@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abdsalah <abdsalah@std.42amman.com>        +#+  +:+       +#+        */
+/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 19:24:00 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/09 14:58:05 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/10 03:43:22 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,8 @@
 # include <sys/types.h>
 # include <errno.h>
 # include <termios.h>
+# include <sys/ioctl.h>
+# include <term.h>
 
 /* Libft and Readline library includes */
 # include "../libft/libft.h"
@@ -203,7 +205,7 @@ int    ft_unset(char **arg, t_env **envp);
 */
 int		ft_setenv(const char *name, const char *value, t_env **env_list);
 
-int	expander(char ***argv_ptr, t_shell *shell);
+int		expander(char ***argv_ptr, t_shell *shell);
 void	expander_test(char **argv, t_shell *shell);
 
 /* 
@@ -251,4 +253,6 @@ int    			ft_lstsize_env(t_env *env_list);
 t_env			*ft_copy_env(t_env *env);
 void			ft_sort_env(t_env **env);
 void			reset_signals(void);
+int				syntax_checker(t_exec *shell);
+void exec_in_child(int i, t_shell **shell, int *pid, int *in_fd, int *out_fd, char **argv, int redir_flag, int *prev_fd);
 #endif

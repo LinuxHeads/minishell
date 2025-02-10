@@ -3,25 +3,27 @@
 /*                                                        :::      ::::::::   */
 /*   signals.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abdsalah <abdsalah@std.42amman.com>        +#+  +:+       +#+        */
+/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 01:23:07 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/08 20:36:17 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/10 03:51:21 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
 
-// Handle SIGINT (Ctrl+C)
-static void handle_sigint(int sig)
+void handle_sigint(int sig)
 {
-    (void)sig;
-    write(1, "\n", 1);
-    rl_on_new_line();
+    g_signal_flag = sig; // Exit status for SIGINT (same as bash)
+    /* Clear current input and reset the prompt */
+    // (void)sig;
     rl_replace_line("", 0);
+    rl_on_new_line();
+    write(STDOUT_FILENO, "\n", 1);  // Move to a new line (prevents weird formatting)
     rl_redisplay();
 }
+
 
 // Reset signals in child processes
 void reset_signals(void)
@@ -44,7 +46,7 @@ void signals_t3res(int mode)
     else
         sa.sa_handler = SIG_IGN;
     sigemptyset(&sa.sa_mask);
-    sa.sa_flags = 0;
+    sa.sa_flags = SA_RESTART;
     sigaction(SIGINT, &sa, NULL);
     sa.sa_handler = SIG_IGN;
     sigaction(SIGQUIT, &sa, NULL);
