@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/29 20:22:52 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/10 00:54:43 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/10 03:57:14 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,8 +48,16 @@ void minishell_loop(t_shell *shell)
 
 	while (1)
 	{
+		ioctl(STDIN_FILENO, TCFLSH, TCIFLUSH);
 		g_signal_flag = 0;
 		input = readline("\001\033[32m\002ZOMBI>\001\033[33m\002 ");
+		if (g_signal_flag == SIGINT && (!input || !*input))
+        {
+            shell->exit_status = 130;
+            if (input)
+                free(input);
+            continue;
+        }
 		if (!input)
 		{
 			printf("exit\n");
@@ -68,6 +76,15 @@ void minishell_loop(t_shell *shell)
 			continue;
 		}
 		// print_shell(shell->parser); //if we need to print the commands 
+		if (!syntax_checker(shell->parser))
+		{
+			shell->exit_status = 258;
+			free_shell(shell->parser);
+			free_str_array(commands);
+			free(processed_input);
+			free(input);
+			continue;
+		}
 		execute_pipeline(&shell);
         signals_t3res(0);
 		free_shell(shell->parser);
