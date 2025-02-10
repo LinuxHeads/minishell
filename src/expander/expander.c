@@ -5,7 +5,7 @@
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
-
+int count_enclosed_quotes(const char *str);
 
 int ft_strisspace(const char *str)
 {
@@ -131,49 +131,190 @@ char	*expand_variable(const char *str, int *index, t_shell *shell)
 	if (!env_val)
 		env_val = "";
 	expanded = ft_strdup(env_val);
+	//printf("expanded = %s\n",expanded);
 	return (expanded);
 }
 
 
-char *remove_outer_closed_quotes(const char *s)
-{
-    size_t len;
-    size_t i;
-    size_t j;
-    char   *res;
+// char *remove_outer_closed_quotes(const char *s)
+// {
+//     size_t len;
+//     size_t i;
+//     size_t j;
+//     char   *res;
 
+//     if (!s)
+//         return NULL;
+//     len = strlen(s);
+//     res = malloc(len + 1);
+//     if (!res)
+//         return NULL;
+
+//     i = 0;
+//     j = 0;
+//     // if ((s[0] == '\'' || s[0] == '"') && s[len - 1] == s[0])
+//     // {
+//     //     char quote = s[0];
+//     //     size_t k = 1;
+//     //     while (k < len - 1)
+//     //     {
+//     //         if (s[k] == quote)
+//     //             break;
+//     //         k++;
+//     //     }
+//     //     if (k == len - 1)
+//     //     {
+//     //         i = 1;
+//     //         len--; 
+//     //     }
+//     // }
+
+// 	if ((s[0] == '\'' || s[0] == '"')&& s[len - 1] == s[0])
+//     {
+//         char quote = s[0];
+//         size_t k = 1;
+//         while (k < len - 1)
+//         {
+//             if (s[k] == quote)
+//                 break;
+//             k++;
+//         }
+//         if (k == len - 1)
+//         {
+//             i = 1;
+//             len--; 
+//         }
+//     }
+
+//     while (i < len)
+//         res[j++] = s[i++];
+    
+//     res[j] = '\0';
+//     return res;
+// }
+
+// char *remove_outer_closed_quotes(const char *s)
+// {
+//     size_t len;
+//     size_t i;
+//     size_t j;
+//     char   *res;
+
+//     if (!s)
+//         return NULL;
+//     len = strlen(s);
+//     if (len == 0)
+//         return strdup("");
+
+
+//     if ((s[0] == '\'' || s[0] == '"') && s[len - 1] == s[0])
+//     {
+//         char quote = s[0];
+//         size_t k = 1;
+//         while (k < len - 1)
+//         {
+//             if (s[k] == quote)
+//                 break;
+//             k++;
+//         }
+//         if (k == len - 1)
+//         {
+//             s++;
+//             len -= 2;
+//         }
+//     }
+
+
+//     res = malloc(len + 1);
+//     if (!res)
+//         return NULL;
+
+//     i = 0;
+//     j = 0;
+// 	int falg=1;
+// 	int ff= i;
+//     while (i < len)
+//     {
+//         if (s[i] != '\'' && s[i] != '"' || falg)
+// 		{	falg=0;
+// 			if(s[i]==s[ff])
+// 				falg=0;
+//             res[j++] = s[i];
+// 		}
+//         i++;
+// 		ff=i;
+//     }
+
+//     res[j] = '\0';
+//     return res;
+// }
+
+// char *remove_outer_closed_quotes(const char *s)
+// {
+//     if (!s)
+//         return NULL;
+//     size_t len = strlen(s);
+//     if (len < 2)
+//         return strdup(s);  
+
+//     if ((s[0] == '\'' || s[0] == '"') && s[len - 1] == s[0])
+//     {
+   
+//         char *result = malloc(len - 1);
+//         if (!result)
+//             return NULL;
+//         memcpy(result, s + 1, len - 2);
+//         result[len - 2] = '\0';
+//         return result;
+//     }
+//     return strdup(s);
+// }
+
+char *remove_outer_closed_quotes(const char *s) {
     if (!s)
         return NULL;
-    len = strlen(s);
-    res = malloc(len + 1);
-    if (!res)
+
+    size_t len = strlen(s);
+    char *result = malloc(len + 1);
+    if (!result)
         return NULL;
 
-    i = 0;
-    j = 0;
-    if ((s[0] == '\'' || s[0] == '"') && s[len - 1] == s[0])
-    {
-        char quote = s[0];
-        size_t k = 1;
-        while (k < len - 1)
-        {
-            if (s[k] == quote)
-                break;
-            k++;
-        }
-        if (k == len - 1)
-        {
-            i = 1;
-            len--; 
+    size_t i = 0; 
+    size_t j = 0; 
+
+    while (i < len) {
+        if (s[i] == '\'' || s[i] == '"') {
+            char quote = s[i];
+            size_t k = i + 1;
+            int foundClosing = 0;
+            while (k < len) {
+                if (s[k] == quote) {
+                    foundClosing = 1;
+                    break;
+                }
+                k++;
+            }
+            if (foundClosing) {
+                i++;
+                while (i < len && s[i] != quote) {
+                    result[j++] = s[i++];
+                }
+                if (i < len && s[i] == quote) {
+                    i++; 
+                }
+            } else {
+                result[j++] = s[i++];
+            }
+        } else {
+            result[j++] = s[i++];
         }
     }
 
-    while (i < len)
-        res[j++] = s[i++];
-    
-    res[j] = '\0';
-    return res;
+    result[j] = '\0';
+    return result;
 }
+
+
 
 
 char	*expand_string(const char *str, t_shell *shell)
@@ -199,10 +340,15 @@ char	*expand_string(const char *str, t_shell *shell)
 			in_dq = !in_dq;
 		else if (str[i] == '$' && !in_sq)
 		{
+			//printf("str =%s\n",str);
 			i++;
 			var_value = expand_variable(str, &i, shell);
+			//printf("var_value =%s\n",var_value);
 			if (var_value)
 			{
+				int encl = count_enclosed_quotes(var_value);
+				if(encl==1)
+					var_value = remove_outer_closed_quotes(var_value);
 				if (!in_dq)
 				{
 					char *trim = ft_strtrim_spaces(var_value);
@@ -239,10 +385,15 @@ char	*expand_string(const char *str, t_shell *shell)
 		}
 		else
 		{
+			
 			char c[2];
 			c[0] = str[i];
 			c[1] = '\0';
+			int encl = count_enclosed_quotes(result);
+			if(encl==2)
+				result = remove_outer_closed_quotes(result);
 			tmp = ft_strjoin(result, c);
+			//printf("temp=%s\n",tmp);
 			if (!tmp)
 			{
 				free(result);
@@ -287,10 +438,10 @@ char	*preprocess_input_test(char *input)
 }
 
 
-static int	ft_tablen(char **tab)
+static int	ft_tablen(char **tab_1)
 {
 	int	i = 0;
-	while (tab && tab[i])
+	while (tab_1 && tab_1[i])
 		i++;
 	return (i);
 }
@@ -358,6 +509,33 @@ int count_enclosed_quotes(const char *str)
     return count;
 }
 
+int check(char *s)
+{
+	int i=0;
+	
+	while (s[i]=='\'' && s[i])
+	{
+		
+		i++;
+		if(s[i]!='\'' && s[i])
+			return 0;
+
+	}
+	return(i);
+}
+int check_1(char *s)
+{
+	int i=0;
+	while (s[i]=='\"'&& s[i])
+	{
+		
+		i++;
+		if(s[i]!='\"'&& s[i])
+			return 0;
+
+	}
+	return(i);
+}
 
 int	expander(char ***argv_ptr, t_shell *shell)
 {
@@ -370,9 +548,35 @@ int	expander(char ***argv_ptr, t_shell *shell)
 	while (argv[i])
 	{
 		old_arg = argv[i];
+		
+	if (check(argv[i]) || check_1(argv[i]))
+	{
+		char *c = malloc(3 * sizeof(char));
+		c[0] = argv[i][0];
+		c[1] = argv[i][1];
+		c[2] = '\0';
+		argv[i] = c;
+		i++;
+		continue;
+	}
+
 		if (!ft_strchr(old_arg, '$'))
 		{
-			char *no_closed_quotes = remove_outer_closed_quotes(old_arg);
+			//int encl = count_enclosed_quotes(old_arg);
+			char *no_closed_quotes=NULL;
+			//char *no_closed_quotes = remove_outer_closed_quotes(old_arg);
+			//while (encl!=0)
+			//{
+			int encl = count_enclosed_quotes(old_arg);
+			//if(encl==2)
+				no_closed_quotes = remove_outer_closed_quotes(old_arg);
+				//encl = count_enclosed_quotes(no_closed_quotes);
+			old_arg= no_closed_quotes;
+			//	no_closed_quotes = remove_outer_closed_quotes(old_arg);
+				//encl = count_enclosed_quotes(no_closed_quotes);
+				//old_arg= no_closed_quotes;
+			//}
+			
 			if (no_closed_quotes)
 			{
 				free(argv[i]);
@@ -388,10 +592,13 @@ int	expander(char ***argv_ptr, t_shell *shell)
 			continue;
 		}
 
+
+
 		// int had_quote = (ft_strchr(old_arg, '\'') || ft_strchr(old_arg, '"')) ? 1 : 0;
         // int had_quote_another = (old_arg[1]=='\'' || old_arg[1]=='\"' ) ? 1 : 0;
+		
         int encl = count_enclosed_quotes(old_arg);
-        // printf("HAD ? %d\n",had_quote);
+        // //printf("HAD ? %d\n",had_quote);
 		expanded = expand_string(old_arg, shell);
 		if (!expanded || ft_strisspace(expanded))
 		{
@@ -411,6 +618,7 @@ int	expander(char ***argv_ptr, t_shell *shell)
            //int j=0;
 		if (!encl && ft_strchr(expanded, ' '))
 		{
+			//printf("ff");
             char *no_closed_quotes = remove_outer_closed_quotes(expanded);
 			char **split_tokens = ft_split(no_closed_quotes, ' ');
             // while(split_tokens[j])
@@ -419,9 +627,9 @@ int	expander(char ***argv_ptr, t_shell *shell)
             //     {
             //         remove_arg(&split_tokens, j);
             //     }
-            //     // printf(" split_tokens[j] old %s\n", split_tokens[j] );
+            //     // //printf(" split_tokens[j] old %s\n", split_tokens[j] );
             //     // split_tokens[j] = remove_outer_closed_quotes(split_tokens[j]);
-            //     // printf(" split_tokens[j] new %s\n", split_tokens[j] );
+            //     // //printf(" split_tokens[j] new %s\n", split_tokens[j] );
             //     j++;
             // }
 			free(expanded);
@@ -467,12 +675,12 @@ int	expander(char ***argv_ptr, t_shell *shell)
 			    argv[i] = no_closed_quotes;}
                 else{
                     argv[i]=expanded;
-                }
+            }
 		}
 		i++;
 	}
 	*argv_ptr = argv;
-	return (1);
+	return (i);
 }
 
 

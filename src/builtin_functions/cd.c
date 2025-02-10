@@ -6,7 +6,7 @@
 /*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/04 04:33:45 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/07 16:46:58 by ahramada         ###   ########.fr       */
+/*   Updated: 2025/02/10 14:42:47 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ static char	*get_target_path(char **args, t_env **envp)
 {
 	char	*path;
 
-	if (!args || !args[0] || ft_strcmp(args[0], "~") == 0) // Handle "cd" or "cd ~"
+	if (!args || !args[0] || ft_strcmp(args[0], "~") == 0 || ft_strcmp(args[0], "--") == 0) // Handle "cd" or "cd ~"
 	{
 		path = ft_getenv("HOME", *envp);
 		if (!path)
