@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abdsalah <abdsalah@std.42amman.com>        +#+  +:+       +#+        */
+/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/29 20:22:52 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/10 16:43:53 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/11 04:48:00 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ void minishell_loop(t_shell *shell)
 		// print_shell(shell->parser); //if we need to print the commands 
 		if (!syntax_checker(shell->parser))
 		{
-			shell->exit_status = 258;
+			shell->exit_status = 2;
 			free_shell(shell->parser);
 			free_str_array(commands);
 			free(processed_input);
@@ -88,7 +88,7 @@ void minishell_loop(t_shell *shell)
 			continue;
 		}
 		execute_pipeline(&shell);
-        signals_t3res(0);
+        signals_setup(0);
 		free_shell(shell->parser);
 		free_str_array(commands);
 		free(processed_input);
@@ -101,10 +101,11 @@ int main(int argc, char **argv, char **envp)
 {
 	(void)argc;
 	(void)argv;
+	
 	g_signal_flag = 0;
 	t_shell shell;
 	init_minishell(&shell, envp);
-	signals_t3res(0);
+	signals_setup(0);
 	minishell_loop(&shell);
 	free_envp_list(shell.env_list);
 	free_envp_array(shell.envp);
