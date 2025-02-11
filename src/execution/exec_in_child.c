@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/10 02:41:05 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/11 05:06:20 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/11 06:03:17 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,17 +89,55 @@ void exec_in_child(int i, t_shell **shell, int *pid, int *in_fd, int *out_fd, ch
         cmd_path = find_command_path(argv[0], (*shell)->envp);
         if (!cmd_path)
         {
-            fprintf(stderr, "%s: command not found\n", argv[0]);
-            free_str_array(argv);
-            exit(127);
+            /* If argv[0] contains a slash, check it directly */
+            if (ft_strchr(argv[0], '/'))
+            {
+                if (access(argv[0], F_OK) == 0)
+                {
+                    fprintf(stderr, "%s: permission denied\n", argv[0]);
+                    free_str_array(argv);
+                    exit(126);
+                }
+                else
+                {
+                    fprintf(stderr, "%s: command not found\n", argv[0]);
+                    free_str_array(argv);
+                    exit(127);
+                }
+            }
+            else
+            {
+                if (ft_strcmp(argv[0], "~") == 0)
+                {
+                    fprintf(stderr, "%s: is a directory\n",ft_getenv("HOME", (*shell)->env_list));
+                    free_str_array(argv);
+                    free(cmd_path);
+                    exit(126);
+                }
+                fprintf(stderr, "%s: command not found\n", argv[0]);
+                free_str_array(argv);
+                exit(127);
+            }
         }
         struct stat path_stat;
-        if (stat(cmd_path, &path_stat) == 0 && S_ISDIR(path_stat.st_mode))
+        if (stat(cmd_path, &path_stat) == 0)
         {
-            fprintf(stderr, "%s: is a directory\n", cmd_path);
-            free_str_array(argv);
-            free(cmd_path);
-            exit(126);
+            if (S_ISDIR(path_stat.st_mode))
+            {
+                
+                if (!ft_strchr(argv[0], '/'))
+                {
+                    fprintf(stderr, "%s: command not found\n", argv[0]);
+                    free_str_array(argv);
+                    free(cmd_path);
+                    exit(127);
+                }
+                fprintf(stderr, "%s: is a directory\n", cmd_path);
+                free_str_array(argv);
+                free(cmd_path);
+                exit(126);
+            }
+            
         }
         execve(cmd_path, argv, (*shell)->envp);
         perror("execve");
@@ -113,10 +151,10 @@ void exec_in_child(int i, t_shell **shell, int *pid, int *in_fd, int *out_fd, ch
             close(*out_fd);
         if (*prev_fd != -1)
             close(*prev_fd);
-        if (errno == EACCES || errno == EISDIR)
-            exit(126);
         if (errno == ENOENT)
             exit(127);
+        if (errno == EACCES || errno == EISDIR)
+            exit(126);
         exit(EXIT_FAILURE);
     }
     if (*in_fd != STDIN_FILENO && *in_fd != *prev_fd)

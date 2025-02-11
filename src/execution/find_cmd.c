@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 06:21:46 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/11 05:04:23 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/11 05:35:40 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,6 @@ char			*find_command_path(char *cmd, char **envp)
         free(path_var);
         return (NULL);
     }
-
     if (access(cmd, X_OK) == 0)
     {
         path_var = ft_strdup(cmd);

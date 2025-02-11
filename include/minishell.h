@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 19:24:00 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/11 04:48:00 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/11 05:31:26 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,8 +109,6 @@ typedef struct s_shell
     int     exit_status;
 	t_exec	*parser;   // Exit status of the last command executed (stores $? value)
 } t_shell;
-
-
 
 /* ************************************************************************** */
 /*                            SIGNAL HANDLING                                   */
