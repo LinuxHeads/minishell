@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 07:13:16 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/06 07:25:43 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/11 22:04:08 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,18 +54,29 @@ void	free_shell(t_exec *shell)
 
 const char	*get_token_type_name(t_token_type type)
 {
-	const char	*names[] = {"COMMAND", "ARGUMENT", "PIPE", "REDIRECT_IN",
-			"REDIRECT_OUT", "REDIRECT_APPEND", "HEREDOC", "HEREDOC_DELI",
-			"ENV_VAR", "DOLLAR_SIGN", "SINGLE_QUOTE", "DOUBLE_QUOTE",
-			"INPUT_FILE", "OUTPUT_FILE"};
+	const char	*names[14];
 
+	names[0] = "COMMAND";
+	names[1] = "ARGUMENT";
+	names[2] = "PIPE";
+	names[3] = "REDIRECT_IN";
+	names[4] = "REDIRECT_OUT";
+	names[5] = "REDIRECT_APPEND";
+	names[6] = "HEREDOC";
+	names[7] = "HEREDOC_DELI";
+	names[8] = "ENV_VAR";
+	names[9] = "DOLLAR_SIGN";
+	names[10] = "SINGLE_QUOTE";
+	names[11] = "DOUBLE_QUOTE";
+	names[12] = "INPUT_FILE";
+	names[13] = "OUTPUT_FILE";
 	return (names[type]);
 }
 
 void	print_shell(t_exec *shell)
 {
-	int i;
-	int j;
+	int	i;
+	int	j;
 
 	printf("Parsed Shell Commands:\n");
 	i = 0;
