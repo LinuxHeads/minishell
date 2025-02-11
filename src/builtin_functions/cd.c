@@ -6,7 +6,7 @@
 /*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/04 04:33:45 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/10 14:42:47 by ahramada         ###   ########.fr       */
+/*   Updated: 2025/02/11 15:15:46 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ static int	validate_cd_args(char **args)
 static char	*get_target_path(char **args, t_env **envp)
 {
 	char	*path;
-
+	
 	if (!args || !args[0] || ft_strcmp(args[0], "~") == 0 || ft_strcmp(args[0], "--") == 0) // Handle "cd" or "cd ~"
 	{
 		path = ft_getenv("HOME", *envp);
@@ -39,6 +39,7 @@ static char	*get_target_path(char **args, t_env **envp)
 	else if (ft_strcmp(args[0], "-") == 0)
 	{
 		path = ft_getenv("OLDPWD", *envp);
+		
 		if (!path)
 		{
 			write(2, "cd: OLDPWD not set\n", 19);
@@ -98,9 +99,9 @@ int	ft_cd(char **args, t_env **envp)
 {
 	char	*path;
 	char	*oldpwd;
-
 	if (!validate_cd_args(args))
 		return (1);
+	args[0]=ft_str_replace(args[0],"~",ft_getenv("HOME", *envp));
 	path = get_target_path(args, envp);
 	if (!path)
 		return (1);
