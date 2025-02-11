@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/29 20:22:52 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/11 04:48:00 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/11 07:37:33 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,10 @@ void minishell_loop(t_shell *shell)
 
 	while (1)
 	{
-		// ioctl(STDIN_FILENO, TCFLSH, TCIFLUSH);
+		if (g_signal_flag == SIGINT)
+		{
+			shell->exit_status = 130;
+		}
 		g_signal_flag = 0;
 
 		input = readline("\001\033[32m\002ZOMBI>\001\033[33m\002 ");

@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/08 01:44:02 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/11 04:48:00 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/11 07:39:42 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,9 @@ void	ft_heredoc(int pipe_fds[2], t_command *cmd, int i)
 	}
 	signals_setup(0);
 	if (g_signal_flag == SIGINT)
+	{
 		write(1, "\n", 1);
+	}
 	dup2(2, 0);
 	
 }
