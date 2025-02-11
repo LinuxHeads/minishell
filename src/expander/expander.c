@@ -119,9 +119,9 @@ char	*expand_variable(const char *str, int *index, t_shell *shell)
 		return (ft_itoa(shell->exit_status));
 	}
 	start = *index;
+
 	if(ft_isdigit(str[start]))
 	{
-			
 			var_name = ft_substr(str, start, *index - start);
 			env_val = ft_getenv(var_name, shell->env_list);
 			free(var_name);
@@ -133,7 +133,7 @@ char	*expand_variable(const char *str, int *index, t_shell *shell)
 	}
 	else
 	{		
-	while (str[*index]  || str[*index] == '_')
+	while (str[*index] && (ft_isalnum(str[*index]) || str[*index] == '_'))
 	{
 		(*index)++;
 	}
@@ -141,7 +141,7 @@ char	*expand_variable(const char *str, int *index, t_shell *shell)
 
 	if (start == *index)
 		return (ft_strdup("$"));
-	printf("varname====%s\n",str);
+	//printf("varname====%s\n",str);
 	var_name = ft_substr(str, start, *index - start);
 	if (!var_name)
 		return (NULL);
