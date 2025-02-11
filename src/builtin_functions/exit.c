@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 15:30:45 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/06 20:15:57 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/11 07:05:43 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,16 @@ int	ft_exit(char **args, t_shell *shell)
 {
 	if (args[0] && args[1])
 	{
-		ft_putstr_fd("exit: too many arguments\n", 2);
-		return (1);
+		if (ft_isnumber(args[0]))
+		{
+			ft_putstr_fd("exit: too many arguments\n", 2);
+			return (1);
+		}
+		else
+		{
+			ft_putstr_fd("exit: numeric argument required\n", 2);
+			exit (2);
+		}
 	}
 	if (args[0])
 	{
@@ -33,6 +41,10 @@ int	ft_exit(char **args, t_shell *shell)
 		else
 		{
 			ft_putstr_fd("exit: numeric argument required\n", 2);
+			free_envp_list(shell->env_list);
+			free_str_array(shell->envp);
+			free(shell->parser);
+			exit(2);
 			return (2);
 		}
 	}
