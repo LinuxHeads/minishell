@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/10 02:41:05 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/11 06:03:17 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/11 19:41:48 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,9 @@ int create_pipe(int *pipe_fd, int i, t_shell **shell)
             perror("pipe");
             return (0);
         }
+        return (1);
     }
-    return (1);
+    return (0);
 }
 
 void    exit_error(int *in_fd, int *out_fd, int pipe_created, int *pipe_fd)
