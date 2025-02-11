@@ -3,50 +3,37 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
+/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 15:40:45 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/10 18:49:55 by ahramada         ###   ########.fr       */
+/*   Updated: 2025/02/11 04:46:27 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-
-int check_1(char *s);
-int check(char *s);
-
-int	ft_echo(char **args)
+static int	process_flags(char **args, int *start_index)
 {
 	int	i;
-	int	newline_1;
+	int	newline;
 
+	newline = 1;
 	i = 1;
-	newline_1 = 1;
-	if(!args[i])
-	{
-		return 0;
-
-	}
+	newline = 1;
 	while (args[i] && ft_strcmp(args[i], "-n") == 0)
 	{
-		newline_1 = 0;
+		newline = 0;
 		i++;
 	}
-	if(!args[i])
-	{
-	if (newline_1)
-	{
-		printf("\n");
-	}
-		return 0;
-	}
-	if (check(args[i]) || check_1(args[i]))
-	{
-		if (newline_1)
-			printf("\n");
-		return (0);
-	}
+	*start_index = i;
+	return (newline);
+}
+
+static void	print_arguments(char **args, int start_index)
+{
+	int	i;
+
+	i = start_index;
 	while (args[i])
 	{
 		printf("%s", args[i]);
@@ -54,9 +41,30 @@ int	ft_echo(char **args)
 			printf(" ");
 		i++;
 	}
-	if (newline_1)
+}
+
+int	ft_echo(char **args)
+{
+	int	start_index;
+	int	newline;
+
+	if (!args[1])
+		return (0);
+	newline = process_flags(args, &start_index);
+	if (!args[start_index])
 	{
-		printf("\n");
+		if (newline)
+			printf("\n");
+		return (0);
 	}
+	if (check_single_qoutes(args[start_index]) || check_double_qoutes(args[start_index]))
+	{
+		if (newline)
+			printf("\n");
+		return (0);
+	}
+	print_arguments(args, start_index);
+	if (newline)
+		printf("\n");
 	return (0);
 }
