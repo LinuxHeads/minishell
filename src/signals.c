@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signals.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abdsalah <abdsalah@std.42amman.com>        +#+  +:+       +#+        */
+/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 01:23:07 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/10 16:45:57 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/11 04:48:22 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void reset_signals(void)
 }
 
 // Setup signal handling for interactive mode
-void signals_t3res(int mode)
+void signals_setup(int mode)
 {
     struct sigaction sa = {0};
     // Handle SIGINT (Ctrl+C)

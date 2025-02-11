@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abdsalah <abdsalah@std.42amman.com>        +#+  +:+       +#+        */
+/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 19:24:00 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/10 16:18:29 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/11 04:48:00 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,7 +120,7 @@ typedef struct s_shell
 ** signals_t3res: Sets up signal handling for interactive shell. Handles SIGINT 
 ** (Ctrl+C) by calling the function `handle_sigint` and ignoring SIGQUIT (Ctrl+\).
 */
-void        signals_t3res(int mode);
+void        signals_setup(int mode);
 
 /* ************************************************************************** */
 /*                            ENVIRONMENT VARIABLES                           */
@@ -253,5 +253,9 @@ t_env			*ft_copy_env(t_env *env);
 void			ft_sort_env(t_env **env);
 void			reset_signals(void);
 int				syntax_checker(t_exec *shell);
-void exec_in_child(int i, t_shell **shell, int *pid, int *in_fd, int *out_fd, char **argv, int redir_flag, int *prev_fd);
+void			exec_in_child(int i, t_shell **shell, int *pid, int *in_fd, int *out_fd, char **argv, int redir_flag, int *prev_fd);
+void			exec_in_parent(int in_fd, int out_fd, t_shell **shell, char **argv, int redir_flag);
+int				check_double_qoutes(char *s);
+int				check_single_qoutes(char *s);
+
 #endif
