@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
+/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/04 04:33:45 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/11 15:15:46 by ahramada         ###   ########.fr       */
+/*   Updated: 2025/02/11 19:44:19 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,9 @@ int	ft_cd(char **args, t_env **envp)
 	char	*oldpwd;
 	if (!validate_cd_args(args))
 		return (1);
-	args[0]=ft_str_replace(args[0],"~",ft_getenv("HOME", *envp));
+	args[0] = ft_str_replace(args[0],"~",ft_getenv("HOME", *envp));
+	if (!args[0])
+		return (1);
 	path = get_target_path(args, envp);
 	if (!path)
 		return (1);

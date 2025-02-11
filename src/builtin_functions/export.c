@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 15:42:39 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/11 07:58:29 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/11 22:55:22 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ static int	syntax_error(const char *arg)
 	{
 		if (!ft_isalnum(arg[i]) && arg[i] != '_')
 		{
-			if (arg[i] == '+' && equal_sign)
+			if (arg[i] == '+' && arg[i + 1] == '=')
 				continue ;
 			fprintf(stderr, "minishell: export: `%s': not a valid identifier\n", arg);
 			return (0);
@@ -103,6 +103,30 @@ static int split_var(const char *arg, char **key, char **value)
     return (1);
 }
 
+int	appeand_mode(char *key, char *value, t_env **env_list)
+{
+	char	*old_value;
+	char	*new_value;
+
+	if (key[ft_strlen(key) - 1] == '+') // Handling VAR+=value
+	{
+		key[ft_strlen(key) - 1] = '\0';
+		old_value = ft_getenv(key, *env_list);
+		if (old_value)
+			new_value = ft_strjoin(old_value, value);
+		else
+			new_value = ft_strdup(value);
+		if (!new_value || !ft_setenv(key, new_value, env_list))
+		{
+			free(key);
+			free(value);
+			free(new_value);
+			return (0);
+		}
+		free(new_value);
+	}
+	return (1);
+}
 
 /**
  * ft_export - Implements the export builtin.
@@ -115,44 +139,33 @@ int	ft_export(char **args, t_env **env_list)
 {
 	char	*key;
 	char	*value;
-	char	*old_value;
-	char	*new_value;
+	// char	*old_value;
+	// char	*new_value;
 	int		i;
-
+	int     syntax;
+	
 	i = -1;
 	if (!args[0])
 		return (!ft_printenv_sorted(*env_list));
+	
 	while (args[++i])
 	{
-		if (!syntax_error(args[i]) || syntax_error(args[i]) == 2)
+		syntax = syntax_error(args[i]);
+		if (!syntax || syntax == 2)
 		{
-			if (syntax_error(args[i]) == 2)
+			if (syntax == 2)
 				return (2);
 			return (1);
 		}
-
 		if (!split_var(args[i], &key, &value))
 			return (1);
-
 		if (value)
 		{
-			if (key[ft_strlen(key) - 1] == '+') // Handling VAR+=value
+			if (!appeand_mode(key, value, env_list))
 			{
-				key[ft_strlen(key) - 1] = '\0';
-				old_value = ft_getenv(key, *env_list);
-				if (old_value)
-					new_value = ft_strjoin(old_value, value);
-				else
-					new_value = ft_strdup(value);
-				
-				if (!new_value || !ft_setenv(key, new_value, env_list))
-				{
-					free(key);
-					free(value);
-					free(new_value);
-					return (1);
-				}
-				free(new_value);
+				free(key);
+				free(value);
+				return (1);
 			}
 			else if (!ft_setenv(key, value, env_list))
 			{
