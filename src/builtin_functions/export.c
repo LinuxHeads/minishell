@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 15:42:39 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/10 02:42:37 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/11 07:50:51 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,8 +36,13 @@ static int	syntax_error(const char *arg)
 	size_t		len;
 	size_t		i;
 
-	if (ft_isdigit(arg[0]) || arg[0] == '=')
+	if (ft_isdigit(arg[0]) || arg[0] == '=' || arg[0] == '\0' || arg[0] == '+' || arg[0] == '-')
 	{
+		if (arg[0] == '-')
+		{
+			fprintf(stderr, "minishell: export: `%s': not a valid identifier\n", arg);
+			return (2);
+		}
 		fprintf(stderr, "minishell: export: `%s': not a valid identifier\n", arg);
 		return (0);
 	}
@@ -51,6 +56,8 @@ static int	syntax_error(const char *arg)
 	{
 		if (!ft_isalnum(arg[i]) && arg[i] != '_')
 		{
+			if (arg[i] == '+' && equal_sign)
+				continue ;
 			fprintf(stderr, "minishell: export: `%s': not a valid identifier\n", arg);
 			return (0);
 		}
@@ -103,40 +110,58 @@ static int split_var(const char *arg, char **key, char **value)
  *
  * Returns 0 on success, 1 on failure.
  */
-int	ft_export(char **args, t_env **env_list) // TO-DO : when no args are passed,
+int	ft_export(char **args, t_env **env_list)
 {
-	char *key;
-	char *value;
-	int i;
+	char	*key;
+	char	*value;
+	char	*old_value;
+	char	*new_value;
+	int		i;
 
 	i = -1;
 	if (!args[0])
-	{
-		if (!ft_printenv_sorted(*env_list)) // should be sorted
-			return (1);
-		return (0);
-	}
+		return (!ft_printenv_sorted(*env_list));
 	while (args[++i])
 	{
-		if (syntax_error(args[i]))
+		if (!syntax_error(args[i]) || syntax_error(args[i]) == 2)
 		{
-			if (!split_var(args[i], &key, &value))
-				return (1);
-			if (value)
+			if (syntax_error(args[i]) == 2)
+				return (2);
+			return (1);
+		}
+
+		if (!split_var(args[i], &key, &value))
+			return (1);
+
+		if (value)
+		{
+			if (key[ft_strlen(key) - 1] == '+') // Handling VAR+=value
 			{
-				if (!ft_setenv(key, value, env_list))
+				key[ft_strlen(key) - 1] = '\0';
+				old_value = ft_getenv(key, *env_list);
+				if (old_value)
+					new_value = ft_strjoin(old_value, value);
+				else
+					new_value = ft_strdup(value);
+				
+				if (!new_value || !ft_setenv(key, new_value, env_list))
 				{
 					free(key);
 					free(value);
+					free(new_value);
 					return (1);
 				}
+				free(new_value);
 			}
-			free(key);
-			if (value)
+			else if (!ft_setenv(key, value, env_list))
+			{
+				free(key);
 				free(value);
+				return (1);
+			}
 		}
-		else
-			return (1);
+		free(key);
+		free(value);
 	}
 	return (0);
 }
