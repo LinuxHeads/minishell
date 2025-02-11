@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/04 04:33:45 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/11 19:44:19 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/12 00:59:24 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,9 @@ static int	validate_cd_args(char **args)
 static char	*get_target_path(char **args, t_env **envp)
 {
 	char	*path;
-	
-	if (!args || !args[0] || ft_strcmp(args[0], "~") == 0 || ft_strcmp(args[0], "--") == 0) // Handle "cd" or "cd ~"
+
+	if (!args || !args[0] || ft_strcmp(args[0], "~") == 0 || ft_strcmp(args[0],
+			"--") == 0)
 	{
 		path = ft_getenv("HOME", *envp);
 		if (!path)
@@ -34,22 +35,20 @@ static char	*get_target_path(char **args, t_env **envp)
 			write(2, "cd: HOME not set\n", 17);
 			return (NULL);
 		}
-		return (ft_strdup(path));
+		return (path);
 	}
 	else if (ft_strcmp(args[0], "-") == 0)
 	{
 		path = ft_getenv("OLDPWD", *envp);
-		
 		if (!path)
 		{
 			write(2, "cd: OLDPWD not set\n", 19);
 			return (NULL);
 		}
-		return (ft_strdup(path));
+		return (path);
 	}
-	return (ft_strdup(args[0]));
+	return (args[0]);
 }
-
 
 static char	*save_current_directory(void)
 {
@@ -99,9 +98,10 @@ int	ft_cd(char **args, t_env **envp)
 {
 	char	*path;
 	char	*oldpwd;
+
 	if (!validate_cd_args(args))
 		return (1);
-	args[0] = ft_str_replace(args[0],"~",ft_getenv("HOME", *envp));
+	args[0] = ft_str_replace(args[0], "~", ft_getenv("HOME", *envp));
 	if (!args[0])
 		return (1);
 	path = get_target_path(args, envp);
