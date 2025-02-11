@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 15:42:39 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/11 22:55:22 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/11 23:06:19 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,8 +118,6 @@ int	appeand_mode(char *key, char *value, t_env **env_list)
 			new_value = ft_strdup(value);
 		if (!new_value || !ft_setenv(key, new_value, env_list))
 		{
-			free(key);
-			free(value);
 			free(new_value);
 			return (0);
 		}
