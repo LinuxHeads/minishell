@@ -3,15 +3,25 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 15:40:45 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/11 04:46:27 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/11 12:50:58 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
+
+int check_for_options(char *args)
+{
+	char *str_cp=ft_strdup(args);
+	if(ft_strchr(args,'-') && ft_strchr(str_cp,'n'))
+	{
+		return(1);
+	}
+	return 0;
+}
 static int	process_flags(char **args, int *start_index)
 {
 	int	i;
@@ -20,7 +30,7 @@ static int	process_flags(char **args, int *start_index)
 	newline = 1;
 	i = 1;
 	newline = 1;
-	while (args[i] && ft_strcmp(args[i], "-n") == 0)
+	while (args[i] && check_for_options(args[i]))
 	{
 		newline = 0;
 		i++;
