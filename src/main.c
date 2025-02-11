@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/29 20:22:52 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/11 07:37:33 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/12 00:43:07 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,48 @@ void init_minishell(t_shell *shell, char **envp)//$SHLVL
 	shell->parser = NULL;
 }
 
+char *get_multiline_input(void)
+{
+    char    *input;
+    char    *line;
+    char    *temp;
+    int     in_quotes;
+
+    input = readline("minishell$ ");
+    if (!input) // Handle Ctrl+D
+        return (NULL);
+
+    in_quotes = 0;
+    line = input;
+    while (*line)
+    {
+        if (*line == '"' || *line == '\'')
+            in_quotes = !in_quotes;
+        line++;
+    }
+    while (in_quotes) // Keep reading if quotes are open
+    {
+        temp = readline("> ");
+        if (!temp) // Handle Ctrl+D in multi-line input
+        {
+            free(input);
+            return (NULL);
+        }
+        input = ft_strjoin(input, "\n");  // Append newline
+        input = ft_strjoin(input, temp);  // Append next line
+        free(temp);
+        in_quotes = 0;
+        line = input;
+        while (*line)
+        {
+            if (*line == '"' || *line == '\'')
+                in_quotes = !in_quotes;
+            line++;
+        }
+    }
+    return (input);
+}
+
 void minishell_loop(t_shell *shell)
 {
 	char	*input;
@@ -46,6 +88,7 @@ void minishell_loop(t_shell *shell)
 	char	**commands;
 	int		num_commands;
 
+	// rl_bind_key('\t', rl_insert);// this fixes all edge cases
 	while (1)
 	{
 		if (g_signal_flag == SIGINT)
@@ -53,8 +96,9 @@ void minishell_loop(t_shell *shell)
 			shell->exit_status = 130;
 		}
 		g_signal_flag = 0;
-
-		input = readline("\001\033[32m\002ZOMBI>\001\033[33m\002 ");
+		// input = get_multiline_input(); //handles none closed qoutes
+		input = readline("minishell$ ");
+		
 		if (g_signal_flag == SIGINT)
         {
 			dup2 (2, 0);
