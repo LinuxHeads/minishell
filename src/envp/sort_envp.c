@@ -6,58 +6,37 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/08 02:31:15 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/11 07:58:40 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/11 08:06:23 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-/*
- * Bubble sort by rearranging pointers.
- * Ensures that after each pass, the highest (lexicographically) environment name
- * is placed at the end of the list.
- */
-void ft_sort_env(t_env **head)
+ void	ft_sort_env(t_env **head)
 {
-    if (!head || !(*head) || !(*head)->next)
-        return;
-
-    int swapped;
+    t_env *sorted;
     t_env *current;
-    t_env *prev;
     t_env *next;
-    t_env *last_sorted = NULL;
 
-    do
+    sorted = NULL;
+    current = *head;
+    while (current)
     {
-        swapped = 0;
-        current = *head;
-        prev = NULL;
-
-        while (current->next != last_sorted)
+        next = current->next;
+        if (!sorted || ft_strcmp(current->name, sorted->name) < 0)
         {
-            next = current->next;
-            if (ft_strcmp(current->name, next->name) > 0)
-            {
-                swapped = 1;
-                /* Swap nodes */
-                current->next = next->next;
-                next->next = current;
-
-                if (prev == NULL)
-                    *head = next;
-                else
-                    prev->next = next;
-
-                /* Move prev forward */
-                prev = next;
-            }
-            else
-            {
-                prev = current;
-                current = current->next;
-            }
+            current->next = sorted;
+            sorted = current;
         }
-        last_sorted = current; // The last swapped node is now sorted
-    } while (swapped);
+        else
+        {
+            t_env *tmp = sorted;
+            while (tmp->next && ft_strcmp(tmp->next->name, current->name) < 0)
+                tmp = tmp->next;
+            current->next = tmp->next;
+            tmp->next = current;
+        }
+        current = next;
+    }
+    *head = sorted;
 }
