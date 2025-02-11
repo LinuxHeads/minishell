@@ -6,12 +6,11 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 06:21:46 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/07 18:56:25 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/11 05:04:23 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
-
 
 static char *find_executable_in_paths(char **cmd, char **paths, char **full_path, int *i)
 {
@@ -38,12 +37,25 @@ char			*find_command_path(char *cmd, char **envp)
     char    **paths;
     char    *full_path;
     int     i;
-
+    
     if (ft_strchr(cmd, '/'))
-        return (ft_strdup(cmd));
+    {
+        path_var = ft_strdup(cmd);
+        if (!path_var)
+            return (NULL);
+        if (access(path_var, X_OK) == 0)
+            return (path_var);
+        free(path_var);
+        return (NULL);
+    }
 
     if (access(cmd, X_OK) == 0)
-        return (ft_strdup(cmd));
+    {
+        path_var = ft_strdup(cmd);
+        if (!path_var)
+            return (NULL);
+        return (path_var);
+    }
 
     i = -1;
     while (envp[++i])
@@ -53,7 +65,9 @@ char			*find_command_path(char *cmd, char **envp)
             path_var = envp[i] + 5;
             paths = ft_split(path_var, ':');
             if (!paths)
-                return (NULL);
+            {
+                return (NULL);                
+            }
             i = 0;
             full_path = find_executable_in_paths(&cmd, paths, &full_path, &i);
             if (full_path)
@@ -65,45 +79,3 @@ char			*find_command_path(char *cmd, char **envp)
     return (NULL);
 }
 
-
-int is_builtin(char **arg)
-{
-	if (ft_strcmp(arg[0], "echo") == 0)
-		return (1);
-	if (ft_strcmp(arg[0], "cd") == 0)
-		return (1);
-	if (ft_strcmp(arg[0], "pwd") == 0)
-		return (1);
-	if (ft_strcmp(arg[0], "export") == 0)
-		return (1);
-	if (ft_strcmp(arg[0], "unset") == 0)
-		return (1);
-	if (ft_strcmp(arg[0], "env") == 0)
-		return (1);
-	if (ft_strcmp(arg[0], "exit") == 0)
-		return (1);
-	return (0);
-
-}
-
-
-
-int exec_builtins(char **args, t_shell *shell)
-{
-	if (ft_strcmp(args[0], "echo") == 0)
-		return (ft_echo(args));
-	if (ft_strcmp(args[0], "cd") == 0)
-		return (ft_cd(args + 1, &shell->env_list));
-	if (ft_strcmp(args[0], "pwd") == 0)
-		return (ft_pwd());
-	if (ft_strcmp(args[0], "export") == 0)
-		return (ft_export(args + 1, &shell->env_list));
-	if (ft_strcmp(args[0], "unset") == 0)
-		return (ft_unset(args + 1, &shell->env_list));
-	if (ft_strcmp(args[0], "env") == 0)
-		return (ft_env(args + 1, shell));
-	if (ft_strcmp(args[0], "exit") == 0)
-		return (ft_exit(args + 1, shell));
-	return (0);
-
-}
