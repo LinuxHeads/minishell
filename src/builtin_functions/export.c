@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 15:42:39 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/11 07:50:51 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/11 07:58:29 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ static int ft_printenv_sorted(t_env *env_list)
 		return (0);
 	ft_sort_env(&tmp);
 	print_envp(tmp);
+	free_envp_list(tmp);
 	return (1);
 }
 

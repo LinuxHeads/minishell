@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/08 02:31:15 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/08 05:03:15 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/11 07:58:40 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,53 +19,45 @@
  */
 void ft_sort_env(t_env **head)
 {
-    if (!head || !(*head))
+    if (!head || !(*head) || !(*head)->next)
         return;
 
-    int len = ft_lstsize_env(*head);
+    int swapped;
+    t_env *current;
+    t_env *prev;
+    t_env *next;
+    t_env *last_sorted = NULL;
 
-    for (int i = 0; i < len - 1; i++)
+    do
     {
-        t_env *current = *head;
-        t_env *prev = NULL;
-        t_env *next = NULL;
-        int swapped = 0;
+        swapped = 0;
+        current = *head;
+        prev = NULL;
 
-        /* In each pass, move the largest "name" toward the end. */
-        for (int j = 0; j < len - i - 1; j++)
+        while (current->next != last_sorted)
         {
-            if (!current->next)
-                break;
             next = current->next;
-
             if (ft_strcmp(current->name, next->name) > 0)
             {
                 swapped = 1;
-                /* Re-link pointers to swap the entire nodes. */
+                /* Swap nodes */
                 current->next = next->next;
                 next->next = current;
 
                 if (prev == NULL)
-                {
-                    /* Update the head if swapping the first node. */
                     *head = next;
-                }
                 else
-                {
                     prev->next = next;
-                }
-                /* After swap, 'next' is now the node at 'prev->next'. */
+
+                /* Move prev forward */
                 prev = next;
             }
             else
             {
-                /* Move forward. */
                 prev = current;
                 current = current->next;
             }
         }
-        /* If nothing was swapped this pass, list is sorted. */
-        if (!swapped)
-            break;
-    }
+        last_sorted = current; // The last swapped node is now sorted
+    } while (swapped);
 }

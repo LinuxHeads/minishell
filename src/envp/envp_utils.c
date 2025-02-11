@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 23:20:22 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/08 04:08:04 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/11 07:59:13 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,10 @@ t_env	*ft_copy_env(t_env *env)
 			return (NULL);
 		}
 		if (!init_node(env, new_head, new_node))
+		{
+			free(new_node); // Free if init_node fails
 			return (NULL);
+		}
 		if (!new_head)
 			new_head = new_node;
 		else
@@ -99,3 +102,4 @@ t_env	*ft_copy_env(t_env *env)
 	}
 	return (new_head);
 }
+
