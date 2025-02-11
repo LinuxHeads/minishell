@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/10 02:41:05 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/10 02:42:20 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/11 05:06:20 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,8 @@ int create_pipe(int *pipe_fd, int i, t_shell **shell)
 {
     if (i < (*shell)->parser->command_count - 1)
     {
-        if (pipe(pipe_fd) == -1) {
+        if (pipe(pipe_fd) == -1)
+        {
             perror("pipe");
             return (0);
         }

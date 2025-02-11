@@ -22,6 +22,8 @@ SRC =  	parsing/parsing.c \
 		execution/find_cmd.c \
 		execution/redirections.c \
 		execution/redir_utils.c \
+		execution/exec_in_parent.c \
+		execution/exec_builtins.c \
 		envp/envp_errors.c \
 		envp/envp_to_str.c \
 		envp/envp_utils.c \
