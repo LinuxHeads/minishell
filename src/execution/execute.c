@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 01:23:07 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/11 04:48:00 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/11 23:02:56 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,7 +123,7 @@ void execute_pipeline(t_shell **shell)
         }
         if (is_builtin(argv) && (*shell)->parser->command_count == 1)
         {
-            exec_in_parent(in_fd, out_fd, shell, argv, redir_flag);
+            exec_in_parent((int []){in_fd, out_fd}, shell, argv, redir_flag);
             return ;
         } 
         else

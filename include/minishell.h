@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 19:24:00 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/11 20:18:49 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/11 23:03:15 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -252,7 +252,7 @@ void			ft_sort_env(t_env **env);
 void			reset_signals(void);
 int				syntax_checker(t_exec *shell);
 void			exec_in_child(int i, t_shell **shell, int *pid, int *in_fd, int *out_fd, char **argv, int redir_flag, int *prev_fd);
-void			exec_in_parent(int in_fd, int out_fd, t_shell **shell, char **argv, int redir_flag);
+void			exec_in_parent(int *fds, t_shell **shell, char **argv, int redir_flag);
 int				check_double_qoutes(char *s);
 int				check_single_qoutes(char *s);
 
