@@ -3,70 +3,39 @@
 /*                                                        :::      ::::::::   */
 /*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
+/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 01:23:07 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/10 18:58:05 by ahramada         ###   ########.fr       */
+/*   Updated: 2025/02/11 04:48:00 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
-
-
-
-void exec_in_parent(int in_fd, int out_fd, t_shell **shell, char **argv, int redir_flag)
-{
-    int fd1 = -1;
-    int fd2 = -1;
-    
-    if (redir_flag)
-    {
-        if (in_fd != STDIN_FILENO)
-            close(in_fd);
-        if (out_fd != STDOUT_FILENO)
-            close(out_fd);
-        return;
-    }
-    if (out_fd != STDOUT_FILENO)
-    {
-        fd1 = dup(STDOUT_FILENO);
-        fd2 = dup(STDIN_FILENO);
-        dup2(out_fd, STDOUT_FILENO);
-    }
-    (*shell)->exit_status = exec_builtins(argv, *shell);
-    free_str_array(argv);
-    if (out_fd != STDOUT_FILENO)
-    {
-        dup2(fd1, STDOUT_FILENO);
-        close(fd1);
-        close(fd2);
-        close(out_fd);
-    }
-}
-
 
 void    wait_for_children(t_shell *shell, int pid)
 {
     int wstatus;
     int last_pid;
     
-    while ((last_pid = wait(&wstatus)) > 0) {
-    if (last_pid == pid)
+    while ((last_pid = wait(&wstatus)) > 0)
     {
-        if (WIFEXITED(wstatus))
-            shell->exit_status = WEXITSTATUS(wstatus);
-        else if (WIFSIGNALED(wstatus))
-            shell->exit_status = 128 + WTERMSIG(wstatus);
+        if (last_pid == pid)
+        {
+            if (WIFEXITED(wstatus))
+                shell->exit_status = WEXITSTATUS(wstatus);
+            else if (WIFSIGNALED(wstatus))
+                shell->exit_status = 128 + WTERMSIG(wstatus);
         }
     }
-
 }
 
 void	free_str_array(char **arr)
 {
-	int	i = 0;
+	int i;
+
+    i = 0;
 	if (!arr)
-		return;
+		return ;
 	while (arr[i])
 	{
 		free(arr[i]);
@@ -80,7 +49,7 @@ static int has_valid_command(t_command *cmd)
     int i;
     if (!cmd || !cmd->tokens || cmd->token_count == 0)
         return (0);
-    i=0;
+    i = 0;
     while (i < cmd->token_count)
     {
         if (cmd->tokens[i] && cmd->tokens[i]->type == COMMAND)
@@ -99,14 +68,13 @@ void execute_pipeline(t_shell **shell)
     int redir_flag;
     int prev_fd = -1;
     
-    
     (*shell)->envp = envp_to_str((*shell)->env_list);
     if (!(*shell)->envp || !(*shell)->envp[0])
     {
         fprintf(stderr, "Error converting env to string array\n");
         return;
     }
-    signals_t3res(1);
+    signals_setup(1);
     while (i < (*shell)->parser->command_count)
     {
         argv = build_command_argv((*shell)->parser->commands[i]);
@@ -156,7 +124,7 @@ void execute_pipeline(t_shell **shell)
         if (is_builtin(argv) && (*shell)->parser->command_count == 1)
         {
             exec_in_parent(in_fd, out_fd, shell, argv, redir_flag);
-            return;
+            return ;
         } 
         else
         {
