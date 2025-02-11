@@ -6,7 +6,7 @@
 /*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 15:40:45 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/11 12:50:58 by ahramada         ###   ########.fr       */
+/*   Updated: 2025/02/11 13:39:57 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,13 @@
 int check_for_options(char *args)
 {
 	char *str_cp=ft_strdup(args);
+	char *str_cp2=ft_strdup(args);
 	if(ft_strchr(args,'-') && ft_strchr(str_cp,'n'))
 	{
+		if(str_cp2[0]=='-' && str_cp2[1]=='-')
+			return 0;
+		if(str_cp2[0]=='n' && str_cp2[1]=='-')
+			return 0;
 		return(1);
 	}
 	return 0;
