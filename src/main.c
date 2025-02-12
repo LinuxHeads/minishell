@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/29 20:22:52 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/12 00:43:07 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/12 23:10:35 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,7 @@ void minishell_loop(t_shell *shell)
 		}
 		g_signal_flag = 0;
 		// input = get_multiline_input(); //handles none closed qoutes
-		input = readline("minishell$ ");
+		input = readline("\001\033[32m\002ZOMBI>\001\033[33m\002 ");
 		
 		if (g_signal_flag == SIGINT)
         {
