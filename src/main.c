@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
+/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/29 20:22:52 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/12 23:10:35 by ahramada         ###   ########.fr       */
+/*   Updated: 2025/02/12 23:21:48 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,12 @@ void init_minishell(t_shell *shell, char **envp)//$SHLVL
         printf("Error: env list is NULL\n");
         exit(1);
     }
-	ft_setup_shlvl(&shell->env_list);
+	if (!ft_setup_shlvl(&shell->env_list))
+	{
+		printf("Error: ft_setup_shlvl returned 0\n");
+		free_envp_list(shell->env_list);
+		exit(1);
+	}
 	shell->envp = envp_to_str(shell->env_list);
 	if (!shell->envp || !shell->envp[0])
 	{
