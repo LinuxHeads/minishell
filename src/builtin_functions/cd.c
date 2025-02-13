@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/04 04:33:45 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/12 00:59:24 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/13 05:09:07 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,6 +101,7 @@ int	ft_cd(char **args, t_env **envp)
 
 	if (!validate_cd_args(args))
 		return (1);
+	// this will be added to the expander function	later, it will fix leakes and some shit
 	args[0] = ft_str_replace(args[0], "~", ft_getenv("HOME", *envp));
 	if (!args[0])
 		return (1);
@@ -123,3 +124,14 @@ int	ft_cd(char **args, t_env **envp)
 	free(oldpwd);
 	return (0);
 }
+
+// test leaks for cd
+// int main(int ac, char **av, char **env)
+// {
+	// t_env *envp = init_envp(env);
+	// char *args[] = {"/", NULL};
+	// 
+	// ft_cd(args, &envp);
+	// free_envp_list(envp);
+	// return 0;
+// }

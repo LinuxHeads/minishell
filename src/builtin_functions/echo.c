@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
+/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 15:40:45 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/11 13:39:57 by ahramada         ###   ########.fr       */
+/*   Updated: 2025/02/13 05:07:10 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,18 +15,37 @@
 
 int check_for_options(char *args)
 {
-	char *str_cp=ft_strdup(args);
-	char *str_cp2=ft_strdup(args);
+	char *str_cp;
+	char *str_cp2;
+
+	str_cp = ft_strdup(args);
+	if (!str_cp)
+		return (0);
+	str_cp2 = ft_strdup(args);
+	if (!str_cp2)
+	{
+		free(str_cp);
+		return (0);
+	}
 	if(ft_strchr(args,'-') && ft_strchr(str_cp,'n'))
 	{
 		if(str_cp2[0]=='-' && str_cp2[1]=='-')
-			return 0;
+		{
+			free(str_cp);
+			free(str_cp2);
+			return (0);
+		}
 		if(str_cp2[0]=='n' && str_cp2[1]=='-')
-			return 0;
+		{
+			free(str_cp);
+			free(str_cp2);
+			return (0);
+		}
 		return(1);
 	}
-	return 0;
+	return (0);
 }
+
 static int	process_flags(char **args, int *start_index)
 {
 	int	i;
