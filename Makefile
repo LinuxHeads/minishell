@@ -14,6 +14,7 @@ SRC =  	parsing/parsing.c \
 		parsing/identify_token.c \
 		parsing/utils.c \
 		parsing/syntax.c \
+		parsing/preprocess_input.c \
 		main.c \
 		signals.c \
 		execution/execute.c \
