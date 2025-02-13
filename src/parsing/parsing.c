@@ -106,34 +106,3 @@ t_exec	*allocate_shell_commands(int num_commands, char **shell_command)
 	shell->commands[i] = NULL;
 	return (shell);
 }
-
-char	*preprocess_input(char *input)
-{
-	char	*new_input;
-	char	*tmp;
-
-	if (!input)
-		return (NULL);
-	new_input = ft_str_replace(input, ">", " > ");
-	if (!new_input)
-		return (NULL);
-	tmp = new_input;
-	new_input = ft_str_replace(tmp, "<", " < ");
-	free(tmp);
-	tmp = new_input;
-	new_input = ft_str_replace(tmp, " >  > ", " >> ");
-	free(tmp);
-	tmp = new_input;
-	new_input = ft_str_replace(tmp, " <  < ", " << ");
-	free(tmp);
-	tmp = new_input;
-	new_input = ft_str_replace(tmp, "	", " ");
-	free(tmp);
-	tmp = new_input;
-	new_input = ft_str_replace(tmp, "|", " | ");
-	free(tmp);
-	// tmp = new_input;
-	// new_input = ft_str_replace(tmp, "$", " $");
-	// free(tmp);
-	return (new_input);
-}
