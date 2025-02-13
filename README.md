@@ -1,14 +1,24 @@
-# minishell
+# Minishell
 
-expander does not work on heredoc input
-minor mem leaks
-this case needs a bit of work:
-  cat <minishell.h <<HERE <missing <<DOC | echo oi
+## Known Issues
 
-this cae too:
-doesntexist
-$EMPTY
-echo $?
+- **Expander does not work on heredoc input**
+- **Minor memory leaks**
+- **Problematic cases:**
 
-this fucker too:
-  echo - "" "  " hello
+  1. **Heredoc with multiple redirections:**
+     ```sh
+     cat <minishell.h <<HERE <missing <<DOC | echo oi
+     ```
+
+  2. **Nonexistent command and variable expansion:**
+     ```sh
+     doesntexist
+     $EMPTY
+     echo $?
+     ```
+
+  3. **Edge case with `echo`:**
+     ```sh
+     echo - "" "  " hello
+     ```
