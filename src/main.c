@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/29 20:22:52 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/13 04:01:37 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/13 22:46:15 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,8 @@ void init_minishell(t_shell *shell, char **envp)//$SHLVL
 	}
 	shell->exit_status = 0;
 	shell->parser = NULL;
+	shell->argv = NULL;
+	shell->input = NULL;
 }
 
 void minishell_loop(t_shell *shell)

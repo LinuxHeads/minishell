@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 19:24:00 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/11 23:03:15 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/13 22:32:24 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,6 +108,8 @@ typedef struct s_shell
     char    **envp;         // Array representation for execve
     int     exit_status;
 	t_exec	*parser;   // Exit status of the last command executed (stores $? value)
+	char	*input;
+	char	**argv;
 } t_shell;
 
 /* ************************************************************************** */
@@ -255,5 +257,6 @@ void			exec_in_child(int i, t_shell **shell, int *pid, int *in_fd, int *out_fd, 
 void			exec_in_parent(int *fds, t_shell **shell, char **argv, int redir_flag);
 int				check_double_qoutes(char *s);
 int				check_single_qoutes(char *s);
+void    		ft_exit_handler(t_shell *shell, int *fds, int count, void *ptr);
 
 #endif

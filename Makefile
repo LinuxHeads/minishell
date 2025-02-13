@@ -17,6 +17,7 @@ SRC =  	parsing/parsing.c \
 		parsing/preprocess_input.c \
 		main.c \
 		signals.c \
+		exit_handler.c \
 		execution/execute.c \
 		execution/exec_in_child.c \
 		execution/build_args.c \

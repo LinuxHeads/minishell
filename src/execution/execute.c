@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 01:23:07 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/13 04:51:01 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/13 23:34:17 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,13 @@ void execute_pipeline(t_shell **shell)
     while (i < (*shell)->parser->command_count)
     {
         argv = build_command_argv((*shell)->parser->commands[i]); // no leaks
+        if (!argv)
+        {
+            (*shell)->exit_status = 1;
+            printf("Error building command argv\n");
+            i++;
+            continue;
+        }
         // expander(&argv, *shell);
         if(!expander(&argv, *shell))
         {
