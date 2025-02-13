@@ -4,7 +4,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/minishell.h"
+#include "../../include/minishell.h"
 
 int			count_enclosed_quotes(const char *str);
 
@@ -435,7 +435,7 @@ int	check_double_qoutes(char *s)
 	return (i);
 }
 
-int	expander(char ***argv_ptr, t_shell *shell)
+int	expander(char ***argv_ptr, t_shell *shell)// leaks here are caused by preprocess_input_test function
 {
 	char	**argv;
 	char	*expanded;
@@ -556,7 +556,53 @@ int	expander(char ***argv_ptr, t_shell *shell)
 	return (i);
 }
 
-void	expander_test(char **arg, t_shell *shell)
+// test leaks for expander function
+/*int main()
+{
+	t_shell	*shell;
+	char	**argv;
+	int		i;
+
+	shell = malloc(sizeof(t_shell));
+	if (!shell)
+		return (1);
+	shell->env_list = NULL;
+	shell->envp = NULL;
+	shell->exit_status = 0;
+	argv = malloc(sizeof(char *) * 4);
+	if (!argv)
+	{
+		free(shell);
+		return (1);
+	}
+	argv[0] = ft_strdup("echo");
+	argv[1] = ft_strdup("hello");
+	argv[2] = ft_strdup("world");
+	argv[3] = NULL;
+	i = 0;
+	while (argv[i])
+	{
+		expander(&argv, shell);
+		i++;
+	}
+	i = 0;
+	while (argv[i])
+	{
+		printf("%s\n", argv[i]);
+		i++;
+	}
+	i = 0;
+	while (argv[i])
+	{
+		free(argv[i]);
+		i++;
+	}
+	free(argv);
+	free(shell);
+	return (0);
+}*/
+
+void	expander_test(char **arg, t_shell *shell)// leaks here are caused by preprocess_input_test function
 {
 	char	*old_arg;
 	char	*expanded;
@@ -666,3 +712,50 @@ void	expander_test(char **arg, t_shell *shell)
 		return ;
 	}
 }
+
+// test leaks for expander_test function
+/*
+int main()
+{
+	t_shell	*shell;
+	char	**argv;
+	int		i;
+
+	shell = malloc(sizeof(t_shell));
+	if (!shell)
+		return (1);
+	shell->env_list = NULL;
+	shell->envp = NULL;
+	shell->exit_status = 0;
+	argv = malloc(sizeof(char *) * 4);
+	if (!argv)
+	{
+		free(shell);
+		return (1);
+	}
+	argv[0] = ft_strdup("echo");
+	argv[1] = ft_strdup("hello");
+	argv[2] = ft_strdup("world");
+	argv[3] = NULL;
+	i = 0;
+	while (argv[i])
+	{
+		expander_test(&argv[i], shell);
+		i++;
+	}
+	i = 0;
+	while (argv[i])
+	{
+		printf("%s\n", argv[i]);
+		i++;
+	}
+	i = 0;
+	while (argv[i])
+	{
+		free(argv[i]);
+		i++;
+	}
+	free(argv);
+	free(shell);
+	return (0);
+}*/

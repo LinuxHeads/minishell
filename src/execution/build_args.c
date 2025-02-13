@@ -6,11 +6,11 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 06:18:02 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/11 21:58:22 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/13 04:42:45 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/minishell.h"
+#include "../../include/minishell.h"
 
 static int	is_redirect_operator(int type)
 {
@@ -65,7 +65,7 @@ static int	fill_args(char **argv, t_command *cmd)
 	return (1);
 }
 
-char	**build_command_argv(t_command *cmd)
+char	**build_command_argv(t_command *cmd)// no leaks
 {
 	int		count;
 	char	**argv;
@@ -81,3 +81,42 @@ char	**build_command_argv(t_command *cmd)
 	}
 	return (argv);
 }
+/*
+//test for leaks
+int main()
+{
+	t_command *cmd;
+	char **argv;
+	int i;
+
+	cmd = malloc(sizeof(t_command));
+	cmd->token_count = 5;
+	cmd->tokens = malloc(sizeof(t_token *) * 6);
+	i = 0;
+	while (i < 5)
+	{
+		cmd->tokens[i] = malloc(sizeof(t_token));
+		cmd->tokens[i]->type = COMMAND;
+		cmd->tokens[i]->value = ft_strdup("ls");
+		i++;
+	}
+	cmd->tokens[i] = NULL;
+	argv = build_command_argv(cmd);
+	i = 0;
+	while (argv[i])
+	{
+		printf("%s\n", argv[i]);
+		i++;
+	}
+	free_str_array(argv);
+	free(cmd->tokens[0]->value);
+	free(cmd->tokens[1]->value);
+	free(cmd->tokens[2]->value);
+	free(cmd->tokens[3]->value);
+	free(cmd->tokens[4]->value);
+	
+	free_str_array(cmd->tokens);
+	free(cmd);
+	return (0);
+}
+*/

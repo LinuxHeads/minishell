@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/08 00:46:38 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/08 01:47:24 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/13 04:50:52 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,7 +124,7 @@ static int	ft_setup_heredoc(t_command *cmd, int *in_fd, int *i)
 	return (1);
 }
 
-int	get_redirections(t_command *cmd, int *in_fd, int *out_fd, t_shell *shell)
+int	get_redirections(t_command *cmd, int *in_fd, int *out_fd, t_shell *shell) // found leaks caused by preprocess_input_test
 {
 	int	i;
 

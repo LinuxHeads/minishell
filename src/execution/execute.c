@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 01:23:07 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/12 00:32:37 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/13 04:51:01 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,11 +77,11 @@ void execute_pipeline(t_shell **shell)
     signals_setup(1);
     while (i < (*shell)->parser->command_count)
     {
-        argv = build_command_argv((*shell)->parser->commands[i]);
+        argv = build_command_argv((*shell)->parser->commands[i]); // no leaks
         // expander(&argv, *shell);
         if(!expander(&argv, *shell))
         {
-            if (!get_redirections((*shell)->parser->commands[i], &in_fd, &out_fd, *shell))
+            if (!get_redirections((*shell)->parser->commands[i], &in_fd, &out_fd, *shell))// found leaks caused by preprocess_input_test
             {
                 (*shell)->exit_status = 1;
                 redir_flag = 1;
