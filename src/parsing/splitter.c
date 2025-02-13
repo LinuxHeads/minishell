@@ -6,11 +6,11 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 07:05:40 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/06 07:06:42 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/13 03:57:28 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/minishell.h"
+#include "../../include/minishell.h"
 
 static void	skip_quote(const char **s)
 {
@@ -114,3 +114,16 @@ char	**ft_splitter(const char *s, char c)
 	result[index] = NULL;
 	return (result);
 }
+
+// int main()
+// {
+	// char	**commands;
+	// char	*input = "ls -l | cat -e | wc -l";
+	// commands = ft_splitter(input, '|');
+	// for (int i = 0; commands[i]; i++)
+	// {
+		// printf("%s\n", commands[i]);
+	// }
+	// free_str_array(commands);
+	// return (0);
+// }

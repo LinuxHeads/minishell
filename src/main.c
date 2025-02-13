@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/29 20:22:52 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/13 02:27:50 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/13 04:01:37 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,18 +84,18 @@ void minishell_loop(t_shell *shell)
 		}
 		if (*input)
 			add_history(input);
-		processed_input = preprocess_input(input);
-		commands = ft_splitter(processed_input, '|');
-		num_commands = count_words(processed_input, '|');
-		shell->parser = allocate_shell_commands(num_commands, commands); 
+		processed_input = preprocess_input(input);// there is a memory leak here that i can't fix
+		commands = ft_splitter(processed_input, '|');// no leaks
+		num_commands = count_words(processed_input, '|');// no leaks
+		shell->parser = allocate_shell_commands(num_commands, commands); // no leaks
 		if (!shell->parser)
 		{
-			free(processed_input);
+			free(processed_input); // does not work
 			free(input);
 			continue;
 		}
 		// print_shell(shell->parser); //if we need to print the commands 
-		if (!syntax_checker(shell->parser))
+		if (!syntax_checker(shell->parser)) // no leaks
 		{
 			shell->exit_status = 2;
 			free_shell(shell->parser);

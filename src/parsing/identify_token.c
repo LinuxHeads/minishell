@@ -6,11 +6,11 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 07:16:41 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/06 18:44:30 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/13 04:00:55 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/minishell.h"
+#include "../../include/minishell.h"
 
 static t_token_type	identify_redirection_tokens(char *token,
 		t_next_token *decide)

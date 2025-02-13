@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/minishell.h"
+#include "../../include/minishell.h"
 
 /* --- Helper to identify redirection tokens --- */
 
@@ -100,9 +100,24 @@ t_exec	*allocate_shell_commands(int num_commands, char **shell_command)
 	{
 		shell->commands[i] = allocate_command(shell_command[i]);
 		if (!shell->commands[i])
+		{
+			free_shell(shell);
 			return (NULL);
+		}	
 		i++;
 	}
 	shell->commands[i] = NULL;
 	return (shell);
 }
+
+// test for leaks
+// int main()
+// {
+// 	t_exec *shell;
+
+// 	shell = allocate_shell_commands(2, (char *[]){"ls -l", "cat file"});
+// 	if (!shell)
+// 		return (1);
+// 	free_shell(shell);
+// 	return (0);
+// }

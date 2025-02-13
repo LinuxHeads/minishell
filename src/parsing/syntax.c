@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/10 02:02:23 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/11 22:58:34 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/13 03:54:37 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,25 @@ int	is_redirection_operator(const char *value)
 		|| !ft_strcmp(value, "<") || !ft_strcmp(value, "<<"));
 }
 
+
+static int check_helper( t_command *cmd, int i)
+{
+	if (!cmd->tokens[i + 1] || is_redirection_operator(cmd->tokens[i
+		+ 1]->value) || !ft_strcmp(cmd->tokens[i + 1]->value,
+		"|"))
+	{
+		ft_putstr_fd("minishell: syntax error near unexpected token `",
+			2);
+		if (cmd->tokens[i + 1])
+			ft_putstr_fd(cmd->tokens[i + 1]->value, 2);
+		else
+			ft_putstr_fd("newline", 2);
+		ft_putstr_fd("'\n", 2);
+		return (0);
+	}
+	return (1);
+}
+
 /* Extended check_redirections:
    - Loops through each command (if you have multiple commands in the pipeline)
    - For each redirection operator,
@@ -61,19 +80,8 @@ int	check_redirections(t_exec *parser)
 		{
 			if (is_redirection_operator(cmd->tokens[i]->value))
 			{
-				if (!cmd->tokens[i + 1] || is_redirection_operator(cmd->tokens[i
-						+ 1]->value) || !ft_strcmp(cmd->tokens[i + 1]->value,
-						"|"))
-				{
-					ft_putstr_fd("minishell: syntax error near unexpected token `",
-						2);
-					if (cmd->tokens[i + 1])
-						ft_putstr_fd(cmd->tokens[i + 1]->value, 2);
-					else
-						ft_putstr_fd("newline", 2);
-					ft_putstr_fd("'\n", 2);
+				if (!check_helper(cmd, i))
 					return (0);
-				}
 			}
 			i++;
 		}

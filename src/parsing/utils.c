@@ -6,11 +6,11 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 07:13:16 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/11 22:04:08 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/13 04:01:09 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/minishell.h"
+#include "../../include/minishell.h"
 
 int	count_words(char *str, char sep)
 {
