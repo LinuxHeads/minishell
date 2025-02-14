@@ -435,7 +435,7 @@ int	check_double_qoutes(char *s)
 	return (i);
 }
 
-int	expander(char ***argv_ptr, t_shell *shell)// leaks here are caused by preprocess_input_test function
+int	expander(t_shell **shell)// leaks here are caused by preprocess_input_test function
 {
 	char	**argv;
 	char	*expanded;
@@ -449,7 +449,7 @@ int	expander(char ***argv_ptr, t_shell *shell)// leaks here are caused by prepro
 	char	**split_tokens;
 	int		k;
 
-	argv = *argv_ptr;
+	argv = (*shell)->argv;
 	i = 0;
 	flag = 1;
 	while (argv[i])
@@ -487,7 +487,7 @@ int	expander(char ***argv_ptr, t_shell *shell)// leaks here are caused by prepro
 		}
 		flag = 0;
 		encl = count_enclosed_quotes(old_arg);
-		expanded = expand_string(old_arg, shell);
+		expanded = expand_string(old_arg, *shell);
 		if (!expanded || ft_strisspace(expanded))
 		{
 			free(expanded);
@@ -552,7 +552,7 @@ int	expander(char ***argv_ptr, t_shell *shell)// leaks here are caused by prepro
 		}
 		i++;
 	}
-	*argv_ptr = argv;
+	(*shell)->argv = argv;
 	return (i);
 }
 
