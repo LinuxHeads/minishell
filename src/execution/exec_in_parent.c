@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 04:00:59 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/11 23:02:18 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/14 04:31:12 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,30 +34,29 @@ int	redir_in_parent(int out_fd, int *fd1)
 	return (1);
 }
 
-void	exec_in_parent(int *fds, t_shell **shell, char **argv,
-		int redir_flag)
+void	exec_in_parent(t_shell **shell, int redir_flag)
 {
 	int	fd1;
 
 	fd1 = -1;
 	if (redir_flag)
 	{
-		if (fds[0] != STDIN_FILENO)
-			close(fds[0]);
-		if (fds[1] != STDOUT_FILENO)
-			close(fds[1]);
+		if ((*shell)->in_fd != STDIN_FILENO)
+			close((*shell)->in_fd);
+		if ((*shell)->out_fd != STDOUT_FILENO)
+			close((*shell)->out_fd);
 		return ;
 	}
-	if (fds[1] != STDOUT_FILENO)
-		if (!redir_in_parent(fds[1], &fd1))
+	if ((*shell)->out_fd != STDOUT_FILENO)
+		if (!redir_in_parent((*shell)->out_fd, &fd1))
 			return ;
-	(*shell)->exit_status = exec_builtins(argv, *shell);
-	free_str_array(argv);
-	if (fds[1] != STDOUT_FILENO)
+	(*shell)->exit_status = exec_builtins((*shell)->argv, *shell);
+	free_str_array((*shell)->argv);
+	if ((*shell)->out_fd != STDOUT_FILENO)
 	{
 		if (dup2(fd1, STDOUT_FILENO) < 0)
 			perror("dup2");
 		close(fd1);
-		close(fds[1]);
+		close((*shell)->out_fd);
 	}
 }

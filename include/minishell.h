@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 19:24:00 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/13 22:32:24 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/14 04:46:41 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,6 +110,11 @@ typedef struct s_shell
 	t_exec	*parser;   // Exit status of the last command executed (stores $? value)
 	char	*input;
 	char	**argv;
+	int		in_fd;
+	int		out_fd;
+	int		prev_fd;
+	int		pipe_fd[2];
+	int		pipe_created;
 } t_shell;
 
 /* ************************************************************************** */
@@ -204,7 +209,7 @@ int    ft_unset(char **arg, t_env **envp);
 */
 int		ft_setenv(const char *name, const char *value, t_env **env_list);
 
-int		expander(char ***argv_ptr, t_shell *shell);
+int		expander(t_shell **shell);
 void	expander_test(char **argv, t_shell *shell);
 
 /* 
@@ -253,10 +258,12 @@ t_env			*ft_copy_env(t_env *env);
 void			ft_sort_env(t_env **env);
 void			reset_signals(void);
 int				syntax_checker(t_exec *shell);
-void			exec_in_child(int i, t_shell **shell, int *pid, int *in_fd, int *out_fd, char **argv, int redir_flag, int *prev_fd);
-void			exec_in_parent(int *fds, t_shell **shell, char **argv, int redir_flag);
+void			exec_in_child(int i, t_shell **shell, int *pid, int redir_flag);
+void			exec_in_parent(t_shell **shell, int redir_flag);
 int				check_double_qoutes(char *s);
 int				check_single_qoutes(char *s);
-void    		ft_exit_handler(t_shell *shell, int *fds, int count, void *ptr);
+void    		ft_exit_handler(t_shell *shell, void *ptr, char *message, int exit_code);
+void			check_cmd_path(char *cmd_path, t_shell **shell);
+void			fork_check(int pid, t_shell **shell);
 
 #endif

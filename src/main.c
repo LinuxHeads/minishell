@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/29 20:22:52 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/13 22:46:15 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/14 04:35:04 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,12 @@ void init_minishell(t_shell *shell, char **envp)//$SHLVL
 	shell->parser = NULL;
 	shell->argv = NULL;
 	shell->input = NULL;
+	shell->in_fd = -1;
+	shell->out_fd = -1;
+	shell->prev_fd = -1;
+	shell->pipe_created = 0;
+	shell->pipe_fd[0] = -1;
+	shell->pipe_fd[1] = -1;
 }
 
 void minishell_loop(t_shell *shell)
@@ -81,6 +87,7 @@ void minishell_loop(t_shell *shell)
         }
 		if (!input)
 		{
+			
 			printf("exit\n");
 			break ;
 		}
