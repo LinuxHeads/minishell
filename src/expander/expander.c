@@ -464,6 +464,8 @@ int	expander(t_shell **shell)  /* leaks fixed in this function */
 		}
 		if (!ft_strchr(old_arg, '$'))
 		{
+			if (ft_strcmp(old_arg, "~") == 0)
+				old_arg = ft_getenv("HOME", (*shell)->env_list);
 			no_closed_quotes = remove_outer_closed_quotes(old_arg);
 			if (no_closed_quotes)
 			{
@@ -537,6 +539,7 @@ int	expander(t_shell **shell)  /* leaks fixed in this function */
 			{
 				no_closed_quotes = remove_outer_closed_quotes(expanded);
 				free(argv[i]);
+				free(expanded);
 				argv[i] = no_closed_quotes;
 			}
 			else

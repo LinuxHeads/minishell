@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redir_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
+/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/08 01:44:02 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/14 12:05:54 by ahramada         ###   ########.fr       */
+/*   Updated: 2025/02/14 15:46:27 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ void reset_signals_heredoc(void)
 {
 	struct sigaction sa;
 	
+	ft_bzero(&sa, sizeof(struct sigaction));
 	sa.sa_handler = &close_heredoc;
 	sa.sa_flags = SA_RESTART;
 	sigaction(SIGINT, &sa, NULL);
@@ -37,6 +38,7 @@ void	ft_heredoc(int pipe_fds[2], t_command *cmd, int i,t_shell *shell)
 		line = readline("> ");
 		if (!line || ft_strcmp(line, cmd->tokens[i]->value) == 0)
 		{
+			
 			free(line);
 			break ;
 		}

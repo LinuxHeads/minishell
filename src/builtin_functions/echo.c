@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
+/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 15:40:45 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/14 12:17:15 by ahramada         ###   ########.fr       */
+/*   Updated: 2025/02/14 15:24:34 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,8 @@ int check_for_options(char *args)
 		free(str_cp);
 		return (0);
 	}
-	if(ft_strchr(args,'-') && ft_strchr(str_cp,'n'))
+	if(ft_strchr(args,'-') && ft_strchr(str_cp,'n') && !ft_strchr(str_cp,' '))
+	// if(ft_strchr(args,'-') && ft_strchr(str_cp,'n'))
 	{
 		if(str_cp2[0]=='-' && str_cp2[1]=='-')
 		{
@@ -41,8 +42,12 @@ int check_for_options(char *args)
 			free(str_cp2);
 			return (0);
 		}
+		free(str_cp);
+		free(str_cp2);
 		return(1);
 	}
+	free(str_cp);
+	free(str_cp2);
 	return (0);
 }
 
@@ -70,8 +75,7 @@ static void	print_arguments(char **args, int start_index)
 	i = start_index;
 	while (args[i])
 	{
-		//if (ft_strcmp(args[i], "~") == 0)
-			//args[i]=ft_getenv("HOME", *envp);
+		
 		if((args[i][0]=='\"' && args[i][1]=='\"') || (args[i][0]=='\"' && args[i][1]=='\"'))
 			printf(" ");
 		else

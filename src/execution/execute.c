@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 01:23:07 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/14 04:26:12 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/14 15:41:31 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,6 +98,11 @@ void	execute_pipeline(t_shell **shell)
 				(*shell)->exit_status = 1;
 				redir_flag = 1;
 			}
+			free_str_array((*shell)->argv);
+			if ((*shell)->in_fd != STDIN_FILENO)
+				close ((*shell)->in_fd);
+			if ((*shell)->out_fd != STDOUT_FILENO)
+				close ((*shell)->out_fd);
 			i++;
 			continue ;
 		}
@@ -139,6 +144,7 @@ void	execute_pipeline(t_shell **shell)
 		else
 			exec_in_child(i, shell, &pid, redir_flag);
 		i++;
+		free_str_array((*shell)->argv);
 	}
 	wait_for_children(*shell, pid);
 }

@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 15:30:45 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/11 07:05:43 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/14 15:21:27 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ int	ft_exit(char **args, t_shell *shell)
 		else
 		{
 			ft_putstr_fd("exit: numeric argument required\n", 2);
-			exit (2);
+			ft_exit_handler(shell, NULL, NULL, 2);
 		}
 	}
 	if (args[0])
@@ -32,25 +32,16 @@ int	ft_exit(char **args, t_shell *shell)
 		if (ft_isnumber(args[0]))
 		{
 			shell->exit_status = ft_atoi(args[0]) % 256;
-			free_envp_list(shell->env_list);
-			free_str_array(shell->envp);
-			free(shell->parser);
-			exit(shell->exit_status);
+			ft_exit_handler(shell, NULL, NULL, shell->exit_status);
 			return (0);
 		}
 		else
 		{
 			ft_putstr_fd("exit: numeric argument required\n", 2);
-			free_envp_list(shell->env_list);
-			free_str_array(shell->envp);
-			free(shell->parser);
-			exit(2);
+			ft_exit_handler(shell, NULL, NULL, 2);
 			return (2);
 		}
 	}
-	free_envp_list(shell->env_list);
-	free_str_array(shell->envp);
-	free(shell->parser);
-	exit(shell->exit_status);
+	ft_exit_handler(shell, NULL, NULL, shell->exit_status);
 	return (0);
 }
