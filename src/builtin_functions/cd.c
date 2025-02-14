@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/04 04:33:45 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/14 04:00:51 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/14 19:26:51 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,10 +101,6 @@ int	ft_cd(char **args, t_env **envp)
 
 	if (!validate_cd_args(args))
 		return (1);
-	// this will be added to the expander function	later, it will fix leakes and some shit
-	// args[0] = ft_str_replace(args[0], "~", ft_getenv("HOME", *envp));
-	// if (!args[0])
-	// 	return (1);
 	path = get_target_path(args, envp);
 	if (!path)
 		return (1);

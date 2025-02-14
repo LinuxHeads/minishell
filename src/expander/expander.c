@@ -51,20 +51,12 @@ static char	*ft_strtrim_spaces(const char *s)
 	return (trim);
 }
 
-char	*compress_spaces(const char *str)
-{
-	char	*new_str;
+void	compress_helper(char *new_str, const char *str, int *j)
+{	
 	int		i;
-	int		j;
 	int		in_space;
 
-	if (!str)
-		return (NULL);
-	new_str = malloc(ft_strlen(str) + 1);
-	if (!new_str)
-		return (NULL);
 	i = 0;
-	j = 0;
 	in_space = 0;
 	while (str[i])
 	{
@@ -72,17 +64,33 @@ char	*compress_spaces(const char *str)
 		{
 			if (!in_space)
 			{
-				new_str[j++] = ' ';
+				new_str[(*j)++] = ' ';
 				in_space = 1;
 			}
 		}
 		else
 		{
-			new_str[j++] = str[i];
+			new_str[(*j)++] = str[i];
 			in_space = 0;
 		}
 		i++;
 	}
+}
+
+char	*compress_spaces(const char *str)
+{
+	char	*new_str;
+	int		j;
+
+	if (!str)
+		return (NULL);
+	j = 0;
+	if (!str)
+		return (NULL);
+	new_str = malloc(ft_strlen(str) + 1);
+	if (!new_str)
+		return (NULL);
+	compress_helper(new_str, str, &j);
 	new_str[j] = '\0';
 	return (new_str);
 }
@@ -119,6 +127,8 @@ char	*expand_variable(const char *str, int *index, t_shell *shell)
 	if (ft_isdigit(str[start]))
 	{
 		var_name = ft_substr(str, start, *index - start);
+		if (!var_name)
+			return (NULL);
 		env_val = ft_getenv(var_name, shell->env_list);
 		free(var_name);
 		if (!env_val)
@@ -356,16 +366,37 @@ static char	**replace_token_with_tokens(char **argv, int index, char **new_token
 	while (i < index)
 	{
 		new_argv[pos++] = ft_strdup(argv[i++]);
+		if (!new_argv[pos - 1])
+		{
+			while (pos > 0)
+				free(new_argv[--pos]);
+			free(new_argv);
+			return (NULL);
+		}
 	}
 	j = 0;
 	while (j < new_count)
 	{
 		new_argv[pos++] = ft_strdup(new_tokens[j++]);
+		if (!new_argv[pos - 1])
+		{
+			while (pos > 0)
+				free(new_argv[--pos]);
+			free(new_argv);
+			return (NULL);
+		}
 	}
 	i = index + 1;
 	while (i < old_count)
 	{
 		new_argv[pos++] = ft_strdup(argv[i++]);
+		if (!new_argv[pos - 1])
+		{
+			while (pos > 0)
+				free(new_argv[--pos]);
+			free(new_argv);
+			return (NULL);
+		}
 	}
 	new_argv[pos] = NULL;
 	i = 0;
@@ -664,6 +695,7 @@ void	expander_test(char **arg, t_shell *shell)
 		return ;
 	}
 }
+
 
 // test leaks for expander_test function*
 // int main()
