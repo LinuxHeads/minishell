@@ -22,3 +22,8 @@
      ```sh
      echo - "" "  " hello
      ```
+  4. **Tilde '~' expansion:**
+      ```sh
+      echo ~
+      cd ~
+      ```
