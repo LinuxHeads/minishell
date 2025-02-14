@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   ft_str_replace.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
+/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/14 12:45:54 by ahramada          #+#    #+#             */
-/*   Updated: 2025/02/14 12:47:26 by ahramada         ###   ########.fr       */
+/*   Updated: 2025/02/14 14:32:37 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
+
 static int	count_occurrences(const char *str, const char *old)
 {
 	int	count;
@@ -64,14 +65,12 @@ char	*ft_str_replace(const char *str, const char *old, const char *new)
 	char	*result;
 	int		count;
 	int		new_str_size;
-	
+
 	if (!str || !old || !new || *old == '\0')
 		return (ft_strdup(str));
-  
 	count = count_occurrences(str, old);
 	if (count == 0)
 		return (ft_strdup(str));
-  
 	new_str_size = ft_strlen(str) + count * (ft_strlen(new) - ft_strlen(old))
 		+ 1;
 	result = malloc(new_str_size);
@@ -80,3 +79,15 @@ char	*ft_str_replace(const char *str, const char *old, const char *new)
 	replace_occurrences(result, str, old, new);
 	return (result);
 }
+
+// //test for leaks
+// int main()
+// {
+// 	char *str = "hello world";
+// 	char *old = "world";
+// 	char *new = "42";
+// 	char *result = ft_str_replace(str, old, new);
+// 	printf("%s\n", result);
+// 	free(result);
+// 	return (0);
+// }

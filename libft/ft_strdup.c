@@ -18,8 +18,8 @@ char	*ft_strdup(const char *s)
 	char	*dest;
 
 	i = 0;
-	if(!s)
-		return(NULL);
+	if (!s)
+		return (NULL);
 	while (s[i] != '\0')
 		i++;
 	dest = malloc(i + 1);
