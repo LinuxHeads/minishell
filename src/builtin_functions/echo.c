@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 15:40:45 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/13 05:07:10 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/14 12:11:26 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,9 +70,14 @@ static void	print_arguments(char **args, int start_index)
 	i = start_index;
 	while (args[i])
 	{
+		if((args[i][0]=='\"' && args[i][1]=='\"') || (args[i][0]=='\"' && args[i][1]=='\"'))
+			printf(" ");
+		else
+		{
 		printf("%s", args[i]);
 		if (args[i + 1])
 			printf(" ");
+		}
 		i++;
 	}
 }
