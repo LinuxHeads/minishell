@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 19:24:00 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/14 04:46:41 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/14 11:59:53 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -252,7 +252,7 @@ int				ft_setup_shlvl(t_env **envp);
 void			free_shell(t_exec *shell);
 int				get_redirections(t_command *cmd, int *in_fd, int *out_fd, t_shell *shell);
 char			*trim_quotes(char *value);
-void			ft_heredoc(int pipe_fds[2], t_command *cmd, int i);
+void			ft_heredoc(int pipe_fds[2], t_command *cmd, int i,t_shell *shell);
 int    			ft_lstsize_env(t_env *env_list);
 t_env			*ft_copy_env(t_env *env);
 void			ft_sort_env(t_env **env);

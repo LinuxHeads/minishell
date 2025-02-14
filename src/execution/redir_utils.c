@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redir_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/08 01:44:02 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/13 04:44:28 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/14 12:05:54 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ void reset_signals_heredoc(void)
 	sigaction(SIGINT, &sa, NULL);
 }
 
-void	ft_heredoc(int pipe_fds[2], t_command *cmd, int i)
+void	ft_heredoc(int pipe_fds[2], t_command *cmd, int i,t_shell *shell)
 {
 	char	*line;
 	
@@ -40,9 +40,19 @@ void	ft_heredoc(int pipe_fds[2], t_command *cmd, int i)
 			free(line);
 			break ;
 		}
-		write(pipe_fds[1], line, ft_strlen(line));
-		write(pipe_fds[1], "\n", 1);
-		free(line);
+		expander_test(&line,shell);
+		if (line)
+		{
+			write(pipe_fds[1],line , ft_strlen(line));
+			write(pipe_fds[1], "\n", 1);
+			free(line);
+		}
+		else
+		{
+			//write(pipe_fds[1],line , ft_strlen(line));
+			write(pipe_fds[1], "\n", 1);
+			//free(line);
+		}
 	}
 	signals_setup(0);
 	if (g_signal_flag == SIGINT)
