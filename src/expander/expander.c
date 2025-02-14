@@ -6,7 +6,7 @@
 
 #include "../../include/minishell.h"
 
-int			count_enclosed_quotes(const char *str);
+int	count_enclosed_quotes(const char *str);
 
 int	ft_strisspace(const char *str)
 {
@@ -130,17 +130,13 @@ char	*expand_variable(const char *str, int *index, t_shell *shell)
 	else
 	{
 		while (str[*index] && (ft_isalnum(str[*index]) || str[*index] == '_'))
-		{
 			(*index)++;
-		}
 	}
 	if (start == *index)
 		return (ft_strdup("$"));
-	//printf("varname====%s\n",str);
 	var_name = ft_substr(str, start, *index - start);
 	if (!var_name)
 		return (NULL);
-	//printf("varname====%s\n",var_name);
 	env_val = ft_getenv(var_name, shell->env_list);
 	free(var_name);
 	if (!env_val)
@@ -187,13 +183,9 @@ char	*remove_outer_closed_quotes(const char *s)
 			{
 				i++;
 				while (i < len && s[i] != quote)
-				{
 					result[j++] = s[i++];
-				}
 				if (i < len && s[i] == quote)
-				{
 					i++;
-				}
 			}
 			else
 			{
@@ -219,7 +211,7 @@ char	*expand_string(const char *str, t_shell *shell)
 	char	*tmp;
 	int		encl;
 	char	*trim;
-			char c[2];
+	char	c[2];
 
 	result = ft_strdup("");
 	if (!result)
@@ -235,17 +227,17 @@ char	*expand_string(const char *str, t_shell *shell)
 			in_dq = !in_dq;
 		else if (str[i] == '$' && !in_sq)
 		{
-			//printf("str =%s\n",str);
 			i++;
 			var_value = expand_variable(str, &i, shell);
-			//printf("var_value =%s\n",var_value);
 			if (var_value)
 			{
 				encl = count_enclosed_quotes(var_value);
-				//printf("var_value =%s\n",var_value);
 				if (encl > 1)
-					var_value = remove_outer_closed_quotes(var_value);
-				//printf("var_value 2=%s\n",var_value);
+				{
+					char *temp = remove_outer_closed_quotes(var_value);
+					free(var_value);
+					var_value = temp;
+				}
 				if (!in_dq)
 				{
 					trim = ft_strtrim_spaces(var_value);
@@ -286,9 +278,12 @@ char	*expand_string(const char *str, t_shell *shell)
 			c[1] = '\0';
 			encl = count_enclosed_quotes(result);
 			if (encl == 2)
-				result = remove_outer_closed_quotes(result);
+			{
+				char *temp = remove_outer_closed_quotes(result);
+				free(result);
+				result = temp;
+			}
 			tmp = ft_strjoin(result, c);
-			//printf("temp=%s\n",tmp);
 			if (!tmp)
 			{
 				free(result);
@@ -340,8 +335,7 @@ static int	ft_tablen(char **tab_1)
 	return (i);
 }
 
-static char	**replace_token_with_tokens(char **argv, int index,
-		char **new_tokens)
+static char	**replace_token_with_tokens(char **argv, int index, char **new_tokens)
 {
 	int		old_count;
 	int		new_count;
@@ -396,8 +390,7 @@ int	count_enclosed_quotes(const char *str)
 	start = str;
 	end = str + len - 1;
 	while (len >= 2 &&
-			((*start == '\'' && *end == '\'') || (*start == '"'
-						&& *end == '"')))
+			((*start == '\'' && *end == '\'') || (*start == '"' && *end == '"')))
 	{
 		count++;
 		start++;
@@ -435,7 +428,7 @@ int	check_double_qoutes(char *s)
 	return (i);
 }
 
-int	expander(t_shell **shell)// leaks here are caused by preprocess_input_test function
+int	expander(t_shell **shell)  /* leaks fixed in this function */
 {
 	char	**argv;
 	char	*expanded;
@@ -459,18 +452,19 @@ int	expander(t_shell **shell)// leaks here are caused by preprocess_input_test f
 		if (check_single_qoutes(argv[i]) || check_double_qoutes(argv[i]))
 		{
 			c = malloc(3 * sizeof(char));
+			if (!c)
+				return (-1);
 			c[0] = argv[i][0];
 			c[1] = argv[i][1];
 			c[2] = '\0';
+			free(argv[i]);            /* Free previous allocation */
 			argv[i] = c;
 			i++;
 			continue ;
 		}
 		if (!ft_strchr(old_arg, '$'))
 		{
-			no_closed_quotes = NULL;
 			no_closed_quotes = remove_outer_closed_quotes(old_arg);
-			old_arg = no_closed_quotes;
 			if (no_closed_quotes)
 			{
 				free(argv[i]);
@@ -547,6 +541,7 @@ int	expander(t_shell **shell)// leaks here are caused by preprocess_input_test f
 			}
 			else
 			{
+				free(argv[i]);
 				argv[i] = expanded;
 			}
 		}
@@ -556,53 +551,7 @@ int	expander(t_shell **shell)// leaks here are caused by preprocess_input_test f
 	return (i);
 }
 
-// test leaks for expander function
-/*int main()
-{
-	t_shell	*shell;
-	char	**argv;
-	int		i;
-
-	shell = malloc(sizeof(t_shell));
-	if (!shell)
-		return (1);
-	shell->env_list = NULL;
-	shell->envp = NULL;
-	shell->exit_status = 0;
-	argv = malloc(sizeof(char *) * 4);
-	if (!argv)
-	{
-		free(shell);
-		return (1);
-	}
-	argv[0] = ft_strdup("echo");
-	argv[1] = ft_strdup("hello");
-	argv[2] = ft_strdup("world");
-	argv[3] = NULL;
-	i = 0;
-	while (argv[i])
-	{
-		expander(&argv, shell);
-		i++;
-	}
-	i = 0;
-	while (argv[i])
-	{
-		printf("%s\n", argv[i]);
-		i++;
-	}
-	i = 0;
-	while (argv[i])
-	{
-		free(argv[i]);
-		i++;
-	}
-	free(argv);
-	free(shell);
-	return (0);
-}*/
-
-void	expander_test(char **arg, t_shell *shell)// leaks here are caused by preprocess_input_test function
+void	expander_test(char **arg, t_shell *shell)
 {
 	char	*old_arg;
 	char	*expanded;
@@ -713,49 +662,48 @@ void	expander_test(char **arg, t_shell *shell)// leaks here are caused by prepro
 	}
 }
 
-// test leaks for expander_test function
-/*
-int main()
-{
-	t_shell	*shell;
-	char	**argv;
-	int		i;
+// test leaks for expander_test function*
+// int main()
+// {
+// 	t_shell	*shell;
+// 	char	**argv;
+// 	int		i;
 
-	shell = malloc(sizeof(t_shell));
-	if (!shell)
-		return (1);
-	shell->env_list = NULL;
-	shell->envp = NULL;
-	shell->exit_status = 0;
-	argv = malloc(sizeof(char *) * 4);
-	if (!argv)
-	{
-		free(shell);
-		return (1);
-	}
-	argv[0] = ft_strdup("echo");
-	argv[1] = ft_strdup("hello");
-	argv[2] = ft_strdup("world");
-	argv[3] = NULL;
-	i = 0;
-	while (argv[i])
-	{
-		expander_test(&argv[i], shell);
-		i++;
-	}
-	i = 0;
-	while (argv[i])
-	{
-		printf("%s\n", argv[i]);
-		i++;
-	}
-	i = 0;
-	while (argv[i])
-	{
-		free(argv[i]);
-		i++;
-	}
-	free(argv);
-	free(shell);
-	return (0);
-}*/
+// 	shell = malloc(sizeof(t_shell));
+// 	if (!shell)
+// 		return (1);
+// 	shell->env_list = NULL;
+// 	shell->envp = NULL;
+// 	shell->exit_status = 0;
+// 	argv = malloc(sizeof(char *) * 4);
+// 	if (!argv)
+// 	{
+// 		free(shell);
+// 		return (1);
+// 	}
+// 	argv[0] = ft_strdup("echo");
+// 	argv[1] = ft_strdup("hello");
+// 	argv[2] = ft_strdup("world");
+// 	argv[3] = NULL;
+// 	i = 0;
+// 	while (argv[i])
+// 	{
+// 		expander_test(&argv[i], shell);
+// 		i++;
+// 	}
+// 	i = 0;
+// 	while (argv[i])
+// 	{
+// 		printf("%s\n", argv[i]);
+// 		i++;
+// 	}
+// 	i = 0;
+// 	while (argv[i])
+// 	{
+// 		free(argv[i]);
+// 		i++;
+// 	}
+// 	free(argv);
+// 	free(shell);
+// 	return (0);
+// }

@@ -3,15 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   ft_str_replace.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abdsalah <abdsalah@std.42amman.com>        +#+  +:+       +#+        */
+/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/03 03:43:47 by ahramada          #+#    #+#             */
-/*   Updated: 2025/02/03 16:32:37 by abdsalah         ###   ########.fr       */
+/*   Created: 2025/02/14 12:45:54 by ahramada          #+#    #+#             */
+/*   Updated: 2025/02/14 12:47:26 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
-
 static int	count_occurrences(const char *str, const char *old)
 {
 	int	count;
@@ -65,20 +64,14 @@ char	*ft_str_replace(const char *str, const char *old, const char *new)
 	char	*result;
 	int		count;
 	int		new_str_size;
-
+	
 	if (!str || !old || !new || *old == '\0')
-	{
-		result = ft_strdup(str);
-		if (!result)
-			return (NULL);
-	}
+		return (ft_strdup(str));
+  
 	count = count_occurrences(str, old);
 	if (count == 0)
-	{
-		result = ft_strdup(str);
-		if (!result)
-			return (NULL);
-	}
+		return (ft_strdup(str));
+  
 	new_str_size = ft_strlen(str) + count * (ft_strlen(new) - ft_strlen(old))
 		+ 1;
 	result = malloc(new_str_size);
