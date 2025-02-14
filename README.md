@@ -3,7 +3,6 @@
 ## Known Issues
 
 - **Expander does not work on heredoc input**
-- **Minor memory leaks**
 - **Problematic cases:**
 
   1. **Heredoc with multiple redirections:**
@@ -17,13 +16,3 @@
      $EMPTY
      echo $?
      ```
-
-  3. **Edge case with `echo`:**
-     ```sh
-     echo - "" "  " hello
-     ```
-  4. **Tilde '~' expansion:**
-      ```sh
-      echo ~
-      cd ~
-      ```
