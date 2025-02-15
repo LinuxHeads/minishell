@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
+/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 19:24:00 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/14 11:59:53 by ahramada         ###   ########.fr       */
+/*   Updated: 2025/02/15 06:00:08 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,13 +24,14 @@
 # include <errno.h>
 # include <termios.h>
 # include <sys/ioctl.h>
+# include <asm-generic/signal-defs.h>
+# include <signal.h>
+# include <bits/sigaction.h>
 
 /* Libft and Readline library includes */
 # include "../libft/libft.h"
 # include <readline/readline.h>
 # include <readline/history.h>
-# include <signal.h>
-# include <bits/sigaction.h>
 
 /* ************************************************************************** */
 /*                            STRUCTS                                          */
@@ -210,7 +211,7 @@ int    ft_unset(char **arg, t_env **envp);
 int		ft_setenv(const char *name, const char *value, t_env **env_list);
 
 int		expander(t_shell **shell);
-void	expander_test(char **argv, t_shell *shell);
+void	expand_single_argument(char **argv, t_shell *shell);
 
 /* 
 ** ft_pwd: Built-in pwd command to print the current directory path.
@@ -245,8 +246,8 @@ void			execute_pipeline(t_shell **shell);
 void			free_envp_node(t_env *env);
 char			**build_command_argv(t_command *cmd);
 char			*find_command_path(char *cmd, char **envp);
-int				is_builtin(char **arg);
-int				exec_builtins(char **args, t_shell *shell);
+int				is_builtin_command(char **arg);
+int				execute_builtin_command(char **args, t_shell *shell);
 char			**ft_splitter(const char *s, char c);
 int				ft_setup_shlvl(t_env **envp);
 void			free_shell(t_exec *shell);
@@ -259,11 +260,11 @@ void			ft_sort_env(t_env **env);
 void			reset_signals(void);
 int				syntax_checker(t_exec *shell);
 void			exec_in_child(int i, t_shell **shell, int *pid, int redir_flag);
-void			exec_in_parent(t_shell **shell, int redir_flag);
-int				check_double_qoutes(char *s);
-int				check_single_qoutes(char *s);
+void			execute_builtin_in_parent(t_shell **shell, int redir_flag);
+int				is_double_quote_token(char *s);
+int				is_single_quote_token(char *s);
 void    		ft_exit_handler(t_shell *shell, void *ptr, char *message, int exit_code);
-void			check_cmd_path(char *cmd_path, t_shell **shell);
+void			validate_command_path(char *cmd_path, t_shell **shell);
 void			fork_check(int pid, t_shell **shell);
 
 #endif
