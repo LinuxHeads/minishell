@@ -536,12 +536,7 @@ int	expander(t_shell **shell)  /* leaks fixed in this function */
 			if (!split_tokens || !split_tokens[0])
 			{
 				if (split_tokens)
-				{
-					k = 0;
-					while (split_tokens[k])
-						free(split_tokens[k++]);
-					free(split_tokens);
-				}
+					free_str_array(split_tokens);
 				remove_argument(&argv, i);
 				continue ;
 			}
@@ -558,10 +553,7 @@ int	expander(t_shell **shell)  /* leaks fixed in this function */
 			{
 				free(argv[i]);
 				argv[i] = ft_strdup(split_tokens[0]);
-				k = 0;
-				while (split_tokens[k])
-					free(split_tokens[k++]);
-				free(split_tokens);
+				free_str_array(split_tokens);
 			}
 		}
 		else
@@ -662,11 +654,7 @@ static void finalize_env_variable_token(char *expanded, char **arg)
 	if (!split_tokens || !split_tokens[0])
 	{
 		if (split_tokens)
-		{
-			for (int k = 0; split_tokens[k]; k++)
-				free(split_tokens[k]);
-			free(split_tokens);
-		}
+			free_str_array(split_tokens);
 		free(*arg);
 		*arg = NULL;
 		return ; 
@@ -681,9 +669,7 @@ static void finalize_env_variable_token(char *expanded, char **arg)
 		free(*arg);
 		*arg = ft_strdup(split_tokens[0]);
 	}
-	for (int k = 0; split_tokens[k]; k++)
-		free(split_tokens[k]);
-	free(split_tokens);
+	free_str_array(split_tokens);
 	return ;
 }
 
@@ -724,15 +710,9 @@ void	expand_single_argument(char **arg, t_shell *shell)
 	if (!prepare_expanded_token(&expanded, shell, old_arg, arg))
 		return ;
 	if (!encl && ft_strchr(expanded, ' '))
-	{
 		finalize_env_variable_token(expanded, arg);
-		return ;
-	}
 	else
-	{
 		finalize_expansion(expanded, flag, encl, arg);
-		return ;
-	}
 }
 
 
