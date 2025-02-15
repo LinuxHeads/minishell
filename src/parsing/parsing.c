@@ -110,6 +110,28 @@ t_exec	*allocate_shell_commands(int num_commands, char **shell_command)
 	return (shell);
 }
 
+void	print_shell(t_exec *shell)
+{
+	int	i;
+	int	j;
+
+	printf("Parsed Shell Commands:\n");
+	i = 0;
+	while (i < shell->command_count)
+	{
+		printf("Command %d:\n", i + 1);
+		j = 0;
+		while (j < shell->commands[i]->token_count)
+		{
+			printf("  Token %d: %s (Type: %s)\n", j + 1,
+				shell->commands[i]->tokens[j]->value,
+				get_token_type_name(shell->commands[i]->tokens[j]->type));
+			j++;
+		}
+		i++;
+	}
+}
+
 // test for leaks
 // int main()
 // {

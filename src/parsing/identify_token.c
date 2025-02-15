@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 07:16:41 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/13 04:00:55 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/15 18:08:11 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,4 +101,25 @@ t_token_type	identify_token_type(char *token, t_next_token *decide)
 	if (type != ARGUMENT)
 		return (type);
 	return (identify_special_tokens(token));
+}
+
+const char	*get_token_type_name(t_token_type type)
+{
+	const char	*names[14];
+
+	names[0] = "COMMAND";
+	names[1] = "ARGUMENT";
+	names[2] = "PIPE";
+	names[3] = "REDIRECT_IN";
+	names[4] = "REDIRECT_OUT";
+	names[5] = "REDIRECT_APPEND";
+	names[6] = "HEREDOC";
+	names[7] = "HEREDOC_DELI";
+	names[8] = "ENV_VAR";
+	names[9] = "DOLLAR_SIGN";
+	names[10] = "SINGLE_QUOTE";
+	names[11] = "DOUBLE_QUOTE";
+	names[12] = "INPUT_FILE";
+	names[13] = "OUTPUT_FILE";
+	return (names[type]);
 }
