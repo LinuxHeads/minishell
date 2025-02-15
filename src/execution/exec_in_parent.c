@@ -6,13 +6,13 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 04:00:59 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/14 04:31:12 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/15 06:03:07 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-int	redir_in_parent(int out_fd, int *fd1)
+int	redirect_stdout_in_parent(int out_fd, int *fd1)
 {
 	if (out_fd != STDOUT_FILENO)
 	{
@@ -34,7 +34,7 @@ int	redir_in_parent(int out_fd, int *fd1)
 	return (1);
 }
 
-void	exec_in_parent(t_shell **shell, int redir_flag)
+void	execute_builtin_in_parent(t_shell **shell, int redir_flag)
 {
 	int	fd1;
 
@@ -48,9 +48,9 @@ void	exec_in_parent(t_shell **shell, int redir_flag)
 		return ;
 	}
 	if ((*shell)->out_fd != STDOUT_FILENO)
-		if (!redir_in_parent((*shell)->out_fd, &fd1))
+		if (!redirect_stdout_in_parent((*shell)->out_fd, &fd1))
 			return ;
-	(*shell)->exit_status = exec_builtins((*shell)->argv, *shell);
+	(*shell)->exit_status = execute_builtin_command((*shell)->argv, *shell);
 	free_str_array((*shell)->argv);
 	if ((*shell)->out_fd != STDOUT_FILENO)
 	{

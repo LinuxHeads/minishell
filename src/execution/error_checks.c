@@ -6,14 +6,14 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/14 04:44:23 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/14 04:45:00 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/15 06:00:04 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
 
-void	dir_check(char *cmd_path, t_shell **shell)
+void	check_if_directory(char *cmd_path, t_shell **shell)
 {
 	struct stat	path_stat;
 
@@ -32,7 +32,7 @@ void	dir_check(char *cmd_path, t_shell **shell)
 	}
 }
 
-void	check_arg(t_shell **shell)
+void	check_command_permissions(t_shell **shell)
 {
 	if (access((*shell)->argv[0], F_OK) == 0)
 	{
@@ -46,12 +46,12 @@ void	check_arg(t_shell **shell)
 	}
 }
 
-void	check_cmd_path(char *cmd_path, t_shell **shell)
+void	validate_command_path(char *cmd_path, t_shell **shell)
 {
 	if (!cmd_path)
 	{
 		if (ft_strchr((*shell)->argv[0], '/'))
-			check_arg(shell);
+			check_command_permissions(shell);
 		else
 		{
 			if (ft_strcmp((*shell)->argv[0], "~") == 0)
@@ -64,7 +64,7 @@ void	check_cmd_path(char *cmd_path, t_shell **shell)
 			ft_exit_handler(*shell, NULL, 0, 127);
 		}
 	}
-	dir_check(cmd_path, shell);
+	check_if_directory(cmd_path, shell);
 }
 
 void	fork_check(int pid, t_shell **shell)

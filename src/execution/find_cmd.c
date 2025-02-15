@@ -6,13 +6,13 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 06:21:46 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/12 01:08:25 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/15 05:53:50 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-static char	*find_executable_in_paths(char **cmd, char **paths,
+static char	*search_executable_in_paths(char **cmd, char **paths,
 		char **full_path, int *i)
 {
 	while (paths[*i])
@@ -32,7 +32,7 @@ static char	*find_executable_in_paths(char **cmd, char **paths,
 	return (NULL);
 }
 
-char	*find_helper(char **envp, char *cmd)
+char	*locate_command_in_env(char **envp, char *cmd)
 {
 	char	*path_var;
 	char	**paths;
@@ -51,7 +51,7 @@ char	*find_helper(char **envp, char *cmd)
 				return (NULL);
 			}
 			i = 0;
-			full_path = find_executable_in_paths(&cmd, paths, &full_path, &i);
+			full_path = search_executable_in_paths(&cmd, paths, &full_path, &i);
 			if (full_path)
 				return (full_path);
 			free_str_array(paths);
@@ -83,7 +83,7 @@ char	*find_command_path(char *cmd, char **envp)
 			return (NULL);
 		return (path_var);
 	}
-	path = find_helper(envp, cmd);
+	path = locate_command_in_env(envp, cmd);
 	if (path)
 		return (path);
 	return (NULL);

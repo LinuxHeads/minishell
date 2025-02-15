@@ -6,13 +6,13 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 04:11:00 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/11 21:57:00 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/15 05:58:59 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-int	is_builtin(char **arg)
+int	is_builtin_command(char **arg)
 {
 	if (ft_strcmp(arg[0], "echo") == 0)
 		return (1);
@@ -31,7 +31,7 @@ int	is_builtin(char **arg)
 	return (0);
 }
 
-int	exec_builtins(char **args, t_shell *shell)
+int	execute_builtin_command(char **args, t_shell *shell)
 {
 	if (ft_strcmp(args[0], "echo") == 0)
 		return (ft_echo(args));

@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 15:40:45 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/14 15:24:34 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/15 05:51:13 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,7 @@ int	ft_echo(char **args)
 			printf("\n");
 		return (0);
 	}
-	if (check_single_qoutes(args[start_index]) || check_double_qoutes(args[start_index]))
+	if (is_single_quote_token(args[start_index]) || is_double_quote_token(args[start_index]))
 	{
 		if (newline)
 			printf("\n");

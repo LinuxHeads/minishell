@@ -6,19 +6,19 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 06:18:02 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/13 04:42:45 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/15 06:00:33 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-static int	is_redirect_operator(int type)
+static int	is_redirection_token(int type)
 {
 	return (type == REDIRECT_IN || type == REDIRECT_OUT
 		|| type == REDIRECT_APPEND || type == HEREDOC);
 }
 
-static int	get_count(t_command *cmd)
+static int	count_command_arguments(t_command *cmd)
 {
 	int	i;
 	int	count;
@@ -27,7 +27,7 @@ static int	get_count(t_command *cmd)
 	count = 0;
 	while (i < cmd->token_count)
 	{
-		if (is_redirect_operator(cmd->tokens[i]->type))
+		if (is_redirection_token(cmd->tokens[i]->type))
 			i += 2;
 		else
 		{
@@ -47,7 +47,7 @@ static int	fill_args(char **argv, t_command *cmd)
 	j = 0;
 	while (i < cmd->token_count)
 	{
-		if (is_redirect_operator(cmd->tokens[i]->type))
+		if (is_redirection_token(cmd->tokens[i]->type))
 		{
 			i += 2;
 			continue ;
@@ -70,7 +70,7 @@ char	**build_command_argv(t_command *cmd)// no leaks
 	int		count;
 	char	**argv;
 
-	count = get_count(cmd);
+	count = count_command_arguments(cmd);
 	argv = malloc(sizeof(char *) * (count + 1));
 	if (!argv)
 		return (NULL);

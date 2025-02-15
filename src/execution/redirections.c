@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirections.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
+/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/08 00:46:38 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/14 11:58:40 by ahramada         ###   ########.fr       */
+/*   Updated: 2025/02/15 05:50:14 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ static int	ft_setup_infile(t_command *cmd, int *in_fd, int *i, t_shell *shell)
 		if (*i + 1 < cmd->token_count && cmd->tokens[*i + 1])
 		{
 			(*i)++;
-			expander_test(&cmd->tokens[*i]->value, shell);
+			expand_single_argument(&cmd->tokens[*i]->value, shell);
 			cmd->tokens[*i]->value = trim_quotes(cmd->tokens[*i]->value);
 			if (cmd->tokens[*i]->value == NULL)
 				return (0);
@@ -48,7 +48,7 @@ static int	ft_setup_outfile(t_command *cmd, int *out_fd, int *i,
 		if (*i + 1 < cmd->token_count && cmd->tokens[*i + 1])
 		{
 			(*i)++;
-			expander_test(&cmd->tokens[*i]->value, shell);
+			expand_single_argument(&cmd->tokens[*i]->value, shell);
 			cmd->tokens[*i]->value = trim_quotes(cmd->tokens[*i]->value);
 			if (cmd->tokens[*i]->value == NULL)
 				return (0);
@@ -77,7 +77,7 @@ static int	ft_setup_append(t_command *cmd, int *out_fd, int *i, t_shell *shell)
 		if (*i + 1 < cmd->token_count && cmd->tokens[*i + 1])
 		{
 			(*i)++;
-			expander_test(&cmd->tokens[*i]->value, shell);
+			expand_single_argument(&cmd->tokens[*i]->value, shell);
 			cmd->tokens[*i]->value = trim_quotes(cmd->tokens[*i]->value);
 			if (cmd->tokens[*i]->value == NULL)
 				return (0);

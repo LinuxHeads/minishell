@@ -6,13 +6,13 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/10 02:41:05 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/14 04:45:05 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/15 06:02:58 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-int	create_pipe(int i, t_shell **shell)
+int	setup_pipe_for_command(int i, t_shell **shell)
 {
 	if (i < (*shell)->parser->command_count - 1)
 	{
@@ -27,7 +27,7 @@ int	create_pipe(int i, t_shell **shell)
 }
 
 /*
-** Helper: child_redirect_fds
+** Helper: setup_fd_redirection
 **
 ** Sets up file descriptor redirections for the child process.
 ** - Duplicates in_fd to STDIN if needed.
@@ -39,7 +39,7 @@ int	create_pipe(int i, t_shell **shell)
 	and both pipe ends (since they are
 **   no longer needed after dup2).
 */
-static void	child_redirect_fds(t_shell **shell)
+static void	setup_fd_redirection(t_shell **shell)
 {
 	if ((*shell)->in_fd != STDIN_FILENO)
 		if (dup2((*shell)->in_fd, STDIN_FILENO) == -1)
@@ -62,7 +62,7 @@ static void	child_redirect_fds(t_shell **shell)
 }
 
 /*
-** Helper: child_run_command
+** Helper: execute_command
 **
 ** After setting up redirections, this function:
 ** - Checks for and executes built-in commands.
@@ -71,17 +71,17 @@ static void	child_redirect_fds(t_shell **shell)
 ** - If execve returns (i.e. an error occurs), it cleans up and exits
 **   with an appropriate exit code.
 */
-static void	child_run_command(t_shell **shell)
+static void	execute_command(t_shell **shell)
 {
 	char	*cmd_path;
 
-	if (is_builtin((*shell)->argv))
+	if (is_builtin_command((*shell)->argv))
 	{
-		(*shell)->exit_status = exec_builtins((*shell)->argv, *shell);
+		(*shell)->exit_status = execute_builtin_command((*shell)->argv, *shell);
 		ft_exit_handler(*shell, NULL, 0, (*shell)->exit_status);
 	}
 	cmd_path = find_command_path((*shell)->argv[0], (*shell)->envp);
-	check_cmd_path(cmd_path, shell);
+	validate_command_path(cmd_path, shell);
 	execve(cmd_path, (*shell)->argv, (*shell)->envp);
 	perror("execve");
 	if ((*shell)->pipe_created)
@@ -97,7 +97,7 @@ static void	child_run_command(t_shell **shell)
 }
 
 /*
-** Helper: parent_cleanup
+** Helper: cleanup_parent_fds
 **
 ** In the parent process (after fork), cleans up unused file descriptors.
 ** - Closes in_fd if it is not the standard input or the previous pipe.
@@ -107,7 +107,7 @@ static void	child_run_command(t_shell **shell)
 	closes its write end and updates prev_fd to its read end.
 **   Otherwise, sets prev_fd to -1.
 */
-static void	parent_cleanup(t_shell **shell)
+static void	cleanup_parent_fds(t_shell **shell)
 {
 	if ((*shell)->in_fd != STDIN_FILENO && (*shell)->in_fd != (*shell)->prev_fd)
 		close((*shell)->in_fd);
@@ -146,7 +146,7 @@ void	exec_in_child(int i, t_shell **shell, int *pid, int redir_flag)
 {
 	if (i > 0 && (*shell)->prev_fd != -1 && (*shell)->in_fd == STDIN_FILENO)
 		(*shell)->in_fd = (*shell)->prev_fd;
-	(*shell)->pipe_created = create_pipe(i, shell);
+	(*shell)->pipe_created = setup_pipe_for_command(i, shell);
 	*pid = fork();
 	fork_check(*pid, shell);
 	if (*pid == 0)
@@ -161,8 +161,8 @@ void	exec_in_child(int i, t_shell **shell, int *pid, int redir_flag)
 		{
 			ft_exit_handler(*shell, NULL, 0, 1);
 		}
-		child_redirect_fds(shell);
-		child_run_command(shell);
+		setup_fd_redirection(shell);
+		execute_command(shell);
 	}
-	parent_cleanup(shell);
+	cleanup_parent_fds(shell);
 }

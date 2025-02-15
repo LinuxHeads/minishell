@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/04 04:33:45 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/14 19:26:51 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/15 06:04:10 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,7 @@ static char	*get_target_path(char **args, t_env **envp)
 {
 	char	*path;
 
-	if (!args || !args[0] || ft_strcmp(args[0], "~") == 0 || ft_strcmp(args[0],
-			"--") == 0)
+	if (!args || !args[0] || ft_strcmp(args[0], "--") == 0)
 	{
 		path = ft_getenv("HOME", *envp);
 		if (!path)

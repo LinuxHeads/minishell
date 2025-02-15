@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 01:23:07 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/14 15:41:31 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/15 06:01:15 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ void	free_str_array(char **arr)
 	free(arr);
 }
 
-static int	has_valid_command(t_command *cmd)
+static int	contains_command_token(t_command *cmd)
 {
 	int	i;
 
@@ -120,7 +120,7 @@ void	execute_pipeline(t_shell **shell)
 			(*shell)->exit_status = 130;
 			continue ;
 		}
-		if (!has_valid_command((*shell)->parser->commands[i]))
+		if (!contains_command_token((*shell)->parser->commands[i]))
 		{
 			if (!get_redirections((*shell)->parser->commands[i],
 					&(*shell)->in_fd, &(*shell)->out_fd, *shell))
@@ -136,9 +136,9 @@ void	execute_pipeline(t_shell **shell)
 			fprintf(stderr, "minishell: invalid command\n");
 			exit(EXIT_FAILURE);
 		}
-		if (is_builtin((*shell)->argv) && (*shell)->parser->command_count == 1)
+		if (is_builtin_command((*shell)->argv) && (*shell)->parser->command_count == 1)
 		{
-			exec_in_parent(shell, redir_flag);
+			execute_builtin_in_parent(shell, redir_flag);
 			return ;
 		}
 		else

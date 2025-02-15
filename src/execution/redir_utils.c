@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/08 01:44:02 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/14 15:51:09 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/15 05:51:53 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ void	ft_heredoc(int pipe_fds[2], t_command *cmd, int i,t_shell *shell)
 			free(line);
 			break ;
 		}
-		expander_test(&line,shell);
+		expand_single_argument(&line,shell);
 		if (line)
 		{
 			write(pipe_fds[1],line , ft_strlen(line));
