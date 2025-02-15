@@ -6,11 +6,21 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 01:23:07 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/15 05:49:19 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/15 18:13:44 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
+
+void reset_signals_heredoc(void)
+{
+	struct sigaction sa;
+	
+	ft_bzero(&sa, sizeof(struct sigaction));
+	sa.sa_handler = &close_heredoc;
+	sa.sa_flags = SA_RESTART;
+	sigaction(SIGINT, &sa, NULL);
+}
 
 void handle_sigint(int sig)
 {

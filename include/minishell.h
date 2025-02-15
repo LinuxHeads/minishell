@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 19:24:00 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/15 17:58:34 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/15 18:13:38 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -276,5 +276,7 @@ char			*trim_spaces(const char *s);
 char	*strip_outers_quotes(const char *s);
 char	*compress_whitespace(const char *str);
 void	expand_single_argument(char **arg, t_shell *shell);
+void reset_signals_heredoc(void);
+void close_heredoc(int signum);
 
 #endif

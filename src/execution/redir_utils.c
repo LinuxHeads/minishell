@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/08 01:44:02 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/15 05:51:53 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/15 18:13:12 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,16 +16,6 @@ void close_heredoc(int signum)
 {
 	g_signal_flag = signum;
 	close(0);
-}
-
-void reset_signals_heredoc(void)
-{
-	struct sigaction sa;
-	
-	ft_bzero(&sa, sizeof(struct sigaction));
-	sa.sa_handler = &close_heredoc;
-	sa.sa_flags = SA_RESTART;
-	sigaction(SIGINT, &sa, NULL);
 }
 
 void	ft_heredoc(int pipe_fds[2], t_command *cmd, int i,t_shell *shell)
