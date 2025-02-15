@@ -36,6 +36,9 @@ SRC =  	parsing/parsing.c \
 		envp/shlvl.c \
 		envp/sort_envp.c \
 		utils/list_utils.c \
+		utils/utils.c \
+		utils/utils_spaces.c \
+		utils/utils_qoutes.c \
 		builtin_functions/cd.c \
 		builtin_functions/echo.c \
 		builtin_functions/env.c \
@@ -43,8 +46,9 @@ SRC =  	parsing/parsing.c \
 		builtin_functions/pwd.c \
 		builtin_functions/unset.c \
 		builtin_functions/exit.c \
-		expander/expander.c
-
+		expander/expander.c \
+		expander/expand_env.c \
+		expander/expand_arg.c
 # Automatically find the full paths of the source files
 SRCS = $(addprefix $(SRC_DIR)/, $(SRC))
 OBJS = $(patsubst $(SRC_DIR)/%.c, $(OBJS_DIR)/%.o, $(SRCS))

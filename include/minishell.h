@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 19:24:00 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/15 06:00:08 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/15 17:58:34 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -266,5 +266,15 @@ int				is_single_quote_token(char *s);
 void    		ft_exit_handler(t_shell *shell, void *ptr, char *message, int exit_code);
 void			validate_command_path(char *cmd_path, t_shell **shell);
 void			fork_check(int pid, t_shell **shell);
+int				count_surrounding_quotes(const char *str);
+int				is_whitespace(const char *str);
+char			*expand_env_string(const char *str, t_shell *shell);
+char			*cleanup_input(char *input);
+int				array_length(char **arr);
+void			remove_extra_spaces(char *new_str, const char *str, int *j);
+char			*trim_spaces(const char *s);
+char	*strip_outers_quotes(const char *s);
+char	*compress_whitespace(const char *str);
+void	expand_single_argument(char **arg, t_shell *shell);
 
 #endif
