@@ -3,14 +3,27 @@
 /*                                                        :::      ::::::::   */
 /*   process_env_token.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 07:47:50 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/16 07:48:41 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/16 13:13:30 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
+
+int	for_good_resone(char ****argv_ptr, char ***argv, int i,
+		char ***split_tokens)
+{
+	**argv_ptr = replace_token_in_array(*argv, i, *split_tokens);
+	if (!**argv_ptr)
+	{
+		free_str_array(*split_tokens);
+		return (-1);
+	}
+	free_str_array(*split_tokens);
+	return (0);
+}
 
 static int	process_expanded_token_with_spaces(char ***argv_ptr, char **argv,
 		int i, char *expanded)
@@ -29,16 +42,7 @@ static int	process_expanded_token_with_spaces(char ***argv_ptr, char **argv,
 		return (0);
 	}
 	if (array_length(split_tokens) > 1)
-	{
-		*argv_ptr = replace_token_in_array(argv, i, split_tokens);
-		if (!*argv_ptr)
-		{
-			free_str_array(split_tokens);
-			return (-1);
-		}
-		free_str_array(split_tokens);
-		return (0);
-	}
+		return (for_good_resone(&argv_ptr, &argv, i, &split_tokens));
 	else
 	{
 		free(argv[i]);
@@ -96,20 +100,12 @@ static char	*expand_and_cleanup_token(char ***argv_ptr, char **argv, int i,
 	return (expanded);
 }
 
-/*
-** Processes a token that contains '$'. It expands the env variables,
-** cleans the result and, if needed, splits the token if it contains spaces.
-** Depending on the outcome, the token at index i may be removed or updated.
-**
-** Returns 1 if the token remains (and i should be incremented) or 0 if the
-** token was removed/replaced (and i should not be incremented).
-*/
 int	process_env_token(char ***argv_ptr, t_shell *shell, int i)
 {
-	char **argv;
-	char *expanded;
-	int encl;
-	int temp;
+	char	**argv;
+	char	*expanded;
+	int		encl;
+	int		temp;
 
 	argv = *argv_ptr;
 	expanded = expand_and_cleanup_token(argv_ptr, argv, i, shell);

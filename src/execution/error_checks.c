@@ -3,15 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   error_checks.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/14 04:44:23 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/15 06:00:04 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/16 12:41:32 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
-
 
 void	check_if_directory(char *cmd_path, t_shell **shell)
 {

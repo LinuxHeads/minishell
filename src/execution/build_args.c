@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   build_args.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 06:18:02 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/15 06:00:33 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/16 12:39:59 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ static int	fill_args(char **argv, t_command *cmd)
 	return (1);
 }
 
-char	**build_command_argv(t_command *cmd)// no leaks
+char	**build_command_argv(t_command *cmd)
 {
 	int		count;
 	char	**argv;

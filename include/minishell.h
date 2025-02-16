@@ -6,7 +6,7 @@
 /*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 19:24:00 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/16 11:00:05 by ahramada         ###   ########.fr       */
+/*   Updated: 2025/02/16 13:23:56 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,7 +143,7 @@ char				**envp_to_str(t_env *env);
 void				print_envp(t_env *env);
 void				printstr_envp(char **envp);
 t_env				*init_envp(char **envp);
-void				free_envp_list(t_env *env);
+char				*free_envp_list(t_env *env);
 void				free_envp_array(char **envp);
 int					env_length(t_env *env);
 char				*ft_getenv(const char *name, t_env *env);

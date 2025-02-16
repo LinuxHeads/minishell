@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   envp_errors.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 05:09:35 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/06 05:09:49 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/16 13:27:00 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void	free_envp_node(t_env *env)
 	free(env);
 }
 
-void	free_envp_list(t_env *env)
+char	*free_envp_list(t_env *env)
 {
 	t_env	*tmp;
 
@@ -29,6 +29,7 @@ void	free_envp_list(t_env *env)
 		env = env->next;
 		free_envp_node(tmp);
 	}
+	return (NULL);
 }
 
 void	free_envp_array(char **envp)

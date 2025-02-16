@@ -1,18 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   execute.c                                          :+:      :+:    :+:   */
+/*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yourlogin <yourlogin@student.42.fr>        +#+  +:+       +#+        */
+/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/30 01:23:07 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/02 15:00:00 by yourlogin         ###   ########.fr       */
+/*   Created: 2025/02/13 02:35:03 by abdsalah          #+#    #+#             */
+/*   Updated: 2025/02/16 13:07:59 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
-
-/* --- Helper to identify redirection tokens --- */
 
 static t_token	*allocate_token(char *str, t_next_token *decide)
 {
@@ -31,8 +29,6 @@ static t_token	*allocate_token(char *str, t_next_token *decide)
 	return (token);
 }
 
-/* --- Fills a command’s token array --- */
-
 static int	fill_command_tokens(t_command *cmd, char **t_str,
 		t_next_token *decide)
 {
@@ -50,14 +46,13 @@ static int	fill_command_tokens(t_command *cmd, char **t_str,
 	return (0);
 }
 
-/* --- Allocates a single command --- */
-
-static t_command	*allocate_command(char *cmd_str)
+static t_command	*allocate_command(char *cmd_str, int *i)
 {
 	t_command		*cmd;
 	t_next_token	decide;
 	char			**t_str;
 
+	(*i)++;
 	decide = (t_next_token){1, 0, 0, 0, 0, 0};
 	cmd = malloc(sizeof(t_command));
 	if (!cmd)
@@ -78,8 +73,6 @@ static t_command	*allocate_command(char *cmd_str)
 	return (cmd);
 }
 
-/* --- Allocates all shell commands --- */
-
 t_exec	*allocate_shell_commands(int num_commands, char **shell_command)
 {
 	t_exec	*shell;
@@ -98,13 +91,12 @@ t_exec	*allocate_shell_commands(int num_commands, char **shell_command)
 	i = 0;
 	while (i < num_commands)
 	{
-		shell->commands[i] = allocate_command(shell_command[i]);
-		if (!shell->commands[i])
+		shell->commands[i - 1] = allocate_command(shell_command[i], &i);
+		if (!shell->commands[i - 1])
 		{
 			free_shell(shell);
 			return (NULL);
-		}	
-		i++;
+		}
 	}
 	shell->commands[i] = NULL;
 	return (shell);
@@ -131,15 +123,3 @@ void	print_shell(t_exec *shell)
 		i++;
 	}
 }
-
-// test for leaks
-// int main()
-// {
-// 	t_exec *shell;
-
-// 	shell = allocate_shell_commands(2, (char *[]){"ls -l", "cat file"});
-// 	if (!shell)
-// 		return (1);
-// 	free_shell(shell);
-// 	return (0);
-// }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirections.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/08 00:46:38 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/15 05:50:14 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/16 13:14:31 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,7 @@ static int	ft_setup_append(t_command *cmd, int *out_fd, int *i, t_shell *shell)
 	return (1);
 }
 
-static int	ft_setup_heredoc(t_command *cmd, int *in_fd, int *i,t_shell *shell)
+static int	ft_setup_heredoc(t_command *cmd, int *in_fd, int *i, t_shell *shell)
 {
 	int	pipe_fds[2];
 
@@ -116,7 +116,7 @@ static int	ft_setup_heredoc(t_command *cmd, int *in_fd, int *i,t_shell *shell)
 				perror("pipe");
 				exit(EXIT_FAILURE);
 			}
-			ft_heredoc(pipe_fds, cmd, *i,shell);
+			ft_heredoc(pipe_fds, cmd, *i, shell);
 			close(pipe_fds[1]);
 			*in_fd = pipe_fds[0];
 		}
@@ -125,7 +125,6 @@ static int	ft_setup_heredoc(t_command *cmd, int *in_fd, int *i,t_shell *shell)
 }
 
 int	get_redirections(t_command *cmd, int *in_fd, int *out_fd, t_shell *shell)
-		// found leaks caused by preprocess_input_test
 {
 	int	i;
 
@@ -147,7 +146,7 @@ int	get_redirections(t_command *cmd, int *in_fd, int *out_fd, t_shell *shell)
 			return (0);
 		if (ft_setup_append(cmd, out_fd, &i, shell) == 0)
 			return (0);
-		if (ft_setup_heredoc(cmd, in_fd, &i,shell) == 0)
+		if (ft_setup_heredoc(cmd, in_fd, &i, shell) == 0)
 			return (0);
 		i++;
 	}

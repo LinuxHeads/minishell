@@ -6,7 +6,7 @@
 /*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 23:20:22 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/16 12:30:42 by ahramada         ###   ########.fr       */
+/*   Updated: 2025/02/16 13:27:31 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,10 +84,7 @@ t_env	*ft_copy_env(t_env *env)
 	{
 		new_node = malloc(sizeof(t_env));
 		if (!new_node)
-		{
-			free_envp_list(new_head);
-			return (NULL);
-		}
+			return ((t_env *)free_envp_list(new_head));
 		if (!init_node(env, new_head, new_node))
 		{
 			free(new_node);
