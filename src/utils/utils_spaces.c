@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_spaces.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/15 17:50:11 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/15 17:56:09 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/16 12:23:19 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,4 +98,3 @@ char	*compress_whitespace(const char *str)
 	new_str[j] = '\0';
 	return (new_str);
 }
-
