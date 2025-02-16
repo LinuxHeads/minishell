@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/15 17:52:30 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/15 18:08:28 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/15 18:29:19 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,3 +37,17 @@ int	count_words(char *str, char sep)
 	return (count);
 }
 
+void	free_str_array(char **arr)
+{
+	int	i;
+
+	i = 0;
+	if (!arr)
+		return ;
+	while (arr[i])
+	{
+		free(arr[i]);
+		i++;
+	}
+	free(arr);
+}

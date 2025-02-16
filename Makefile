@@ -12,7 +12,6 @@ OBJS_DIR = objs
 SRC =  	parsing/parsing.c \
 		parsing/splitter.c \
 		parsing/identify_token.c \
-		parsing/utils.c \
 		parsing/syntax.c \
 		parsing/preprocess_input.c \
 		main.c \
@@ -48,7 +47,8 @@ SRC =  	parsing/parsing.c \
 		builtin_functions/exit.c \
 		expander/expander.c \
 		expander/expand_env.c \
-		expander/expand_arg.c
+		expander/expand_arg.c \
+		expander/expand_utils.c
 # Automatically find the full paths of the source files
 SRCS = $(addprefix $(SRC_DIR)/, $(SRC))
 OBJS = $(patsubst $(SRC_DIR)/%.c, $(OBJS_DIR)/%.o, $(SRCS))

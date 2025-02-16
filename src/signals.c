@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 01:23:07 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/15 18:13:44 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/15 19:19:33 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,10 +24,10 @@ void reset_signals_heredoc(void)
 
 void handle_sigint(int sig)
 {
+    
     g_signal_flag = sig;
     write(STDOUT_FILENO, "\n", 1);
     close (0);
-    
 }
 
 // Reset signals in child processes

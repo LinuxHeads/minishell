@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 19:24:00 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/15 18:13:38 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/16 07:34:33 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -273,10 +273,14 @@ char			*cleanup_input(char *input);
 int				array_length(char **arr);
 void			remove_extra_spaces(char *new_str, const char *str, int *j);
 char			*trim_spaces(const char *s);
-char	*strip_outers_quotes(const char *s);
-char	*compress_whitespace(const char *str);
-void	expand_single_argument(char **arg, t_shell *shell);
-void reset_signals_heredoc(void);
-void close_heredoc(int signum);
-
+char			*strip_outers_quotes(const char *s);
+char			*compress_whitespace(const char *str);
+void			expand_single_argument(char **arg, t_shell *shell);
+void 			reset_signals_heredoc(void);
+void 			close_heredoc(int signum);
+void			free_tokens(char **arr, int count);
+int 			check_for_quotes(char *old_arg, char **arg);
+int				has_closing(int i, char quote, const char *s, size_t len);
+void			remove_argument(char ***argv_ptr, int index);
+int				check_for_sign(char *old_arg, char **arg);
 #endif

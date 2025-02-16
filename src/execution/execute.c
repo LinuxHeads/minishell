@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 01:23:07 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/15 06:01:15 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/16 03:33:00 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,21 +29,6 @@ void	wait_for_children(t_shell *shell, int pid)
 		}
 		last_pid = wait(&wstatus);
 	}
-}
-
-void	free_str_array(char **arr)
-{
-	int	i;
-
-	i = 0;
-	if (!arr)
-		return ;
-	while (arr[i])
-	{
-		free(arr[i]);
-		i++;
-	}
-	free(arr);
 }
 
 static int	contains_command_token(t_command *cmd)
@@ -93,16 +78,15 @@ void	execute_pipeline(t_shell **shell)
 		{
 			if (!get_redirections((*shell)->parser->commands[i],
 					&(*shell)->in_fd, &(*shell)->out_fd, *shell))
-				// found leaks caused by preprocess_input_test
 			{
 				(*shell)->exit_status = 1;
 				redir_flag = 1;
 			}
 			free_str_array((*shell)->argv);
 			if ((*shell)->in_fd != STDIN_FILENO)
-				close ((*shell)->in_fd);
+				close((*shell)->in_fd);
 			if ((*shell)->out_fd != STDOUT_FILENO)
-				close ((*shell)->out_fd);
+				close((*shell)->out_fd);
 			i++;
 			continue ;
 		}
@@ -134,9 +118,10 @@ void	execute_pipeline(t_shell **shell)
 		if (!(*shell)->argv || !(*shell)->argv[0])
 		{
 			fprintf(stderr, "minishell: invalid command\n");
-			exit(EXIT_FAILURE);
+			ft_exit_handler(*shell, NULL, NULL, (*shell)->exit_status);
 		}
-		if (is_builtin_command((*shell)->argv) && (*shell)->parser->command_count == 1)
+		if (is_builtin_command((*shell)->argv)
+			&& (*shell)->parser->command_count == 1)
 		{
 			execute_builtin_in_parent(shell, redir_flag);
 			return ;

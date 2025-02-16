@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/10 02:02:23 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/13 03:54:37 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/15 18:27:59 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ int	is_redirection_operator(const char *value)
 }
 
 
-static int check_helper( t_command *cmd, int i)
+static int check_redir_helper( t_command *cmd, int i)
 {
 	if (!cmd->tokens[i + 1] || is_redirection_operator(cmd->tokens[i
 		+ 1]->value) || !ft_strcmp(cmd->tokens[i + 1]->value,
@@ -80,7 +80,7 @@ int	check_redirections(t_exec *parser)
 		{
 			if (is_redirection_operator(cmd->tokens[i]->value))
 			{
-				if (!check_helper(cmd, i))
+				if (!check_redir_helper(cmd, i))
 					return (0);
 			}
 			i++;

@@ -6,56 +6,14 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/15 17:47:31 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/15 17:47:58 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/16 07:34:16 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
 
-static int check_for_sign(char *old_arg, char **arg)
-{
-	char	*no_closed_quotes;
-	char	*tmp;
 
-	if (!ft_strchr(old_arg, '$'))
-	{
-		no_closed_quotes = strip_outers_quotes(old_arg);
-		if (no_closed_quotes)
-		{
-			free(old_arg);
-			old_arg = no_closed_quotes;
-			*arg = old_arg;
-		}
-		tmp = cleanup_input(old_arg);
-		if (tmp)
-		{
-			free(old_arg);
-			*arg = tmp;
-		}
-		return (1);
-	}
-	return (0);
-}
-
-static int check_for_quotes(char *old_arg, char **arg)
-{
-	char	*c;
-
-	if (is_single_quote_token(old_arg) || is_double_quote_token(old_arg))
-	{
-		c = malloc(3 * sizeof(char));
-		if (!c)
-			return (2);
-		c[0] = old_arg[0];
-		c[1] = old_arg[1];
-		c[2] = '\0';
-		free(old_arg);
-		*arg = c;
-		return (1);
-	}
-	return (0);
-}
 
 static int	prepare_expanded_token(char **expanded, t_shell *shell, char *old_arg, char **arg)
 {
