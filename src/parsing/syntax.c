@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   syntax.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/10 02:02:23 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/15 18:27:59 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/16 12:27:24 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,6 @@ int	check_pipes(t_exec *parser)
 	i = 0;
 	while (i < parser->command_count)
 	{
-		/* Check if the command itself or its tokens array is NULL,
-			or if the tokens array is empty (first token is NULL) */
 		if (!parser->commands[i] || !parser->commands[i]->tokens
 			|| !parser->commands[i]->tokens[0])
 		{
@@ -35,22 +33,18 @@ int	check_pipes(t_exec *parser)
 	return (1);
 }
 
-/* Helper: returns 1 if the token is a redirection operator, 0 otherwise */
 int	is_redirection_operator(const char *value)
 {
 	return (!ft_strcmp(value, ">") || !ft_strcmp(value, ">>")
 		|| !ft_strcmp(value, "<") || !ft_strcmp(value, "<<"));
 }
 
-
-static int check_redir_helper( t_command *cmd, int i)
+static int	check_redir_helper(t_command *cmd, int i)
 {
 	if (!cmd->tokens[i + 1] || is_redirection_operator(cmd->tokens[i
-		+ 1]->value) || !ft_strcmp(cmd->tokens[i + 1]->value,
-		"|"))
+				+ 1]->value) || !ft_strcmp(cmd->tokens[i + 1]->value, "|"))
 	{
-		ft_putstr_fd("minishell: syntax error near unexpected token `",
-			2);
+		ft_putstr_fd("minishell: syntax error near unexpected token `", 2);
 		if (cmd->tokens[i + 1])
 			ft_putstr_fd(cmd->tokens[i + 1]->value, 2);
 		else
@@ -61,10 +55,6 @@ static int check_redir_helper( t_command *cmd, int i)
 	return (1);
 }
 
-/* Extended check_redirections:
-   - Loops through each command (if you have multiple commands in the pipeline)
-   - For each redirection operator,
-	ensures the following token exists and is not an operator */
 int	check_redirections(t_exec *parser)
 {
 	int			i;
