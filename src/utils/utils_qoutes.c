@@ -23,8 +23,8 @@ int	count_surrounding_quotes(const char *str)
 	len = ft_strlen(str);
 	start = str;
 	end = str + len - 1;
-	while (len >= 2 &&
-			((*start == '\'' && *end == '\'') || (*start == '"' && *end == '"')))
+	while (len >= 2 && ((*start == '\'' && *end == '\'') || (*start == '"'
+				&& *end == '"')))
 	{
 		count++;
 		start++;
