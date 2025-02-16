@@ -48,7 +48,11 @@ SRC =  	parsing/parsing.c \
 		expander/expander.c \
 		expander/expand_env.c \
 		expander/expand_arg.c \
-		expander/expand_utils.c
+		expander/expand_utils.c \
+		expander/cleanup_input.c \
+		expander/replace_tokens.c \
+		expander/strip_quotes.c \
+		expander/process_env_token.c \
 # Automatically find the full paths of the source files
 SRCS = $(addprefix $(SRC_DIR)/, $(SRC))
 OBJS = $(patsubst $(SRC_DIR)/%.c, $(OBJS_DIR)/%.o, $(SRCS))

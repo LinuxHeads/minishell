@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 19:24:00 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/16 07:34:33 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/16 07:48:52 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -283,4 +283,7 @@ int 			check_for_quotes(char *old_arg, char **arg);
 int				has_closing(int i, char quote, const char *s, size_t len);
 void			remove_argument(char ***argv_ptr, int index);
 int				check_for_sign(char *old_arg, char **arg);
+char			*strip_outers_quotes(const char *s);
+char			**replace_token_in_array(char **argv, int index, char **new_tokens);
+int				process_env_token(char ***argv_ptr, t_shell *shell, int i);
 #endif
