@@ -6,7 +6,7 @@
 /*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 15:42:39 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/16 12:20:32 by ahramada         ###   ########.fr       */
+/*   Updated: 2025/02/16 18:13:13 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,12 +25,8 @@ static int	ft_printenv_sorted(t_env *env_list)
 	return (1);
 }
 
-static int	syntax_error(const char *arg)
+static int	check_initial_syntax(const char *arg)
 {
-	const char	*equal_sign;
-	size_t		len;
-	size_t		i;
-
 	if (ft_isdigit(arg[0]) || arg[0] == '=' || arg[0] == '\0' || arg[0] == '+'
 		|| arg[0] == '-')
 	{
@@ -44,53 +40,84 @@ static int	syntax_error(const char *arg)
 			arg);
 		return (0);
 	}
+	return (1);
+}
+
+static int	validate_identifier_chars(const char *arg, size_t len)
+{
+	size_t	i;
+
+	i = 0;
+	while (i < len)
+	{
+		if (!ft_isalnum(arg[i]) && arg[i] != '_')
+		{
+			if (arg[i] == '+' && arg[i + 1] == '=')
+				i++;
+			else
+			{
+				fprintf(stderr,
+					"minishell: export: `%s': not a valid identifier\n", arg);
+				return (0);
+			}
+		}
+		i++;
+	}
+	return (1);
+}
+
+static int	syntax_error(const char *arg)
+{
+	int			status;
+	const char	*equal_sign;
+	size_t		len;
+
+	status = check_initial_syntax(arg);
+	if (status != 1)
+		return (status);
 	equal_sign = ft_strchr(arg, '=');
 	if (equal_sign)
 		len = equal_sign - arg;
 	else
 		len = ft_strlen(arg);
-	i = -1;
-	while (++i < len)
+	return (validate_identifier_chars(arg, len));
+}
+
+static int	split_with_equal(const char *arg, char **key, char **value)
+{
+	int	key_len;
+
+	key_len = ft_strchr(arg, '=') - arg;
+	*key = ft_substr(arg, 0, key_len);
+	if (!*key)
+		return (0);
+	*value = ft_strdup(ft_strchr(arg, '=') + 1);
+	if (!*value)
 	{
-		if (!ft_isalnum(arg[i]) && arg[i] != '_')
-		{
-			if (arg[i] == '+' && arg[i + 1] == '=')
-				continue ;
-			fprintf(stderr, "minishell: export: `%s': not a valid identifier\n",
-				arg);
-			return (0);
-		}
+		free(*key);
+		return (0);
 	}
+	return (1);
+}
+
+static int	split_without_equal(const char *arg, char **key, char **value)
+{
+	*key = ft_strdup(arg);
+	if (!*key)
+		return (0);
+	*value = NULL;
 	return (1);
 }
 
 static int	split_var(const char *arg, char **key, char **value)
 {
 	char	*equal_sign;
-	int		key_len;
 
 	equal_sign = ft_strchr(arg, '=');
 	if (equal_sign)
-	{
-		key_len = equal_sign - arg;
-		*key = ft_substr(arg, 0, key_len);
-		if (!*key)
-			return (0);
-		*value = ft_strdup(equal_sign + 1);
-		if (!*value)
-		{
-			free(*key);
-			return (0);
-		}
-	}
+		return (split_with_equal(arg, key, value));
 	else
-	{
-		*key = ft_strdup(arg);
-		if (!*key)
-			return (0);
-		*value = NULL;
-	}
-	return (1);
+		return (split_without_equal(arg, key, value));
 }
 
 int	appeand_mode(char *key, char *value, t_env **env_list)
@@ -116,44 +143,60 @@ int	appeand_mode(char *key, char *value, t_env **env_list)
 	return (1);
 }
 
-int	ft_export(char **args, t_env **env_list)
+int	for_the(char *key, char *value, t_env **env_list)
+{
+	if (!appeand_mode(key, value, env_list))
+	{
+		free(key);
+		free(value);
+		return (1);
+	}
+	else if (!ft_setenv(key, value, env_list))
+	{
+		free(key);
+		free(value);
+		return (1);
+	}
+	return (0);
+}
+
+static int	process_export_argument(const char *arg)
 {
 	char	*key;
 	char	*value;
-	int		i;
 	int		syntax;
 
-	i = -1;
+	syntax = syntax_error(arg);
+	if (!syntax || syntax == 2)
+	{
+		if (syntax == 2)
+			return (2);
+		return (1);
+	}
+	if (!split_var(arg, &key, &value))
+		return (1);
+	if (value)
+	{
+	}
+	free(key);
+	free(value);
+	return (0);
+}
+
+int	ft_export(char **args, t_env **env_list)
+{
+	int	i;
+	int	ret;
+
+	i = 0;
 	if (!args[0])
 		return (!ft_printenv_sorted(*env_list));
-	while (args[++i])
+	while (args[i])
 	{
-		syntax = syntax_error(args[i]);
-		if (!syntax || syntax == 2)
-		{
-			if (syntax == 2)
-				return (2);
-			return (1);
-		}
-		if (!split_var(args[i], &key, &value))
-			return (1);
-		if (value)
-		{
-			if (!appeand_mode(key, value, env_list))
-			{
-				free(key);
-				free(value);
-				return (1);
-			}
-			else if (!ft_setenv(key, value, env_list))
-			{
-				free(key);
-				free(value);
-				return (1);
-			}
-		}
-		free(key);
-		free(value);
+		ret = process_export_argument(args[i]);
+		if (ret)
+			return (ret);
+		i++;
 	}
 	return (0);
 }
