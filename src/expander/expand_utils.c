@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 07:22:27 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/16 07:34:20 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/16 07:38:24 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ void	free_tokens(char **arr, int count)
 	free(arr);
 }
 
-int check_for_quotes(char *old_arg, char **arg)
+int	check_for_quotes(char *old_arg, char **arg)
 {
 	char	*c;
 
@@ -77,7 +77,7 @@ void	remove_argument(char ***argv_ptr, int index)
 	argv[i] = NULL;
 }
 
-int check_for_sign(char *old_arg, char **arg)
+int	check_for_sign(char *old_arg, char **arg)
 {
 	char	*no_closed_quotes;
 	char	*tmp;
@@ -101,4 +101,3 @@ int check_for_sign(char *old_arg, char **arg)
 	}
 	return (0);
 }
-

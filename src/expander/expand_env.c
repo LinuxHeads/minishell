@@ -6,18 +6,18 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/15 17:52:57 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/15 23:39:44 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/16 07:38:06 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-static char *expand_name(const char *str, int start, int *index, t_shell *shell)
+static char	*expand_name(const char *str, int start, int *index, t_shell *shell)
 {
 	char	*var_name;
 	char	*env_val;
 	char	*expanded;
-	
+
 	if (start == *index)
 		return (ft_strdup("$"));
 	var_name = ft_substr(str, start, *index - start);
@@ -31,11 +31,12 @@ static char *expand_name(const char *str, int start, int *index, t_shell *shell)
 	return (expanded);
 }
 
-static int expand_digit(char **expanded, t_shell *shell, int *index, const char *str)
+static int	expand_digit(char **expanded, t_shell *shell, int *index,
+		const char *str)
 {
 	char	*var_name;
 	char	*env_val;
-	int 	start;
+	int		start;
 
 	start = *index;
 	if (ft_isdigit(str[start]))
@@ -59,7 +60,7 @@ char	*expand_env_variable(const char *str, int *index, t_shell *shell)
 	int		start;
 	char	*expanded;
 	int		res;
-	
+
 	if (str[*index] == '?')
 	{
 		(*index)++;
@@ -85,11 +86,11 @@ char	*expand_env_variable(const char *str, int *index, t_shell *shell)
 
 static int	helper_for_some_shit(const char *str, char **result, int i)
 {
-	int encl;
-	char *tmp;
+	int		encl;
+	char	*tmp;
 	char	*temp;
 	char	c[2];
-	
+
 	c[0] = str[i];
 	c[1] = '\0';
 	encl = count_surrounding_quotes(*result);
@@ -112,10 +113,9 @@ static int	helper_for_some_shit(const char *str, char **result, int i)
 
 static int	loop_dq(char **var_value, char *result)
 {
-	char *trim;
+	char	*trim;
 
 	trim = trim_spaces(*var_value);
-	/* Free the old var_value immediately after getting the trimmed version */
 	free(*var_value);
 	if (!trim)
 	{
@@ -127,7 +127,6 @@ static int	loop_dq(char **var_value, char *result)
 		free(trim);
 		return (1);
 	}
-	/* Update the caller's pointer with the newly allocated, whitespace-compressed string */
 	*var_value = compress_whitespace(trim);
 	free(trim);
 	if (!*var_value)
@@ -138,7 +137,6 @@ static int	loop_dq(char **var_value, char *result)
 	return (2);
 }
 
-
 char	*expand_env_string(const char *str, t_shell *shell)
 {
 	char	*result;
@@ -148,6 +146,8 @@ char	*expand_env_string(const char *str, t_shell *shell)
 	int		in_dq;
 	char	*tmp;
 	int		encl;
+	char	*temp;
+	int		res;
 
 	result = ft_strdup("");
 	if (!result)
@@ -170,19 +170,19 @@ char	*expand_env_string(const char *str, t_shell *shell)
 				encl = count_surrounding_quotes(var_value);
 				if (encl > 1)
 				{
-					char *temp = strip_outers_quotes(var_value);
+					temp = strip_outers_quotes(var_value);
 					free(var_value);
 					var_value = temp;
 				}
 				if (!in_dq)
 				{
-					int res = loop_dq(&var_value, result);
+					res = loop_dq(&var_value, result);
 					if (res == 1)
 						continue ;
 					if (res == 0)
 					{
 						free(result);
-						return (NULL);	
+						return (NULL);
 					}
 				}
 				tmp = ft_strjoin(result, var_value);
@@ -197,12 +197,11 @@ char	*expand_env_string(const char *str, t_shell *shell)
 			}
 			continue ;
 		}
-		else
-			if (!helper_for_some_shit(str, &result, i))
-			{
-				free(var_value);
-				return (NULL);
-			}
+		else if (!helper_for_some_shit(str, &result, i))
+		{
+			free(var_value);
+			return (NULL);
+		}
 		i++;
 	}
 	return (result);

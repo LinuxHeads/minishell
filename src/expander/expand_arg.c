@@ -6,16 +6,14 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/15 17:47:31 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/16 07:34:16 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/16 07:37:19 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-
-
-
-static int	prepare_expanded_token(char **expanded, t_shell *shell, char *old_arg, char **arg)
+static int	prepare_expanded_token(char **expanded, t_shell *shell,
+		char *old_arg, char **arg)
 {
 	char	*tmp;
 
@@ -39,7 +37,7 @@ static int	prepare_expanded_token(char **expanded, t_shell *shell, char *old_arg
 	return (1);
 }
 
-static void finalize_env_variable_token(char *expanded, char **arg)
+static void	finalize_env_variable_token(char *expanded, char **arg)
 {
 	char	**split_tokens;
 
@@ -51,7 +49,7 @@ static void finalize_env_variable_token(char *expanded, char **arg)
 			free_str_array(split_tokens);
 		free(*arg);
 		*arg = NULL;
-		return ; 
+		return ;
 	}
 	if (array_length(split_tokens) > 1)
 	{
@@ -67,7 +65,7 @@ static void finalize_env_variable_token(char *expanded, char **arg)
 	return ;
 }
 
-static void finalize_expansion(char	*expanded, int	flag, int	encl, char **arg)
+static void	finalize_expansion(char *expanded, int flag, int encl, char **arg)
 {
 	char	*no_closed_quotes;
 
@@ -108,7 +106,6 @@ void	expand_single_argument(char **arg, t_shell *shell)
 	else
 		finalize_expansion(expanded, flag, encl, arg);
 }
-
 
 // test leaks for expander_test function*
 // int main()
