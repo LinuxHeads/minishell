@@ -3,20 +3,44 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 15:40:45 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/15 05:51:13 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/16 12:15:09 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-
-int check_for_options(char *args)
+int	handle_flage(char **args, char **str_cp, char **str_cp2)
 {
-	char *str_cp;
-	char *str_cp2;
+	if (ft_strchr(*args, '-') && ft_strchr(*str_cp, 'n') && !ft_strchr(*str_cp,
+			' '))
+	{
+		if (*str_cp2[0] == '-' && *str_cp2[1] == '-')
+		{
+			free(*str_cp);
+			free(*str_cp2);
+			return (0);
+		}
+		if (*str_cp2[0] == 'n' && *str_cp2[1] == '-')
+		{
+			free(*str_cp);
+			free(*str_cp2);
+			return (0);
+		}
+		free(*str_cp);
+		free(*str_cp2);
+		return (1);
+	}
+	return (2);
+}
+
+int	check_for_options(char *args)
+{
+	char	*str_cp;
+	char	*str_cp2;
+	int		check;
 
 	str_cp = ft_strdup(args);
 	if (!str_cp)
@@ -27,24 +51,13 @@ int check_for_options(char *args)
 		free(str_cp);
 		return (0);
 	}
-	if(ft_strchr(args,'-') && ft_strchr(str_cp,'n') && !ft_strchr(str_cp,' '))
-	// if(ft_strchr(args,'-') && ft_strchr(str_cp,'n'))
+	check = handle_flage(&args, &str_cp, &str_cp2);
+	if (check != 2)
 	{
-		if(str_cp2[0]=='-' && str_cp2[1]=='-')
-		{
-			free(str_cp);
-			free(str_cp2);
+		if (check == 0)
 			return (0);
-		}
-		if(str_cp2[0]=='n' && str_cp2[1]=='-')
-		{
-			free(str_cp);
-			free(str_cp2);
-			return (0);
-		}
-		free(str_cp);
-		free(str_cp2);
-		return(1);
+		if (check == 1)
+			return (1);
 	}
 	free(str_cp);
 	free(str_cp2);
@@ -75,14 +88,14 @@ static void	print_arguments(char **args, int start_index)
 	i = start_index;
 	while (args[i])
 	{
-		
-		if((args[i][0]=='\"' && args[i][1]=='\"') || (args[i][0]=='\"' && args[i][1]=='\"'))
+		if ((args[i][0] == '\"' && args[i][1] == '\"') || (args[i][0] == '\"'
+				&& args[i][1] == '\"'))
 			printf(" ");
 		else
 		{
-		printf("%s", args[i]);
-		if (args[i + 1])
-			printf(" ");
+			printf("%s", args[i]);
+			if (args[i + 1])
+				printf(" ");
 		}
 		i++;
 	}
@@ -102,7 +115,8 @@ int	ft_echo(char **args)
 			printf("\n");
 		return (0);
 	}
-	if (is_single_quote_token(args[start_index]) || is_double_quote_token(args[start_index]))
+	if (is_single_quote_token(args[start_index])
+		|| is_double_quote_token(args[start_index]))
 	{
 		if (newline)
 			printf("\n");
