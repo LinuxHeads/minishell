@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand_env.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
+/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/15 17:52:57 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/16 13:31:02 by ahramada         ###   ########.fr       */
+/*   Updated: 2025/02/16 16:52:49 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,34 +84,7 @@ char	*expand_env_variable(const char *str, int *index, t_shell *shell)
 	return (expanded);
 }
 
-static int	helper_for_some_shit(const char *str, char **result, int i)
-{
-	int		encl;
-	char	*tmp;
-	char	*temp;
-	char	c[2];
-
-	c[0] = str[i];
-	c[1] = '\0';
-	encl = count_surrounding_quotes(*result);
-	if (encl == 2)
-	{
-		temp = strip_outers_quotes(*result);
-		free(*result);
-		*result = temp;
-	}
-	tmp = ft_strjoin(*result, c);
-	if (!tmp)
-	{
-		free(*result);
-		return (0);
-	}
-	free(*result);
-	*result = tmp;
-	return (1);
-}
-
-static int	loop_dq(char **var_value, char *result)
+static int	normalize_env_value(char **var_value, char *result)
 {
 	char	*trim;
 
@@ -137,17 +110,90 @@ static int	loop_dq(char **var_value, char *result)
 	return (2);
 }
 
+static void	toggle_quotes(char c, int *in_sq, int *in_dq)
+{
+	if (c == '\'' && !(*in_dq))
+		*in_sq = !(*in_sq);
+	else if (c == '"' && !(*in_sq))
+		*in_dq = !(*in_dq);
+}
+
+static int	append_variable_value(char **result, char *var_value, int in_dq)
+{
+	char	*tmp;
+	int		res;
+
+	if (!in_dq)
+	{
+		res = normalize_env_value(&var_value, *result);
+		if (res == 1)
+			return (1);
+		if (res == 0)
+		{
+			free(*result);
+			return (0);
+		}
+	}
+	tmp = ft_strjoin(*result, var_value);
+	free(var_value);
+	if (!tmp)
+	{
+		free(*result);
+		return (0);
+	}
+	free(*result);
+	*result = tmp;
+	return (1);
+}
+
+static int	handle_env_var(const char *str, int *i, char **result, t_shell *shell, int in_dq)
+{
+	char	*var_value;
+	int		encl;
+	char	*temp;
+
+	var_value = expand_env_variable(str, i, shell);
+	if (!var_value)
+		return (1);
+	encl = count_surrounding_quotes(var_value);
+	if (encl > 1)
+	{
+		temp = strip_outers_quotes(var_value);
+		free(var_value);
+		var_value = temp;
+	}
+	if (!append_variable_value(result, var_value, in_dq))
+		return (0);
+
+	while (str[*i] && (ft_isalnum(str[*i]) || str[*i] == '_'))
+		(*i)++;
+	return (1);
+}
+
+static int	process_regular_char(const char *str, char **result, int i)
+{
+	char	*tmp;
+	char	c[2];
+
+	c[0] = str[i];
+	c[1] = '\0';
+	tmp = ft_strjoin(*result, c);
+	if (!tmp)
+	{
+		free(*result);
+		return (0);
+	}
+	free(*result);
+	*result = tmp;
+	return (1);
+}
+
 char	*expand_env_string(const char *str, t_shell *shell)
 {
 	char	*result;
-	char	*var_value;
 	int		i;
 	int		in_sq;
 	int		in_dq;
-	char	*tmp;
-	int		encl;
-	char	*temp;
-	int		res;
 
 	result = ft_strdup("");
 	if (!result)
@@ -157,51 +203,17 @@ char	*expand_env_string(const char *str, t_shell *shell)
 	in_dq = 0;
 	while (str[i])
 	{
-		if (str[i] == '\'' && !in_dq)
-			in_sq = !in_sq;
-		else if (str[i] == '"' && !in_sq)
-			in_dq = !in_dq;
+		if (str[i] == '\'' || str[i] == '"')
+			toggle_quotes(str[i], &in_sq, &in_dq);
 		else if (str[i] == '$' && !in_sq)
 		{
 			i++;
-			var_value = expand_env_variable(str, &i, shell);
-			if (var_value)
-			{
-				encl = count_surrounding_quotes(var_value);
-				if (encl > 1)
-				{
-					temp = strip_outers_quotes(var_value);
-					free(var_value);
-					var_value = temp;
-				}
-				if (!in_dq)
-				{
-					res = loop_dq(&var_value, result);
-					if (res == 1)
-						continue ;
-					if (res == 0)
-					{
-						free(result);
-						return (NULL);
-					}
-				}
-				tmp = ft_strjoin(result, var_value);
-				free(var_value);
-				if (!tmp)
-				{
-					free(result);
-					return (NULL);
-				}
-				free(result);
-				result = tmp;
-			}
-			continue ;
+			if (!handle_env_var(str, &i, &result, shell, in_dq))
+				return (NULL);
+			continue;
 		}
-		else if (!helper_for_some_shit(str, &result, i))
-		{
-			free(var_value);
+		else if (!process_regular_char(str, &result, i))
 			return (NULL);
-		}
 		i++;
 	}
 	return (result);
