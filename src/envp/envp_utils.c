@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   envp_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 23:20:22 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/13 04:47:58 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/16 12:30:42 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,29 +47,29 @@ void	printstr_envp(char **envp)
 	}
 }
 
-static t_env *init_node(t_env *env, t_env *new_head, t_env *new_node)
+static t_env	*init_node(t_env *env, t_env *new_head, t_env *new_node)
 {
-    new_node->name = ft_strdup(env->name);
-    if (!new_node->name)
-    {
-        free_envp_list(new_head);
-        return (NULL);
-    }
-    if (env->value)
-    {
-        new_node->value = ft_strdup(env->value);
-        if (!new_node->value)
-        {
-            free_envp_list(new_head);
-            return (NULL);
-        }
-    }
-    else
-    {
-        new_node->value = NULL;
-    }
-    new_node->next = NULL;
-    return (new_node);
+	new_node->name = ft_strdup(env->name);
+	if (!new_node->name)
+	{
+		free_envp_list(new_head);
+		return (NULL);
+	}
+	if (env->value)
+	{
+		new_node->value = ft_strdup(env->value);
+		if (!new_node->value)
+		{
+			free_envp_list(new_head);
+			return (NULL);
+		}
+	}
+	else
+	{
+		new_node->value = NULL;
+	}
+	new_node->next = NULL;
+	return (new_node);
 }
 
 t_env	*ft_copy_env(t_env *env)
@@ -90,7 +90,7 @@ t_env	*ft_copy_env(t_env *env)
 		}
 		if (!init_node(env, new_head, new_node))
 		{
-			free(new_node); // Free if init_node fails
+			free(new_node);
 			return (NULL);
 		}
 		if (!new_head)
@@ -102,4 +102,3 @@ t_env	*ft_copy_env(t_env *env)
 	}
 	return (new_head);
 }
-

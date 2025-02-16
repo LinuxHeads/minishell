@@ -3,22 +3,23 @@
 /*                                                        :::      ::::::::   */
 /*   shlvl.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 15:35:29 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/06 22:54:44 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/16 12:34:27 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-static int ft_setup_value(t_env **envp, int shlvl)
+static int	ft_setup_value(t_env **envp, int shlvl)
 {
-	char *new_shlvl;
-		
+	char	*new_shlvl;
+
 	if (shlvl >= 1000)
 	{
-		printf("minishell: warning: shell level (SHLVL) too high, resetting to 1\n");
+		printf("minishell: warning: shell \
+level (SHLVL) too high,resetting to 1\n");
 		if (!ft_setenv("SHLVL", "1", envp))
 			return (0);
 		return (1);
@@ -40,7 +41,8 @@ static int ft_setup_value(t_env **envp, int shlvl)
 	free(new_shlvl);
 	return (1);
 }
-static int ft_check_errors(int shlvl, char *shlvl_str, t_env **envp)
+
+static int	ft_check_errors(int shlvl, char *shlvl_str, t_env **envp)
 {
 	if (shlvl == 0 && shlvl_str[0] != '0')
 	{
