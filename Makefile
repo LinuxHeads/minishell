@@ -22,10 +22,12 @@ SRC =  	parsing/parsing.c \
 		execution/build_args.c \
 		execution/find_cmd.c \
 		execution/redirections.c \
-		execution/redir_utils.c \
+		execution/exec_utils.c \
 		execution/exec_in_parent.c \
 		execution/exec_builtins.c \
 		execution/error_checks.c \
+		execution/heredoc.c \
+		execution/execute_cmd_handler.c \
 		envp/envp_errors.c \
 		envp/envp_to_str.c \
 		envp/envp_utils.c \
