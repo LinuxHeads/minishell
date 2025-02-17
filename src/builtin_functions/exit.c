@@ -16,12 +16,14 @@ int	cheker_for_number(char **args, t_shell *shell)
 {
 	if (ft_isnumber(args[0]))
 	{
-		ft_exit_handler(shell, NULL, (char *[]){"exit: too many arguments\n", NULL}, 2);
+		ft_exit_handler(shell, NULL, (char *[]){"exit: too many arguments\n",
+			NULL}, 2);
 		return (1);
 	}
 	else
 	{
-		ft_exit_handler(shell, NULL, (char *[]){"exit: numeric argument required\n", NULL}, 2);
+		ft_exit_handler(shell, NULL,
+			(char *[]){"exit: numeric argument required\n", NULL}, 2);
 		return (0);
 	}
 }
@@ -43,7 +45,8 @@ int	ft_exit(char **args, t_shell *shell)
 		}
 		else
 		{
-			ft_exit_handler(shell, NULL, (char *[]){"exit: numeric argument required\n",NULL}, 2);
+			ft_exit_handler(shell, NULL,
+				(char *[]){"exit: numeric argument required\n", NULL}, 2);
 			return (2);
 		}
 	}

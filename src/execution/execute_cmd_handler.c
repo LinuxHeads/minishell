@@ -68,7 +68,8 @@ int	process_command(t_shell **shell, int i, int *pid)
 		return (1);
 	if (!(*shell)->argv || !(*shell)->argv[0])
 	{
-		ft_exit_handler(*shell, NULL, (char *[]){"minishell: invalid command\n",NULL}, (*shell)->exit_status);
+		ft_exit_handler(*shell, NULL, (char *[]){"minishell: invalid command\n",
+			NULL}, (*shell)->exit_status);
 	}
 	if (is_builtin_command((*shell)->argv)
 		&& (*shell)->parser->command_count == 1)

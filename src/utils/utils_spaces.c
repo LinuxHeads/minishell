@@ -57,8 +57,8 @@ char	*trim_spaces(const char *s)
 
 void	remove_extra_spaces(char *new_str, const char *str, int *j)
 {
-	int		i;
-	int		in_space;
+	int	i;
+	int	in_space;
 
 	i = 0;
 	in_space = 0;

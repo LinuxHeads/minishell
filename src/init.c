@@ -34,17 +34,20 @@ static void	env_init(t_shell *shell, char **envp)
 	}
 	shell->env_list = init_envp(envp);
 	if (!shell->env_list)
-		ft_exit_handler(shell, 0,(char* []){"Error: env list is NULL\n", NULL},1);
+		ft_exit_handler(shell, 0, (char *[]){"Error: env list is NULL\n", NULL},
+			1);
 	if (!ft_setup_shlvl(&shell->env_list))
 	{
 		free_envp_list(shell->env_list);
-		ft_exit_handler(shell, 0,(char* []){"Error: ft_setup_shlvl returned 0\n", NULL},1);
+		ft_exit_handler(shell, 0,
+			(char *[]){"Error: ft_setup_shlvl returned 0\n", NULL}, 1);
 	}
 	shell->envp = envp_to_str(shell->env_list);
 	if (!shell->envp || !shell->envp[0])
 	{
 		free_envp_list(shell->env_list);
-		ft_exit_handler(shell, 0,(char* []){"Error: envp_to_str returned NULL or empty\n", NULL},1);
+		ft_exit_handler(shell, 0,
+			(char *[]){"Error: envp_to_str returned NULL or empty\n", NULL}, 1);
 	}
 }
 

@@ -62,8 +62,7 @@ int	setup_var_value(char **var_value, t_expander *ctx)
 		free(ctx->result);
 		return (-1);
 	}
-	*var_value = process_var_value_spaces(*var_value, ctx->in_dq,
-			&ctx->result);
+	*var_value = process_var_value_spaces(*var_value, ctx->in_dq, &ctx->result);
 	if (!*var_value)
 		return (-1);
 	if (!*var_value[0])
@@ -79,7 +78,7 @@ int	handle_dollar(t_expander *ctx)
 	char	*var_value;
 	char	*tmp;
 	int		ret;
-	
+
 	ctx->i++;
 	var_value = expand_env_variable(ctx->str, &ctx->i, ctx->shell);
 	if (var_value)

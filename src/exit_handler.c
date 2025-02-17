@@ -37,19 +37,20 @@ void	free_shell(t_exec *shell)
 	free(shell);
 }
 
-static	void print_error_message(char **message, int fd)
+static void	print_error_message(char **message, int fd)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (message[i])
 	{
 		ft_putstr_fd(message[i], fd);
 		i++;
-	}	
+	}
 }
 
-void	ft_exit_handler(t_shell *shell, void *ptr, char **message, int exit_code)
+void	ft_exit_handler(t_shell *shell, void *ptr, char **message,
+		int exit_code)
 {
 	if (message)
 		print_error_message(message, STDERR_FILENO);

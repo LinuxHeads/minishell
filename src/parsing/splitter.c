@@ -117,13 +117,13 @@ char	**ft_splitter(const char *s, char c)
 
 // int main()
 // {
-	// char	**commands;
-	// char	*input = "ls -l | cat -e | wc -l";
-	// commands = ft_splitter(input, '|');
-	// for (int i = 0; commands[i]; i++)
-	// {
-		// printf("%s\n", commands[i]);
-	// }
-	// free_str_array(commands);
-	// return (0);
+// char	**commands;
+// char	*input = "ls -l | cat -e | wc -l";
+// commands = ft_splitter(input, '|');
+// for (int i = 0; commands[i]; i++)
+// {
+// printf("%s\n", commands[i]);
+// }
+// free_str_array(commands);
+// return (0);
 // }

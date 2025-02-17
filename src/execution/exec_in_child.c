@@ -167,7 +167,8 @@ void	exec_in_child(int i, t_shell **shell, int *pid, int redir_flag)
 	{
 		reset_signals();
 		if (!(*shell)->argv || !(*shell)->argv[0])
-			ft_exit_handler(*shell, NULL, (char *[]){"minishell: invalid command\n", NULL}, 1);
+			ft_exit_handler(*shell, NULL,
+				(char *[]){"minishell: invalid command\n", NULL}, 1);
 		if (redir_flag)
 			ft_exit_handler(*shell, NULL, 0, 1);
 		setup_fd_redirection(shell);

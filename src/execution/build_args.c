@@ -83,11 +83,11 @@ char	**build_command_argv(t_command *cmd)
 }
 /*
 //test for leaks
-int main()
+int	main(void)
 {
-	t_command *cmd;
-	char **argv;
-	int i;
+	t_command	*cmd;
+	char		**argv;
+	int			i;
 
 	cmd = malloc(sizeof(t_command));
 	cmd->token_count = 5;
@@ -114,7 +114,6 @@ int main()
 	free(cmd->tokens[2]->value);
 	free(cmd->tokens[3]->value);
 	free(cmd->tokens[4]->value);
-	
 	free_str_array(cmd->tokens);
 	free(cmd);
 	return (0);

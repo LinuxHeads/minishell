@@ -123,10 +123,10 @@ int	ft_cd(char **args, t_env **envp)
 // test leaks for cd
 // int main(int ac, char **av, char **env)
 // {
-	// t_env *envp = init_envp(env);
-	// char *args[] = {"/", NULL};
-	// 
-	// ft_cd(args, &envp);
-	// free_envp_list(envp);
-	// return 0;
+// t_env *envp = init_envp(env);
+// char *args[] = {"/", NULL};
+//
+// ft_cd(args, &envp);
+// free_envp_list(envp);
+// return (0);
 // }

@@ -22,8 +22,10 @@ void	check_if_directory(char *cmd_path, t_shell **shell)
 		if (S_ISDIR(path_stat.st_mode))
 		{
 			if (!ft_strchr((*shell)->argv[0], '/'))
-				ft_exit_handler(*shell, cmd_path, (char *[]){(*shell)->argv[0], ": command not found\n",NULL}, 127);
-			ft_exit_handler(*shell, cmd_path, (char *[]){cmd_path, ": is a directory\n", NULL}, 126);
+				ft_exit_handler(*shell, cmd_path, (char *[]){(*shell)->argv[0],
+					": command not found\n", NULL}, 127);
+			ft_exit_handler(*shell, cmd_path, (char *[]){cmd_path,
+				": is a directory\n", NULL}, 126);
 		}
 	}
 }
@@ -31,9 +33,11 @@ void	check_if_directory(char *cmd_path, t_shell **shell)
 void	check_command_permissions(t_shell **shell)
 {
 	if (access((*shell)->argv[0], F_OK) == 0)
-		ft_exit_handler(*shell, NULL, (char *[]){(*shell)->argv[0],": permission denied\n", NULL }, 126);
+		ft_exit_handler(*shell, NULL, (char *[]){(*shell)->argv[0],
+			": permission denied\n", NULL}, 126);
 	else
-		ft_exit_handler(*shell, NULL, (char *[]){(*shell)->argv[0],": command not found\n", NULL}, 127);
+		ft_exit_handler(*shell, NULL, (char *[]){(*shell)->argv[0],
+			": command not found\n", NULL}, 127);
 }
 
 void	validate_command_path(char *cmd_path, t_shell **shell)
@@ -46,8 +50,9 @@ void	validate_command_path(char *cmd_path, t_shell **shell)
 		{
 			if (ft_strcmp((*shell)->argv[0], "~") == 0)
 				ft_exit_handler(*shell, cmd_path, (char *[]){ft_getenv("HOME",
-						(*shell)->env_list),": is a directory\n", NULL }, 126);
-			ft_exit_handler(*shell, NULL, (char *[]){(*shell)->argv[0],": command not found\n", NULL }, 127);
+						(*shell)->env_list), ": is a directory\n", NULL}, 126);
+			ft_exit_handler(*shell, NULL, (char *[]){(*shell)->argv[0],
+				": command not found\n", NULL}, 127);
 		}
 	}
 	check_if_directory(cmd_path, shell);
