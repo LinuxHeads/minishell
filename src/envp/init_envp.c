@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init_envp.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 05:14:15 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/06 05:20:41 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/17 13:08:30 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,3 +68,4 @@ t_env	*init_envp(char **envp)
 	}
 	return (head);
 }
+

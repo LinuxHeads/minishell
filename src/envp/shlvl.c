@@ -6,7 +6,7 @@
 /*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 15:35:29 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/16 12:34:27 by ahramada         ###   ########.fr       */
+/*   Updated: 2025/02/17 13:08:27 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,3 +82,4 @@ int	ft_setup_shlvl(t_env **envp)
 		return (0);
 	return (1);
 }
+
