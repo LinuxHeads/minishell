@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/10 02:41:05 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/15 06:02:58 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/17 06:26:39 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,16 +42,22 @@ int	setup_pipe_for_command(int i, t_shell **shell)
 static void	setup_fd_redirection(t_shell **shell)
 {
 	if ((*shell)->in_fd != STDIN_FILENO)
+	{
 		if (dup2((*shell)->in_fd, STDIN_FILENO) == -1)
 			perror("dup2");
+		close((*shell)->in_fd);
+	}
 	if ((*shell)->pipe_created)
 	{
 		if ((*shell)->out_fd == STDOUT_FILENO)
 			(*shell)->out_fd = (*shell)->pipe_fd[1];
 	}
 	if ((*shell)->out_fd != STDOUT_FILENO)
+	{
 		if (dup2((*shell)->out_fd, STDOUT_FILENO) == -1)
 			perror("dup2");
+		close((*shell)->out_fd);
+	}
 	if ((*shell)->prev_fd != -1)
 		close((*shell)->prev_fd);
 	if ((*shell)->pipe_created)
@@ -110,21 +116,28 @@ static void	execute_command(t_shell **shell)
 static void	cleanup_parent_fds(t_shell **shell)
 {
 	if ((*shell)->in_fd != STDIN_FILENO && (*shell)->in_fd != (*shell)->prev_fd)
+	{
 		close((*shell)->in_fd);
+		(*shell)->in_fd = STDIN_FILENO;
+	}
 	if ((*shell)->out_fd != STDOUT_FILENO)
+	{
 		close((*shell)->out_fd);
+		(*shell)->out_fd = STDOUT_FILENO;
+	}
 	if ((*shell)->prev_fd != -1)
+	{
 		close((*shell)->prev_fd);
+		(*shell)->prev_fd = -1;
+	}
 	if ((*shell)->pipe_created)
 	{
 		close((*shell)->pipe_fd[1]);
 		(*shell)->prev_fd = (*shell)->pipe_fd[0];
-	}
-	else
-	{
-		(*shell)->prev_fd = -1;
+		(*shell)->pipe_created = 0;
 	}
 }
+
 /*
 ** Main Function: exec_in_child
 **
