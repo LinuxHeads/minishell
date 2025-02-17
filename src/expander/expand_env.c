@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/15 17:52:57 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/16 16:52:49 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/17 04:44:30 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,30 +146,6 @@ static int	append_variable_value(char **result, char *var_value, int in_dq)
 	return (1);
 }
 
-static int	handle_env_var(const char *str, int *i, char **result, t_shell *shell, int in_dq)
-{
-	char	*var_value;
-	int		encl;
-	char	*temp;
-
-	var_value = expand_env_variable(str, i, shell);
-	if (!var_value)
-		return (1);
-	encl = count_surrounding_quotes(var_value);
-	if (encl > 1)
-	{
-		temp = strip_outers_quotes(var_value);
-		free(var_value);
-		var_value = temp;
-	}
-	if (!append_variable_value(result, var_value, in_dq))
-		return (0);
-
-	while (str[*i] && (ft_isalnum(str[*i]) || str[*i] == '_'))
-		(*i)++;
-	return (1);
-}
-
 static int	process_regular_char(const char *str, char **result, int i)
 {
 	char	*tmp;
@@ -188,33 +164,65 @@ static int	process_regular_char(const char *str, char **result, int i)
 	return (1);
 }
 
+static t_exp	init_exp(const char *str, char **res)
+{
+	t_exp	exp;
+
+	exp.str = str;
+	exp.i = 0;
+	exp.result = res;
+	exp.in_sq = 0;
+	exp.in_dq = 0;
+	return (exp);
+}
+
+static int	handle_env_var(t_exp *exp, t_shell *shell)
+{
+	char	*var_value;
+	int		encl;
+	char	*temp;
+
+	var_value = expand_env_variable(exp->str, &exp->i, shell);
+	if (!var_value)
+		return (1);
+	encl = count_surrounding_quotes(var_value);
+	if (encl > 1)
+	{
+		temp = strip_outers_quotes(var_value);
+		free(var_value);
+		var_value = temp;
+	}
+	if (!append_variable_value(exp->result, var_value, exp->in_dq))
+		return (0);
+	while (exp->str[exp->i] && (ft_isalnum(exp->str[exp->i])
+			|| exp->str[exp->i] == '_'))
+		exp->i++;
+	return (1);
+}
+
 char	*expand_env_string(const char *str, t_shell *shell)
 {
 	char	*result;
-	int		i;
-	int		in_sq;
-	int		in_dq;
+	t_exp	exp;
 
 	result = ft_strdup("");
 	if (!result)
 		return (NULL);
-	i = 0;
-	in_sq = 0;
-	in_dq = 0;
-	while (str[i])
+	exp = init_exp(str, &result);
+	while (exp.str[exp.i])
 	{
-		if (str[i] == '\'' || str[i] == '"')
-			toggle_quotes(str[i], &in_sq, &in_dq);
-		else if (str[i] == '$' && !in_sq)
+		if (exp.str[exp.i] == '\'' || exp.str[exp.i] == '"')
+			toggle_quotes(exp.str[exp.i], &exp.in_sq, &exp.in_dq);
+		else if (exp.str[exp.i] == '$' && !exp.in_sq)
 		{
-			i++;
-			if (!handle_env_var(str, &i, &result, shell, in_dq))
+			exp.i++;
+			if (!handle_env_var(&exp, shell))
 				return (NULL);
-			continue;
+			continue ;
 		}
-		else if (!process_regular_char(str, &result, i))
+		else if (!process_regular_char(exp.str, exp.result, exp.i))
 			return (NULL);
-		i++;
+		exp.i++;
 	}
-	return (result);
+	return (*exp.result);
 }
