@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   exec_in_child.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/10 02:41:05 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/17 06:26:39 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/17 15:57:30 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
+#include <string.h>
 
 int	setup_pipe_for_command(int i, t_shell **shell)
 {
@@ -166,14 +167,9 @@ void	exec_in_child(int i, t_shell **shell, int *pid, int redir_flag)
 	{
 		reset_signals();
 		if (!(*shell)->argv || !(*shell)->argv[0])
-		{
-			fprintf(stderr, "minishell: invalid command\n");
-			ft_exit_handler(*shell, NULL, 0, 1);
-		}
+			ft_exit_handler(*shell, NULL, (char *[]){"minishell: invalid command\n", NULL}, 1);
 		if (redir_flag)
-		{
 			ft_exit_handler(*shell, NULL, 0, 1);
-		}
 		setup_fd_redirection(shell);
 		execute_command(shell);
 	}

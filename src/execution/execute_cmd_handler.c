@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_cmd_handler.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/17 05:34:51 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/17 05:39:41 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/17 15:58:25 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,8 +68,7 @@ int	process_command(t_shell **shell, int i, int *pid)
 		return (1);
 	if (!(*shell)->argv || !(*shell)->argv[0])
 	{
-		fprintf(stderr, "minishell: invalid command\n");
-		ft_exit_handler(*shell, NULL, NULL, (*shell)->exit_status);
+		ft_exit_handler(*shell, NULL, (char *[]){"minishell: invalid command\n",NULL}, (*shell)->exit_status);
 	}
 	if (is_builtin_command((*shell)->argv)
 		&& (*shell)->parser->command_count == 1)

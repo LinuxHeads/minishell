@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 19:24:00 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/17 05:53:26 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/17 14:20:05 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,6 +128,17 @@ typedef struct s_exp
 	int				in_sq;
 	int				in_dq;
 }					t_exp;
+
+typedef struct s_expander
+{
+	const char		*str;
+	int				i;
+	int				in_sq;
+	int				in_dq;
+	t_shell			*shell;
+	char			*result;
+}					t_expander;
+
 /*
 ** ************************************************************************** **
 **                         Signal Handling Functions                          **
@@ -179,7 +190,7 @@ int					execute_builtin_command(char **args, t_shell *shell);
 
 /*
 ** ************************************************************************** **
-**                         Builtin helper				                       **
+**                         Builtin helper					                    **
 ** ************************************************************************** **
 */
 
@@ -230,6 +241,8 @@ int					is_whitespace(const char *str);
 char				*expand_env_string(const char *str, t_shell *shell);
 char				*cleanup_input(char *input);
 int					array_length(char **arr);
+char				*expand_env_variable(const char *str, int *index,
+						t_shell *shell);
 void				remove_extra_spaces(char *new_str, const char *str, int *j);
 char				*trim_spaces(const char *s);
 char				*strip_outers_quotes(const char *s);
@@ -250,7 +263,11 @@ char				*expand_name(const char *str, int start, int *index,
 int					expand_digit(char **expanded, t_shell *shell, int *index,
 						const char *str);
 int					normalize_env_value(char **var_value, char *result);
-
+char				*process_var_value_quotes(char *var_value);
+char				*process_var_value_spaces(char *var_value, int in_dq,
+						char **result);
+int					handle_dollar(t_expander *ctx);
+int					append_char(t_expander *ctx);
 /*
 ** ************************************************************************** **
 **                         Execution Functions                                **
@@ -267,7 +284,7 @@ void				exec_in_child(int i, t_shell **shell, int *pid,
 void				execute_builtin_in_parent(t_shell **shell, int redir_flag);
 void				ft_heredoc(int pipe_fds[2], t_command *cmd, int i,
 						t_shell *shell);
-void				ft_exit_handler(t_shell *shell, void *ptr, char *message,
+void				ft_exit_handler(t_shell *shell, void *ptr, char **message,
 						int exit_code);
 int					contains_command_token(t_command *cmd);
 int					setup_command(t_shell **shell, int i, int *status);

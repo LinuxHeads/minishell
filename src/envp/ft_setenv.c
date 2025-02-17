@@ -6,7 +6,7 @@
 /*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 04:50:36 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/17 13:08:34 by ahramada         ###   ########.fr       */
+/*   Updated: 2025/02/17 13:13:18 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,4 +96,3 @@ int	ft_setenv(const char *name, const char *value, t_env **env_list)
 	append_env_entry(env_list, new);
 	return (1);
 }
-

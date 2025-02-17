@@ -1,24 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_getenv.c                                        :+:      :+:    :+:   */
+/*   ft_strcpy.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/06 04:51:24 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/17 13:13:15 by ahramada         ###   ########.fr       */
+/*   Created: 2025/02/17 11:45:55 by abdsalah          #+#    #+#             */
+/*   Updated: 2025/02/17 13:12:48 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/minishell.h"
+#include "libft.h"
 
-char	*ft_getenv(const char *name, t_env *env)
+char	*ft_strcpy(char *dest, const char *src)
 {
-	while (env)
+	char	*temp;
+	int		i;
+
+	if (!dest || !src)
+		return (NULL);
+	i = 0;
+	temp = dest;
+	while (*(src + i) != '\0')
 	{
-		if (ft_strcmp(env->name, name) == 0)
-			return (env->value);
-		env = env->next;
+		dest[i] = src[i];
+		i++;
 	}
-	return (NULL);
+	dest[i] = '\0';
+	return (temp);
 }

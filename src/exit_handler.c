@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit_handler.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 20:19:38 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/15 18:07:32 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/17 16:19:49 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,10 +37,22 @@ void	free_shell(t_exec *shell)
 	free(shell);
 }
 
-void	ft_exit_handler(t_shell *shell, void *ptr, char *message, int exit_code)
+static	void print_error_message(char **message, int fd)
+{
+	int i;
+
+	i = 0;
+	while (message[i])
+	{
+		ft_putstr_fd(message[i], fd);
+		i++;
+	}	
+}
+
+void	ft_exit_handler(t_shell *shell, void *ptr, char **message, int exit_code)
 {
 	if (message)
-		ft_putstr_fd(message, STDERR_FILENO);
+		print_error_message(message, STDERR_FILENO);
 	if (shell)
 	{
 		free_envp_list(shell->env_list);

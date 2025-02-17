@@ -6,7 +6,7 @@
 /*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 23:20:22 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/17 13:08:38 by ahramada         ###   ########.fr       */
+/*   Updated: 2025/02/17 13:13:12 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,4 +99,3 @@ t_env	*ft_copy_env(t_env *env)
 	}
 	return (new_head);
 }
-

@@ -6,7 +6,7 @@
 /*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/08 02:31:15 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/17 13:08:25 by ahramada         ###   ########.fr       */
+/*   Updated: 2025/02/17 13:13:28 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,4 +45,3 @@ void	ft_sort_env(t_env **head)
 	}
 	*head = sorted;
 }
-
