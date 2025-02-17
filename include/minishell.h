@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 19:24:00 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/17 05:24:59 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/17 05:41:01 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -262,7 +262,11 @@ void				ft_heredoc(int pipe_fds[2], t_command *cmd, int i,
 						t_shell *shell);
 void				ft_exit_handler(t_shell *shell, void *ptr, char *message,
 						int exit_code);
-
+int					contains_command_token(t_command *cmd);
+int					setup_command(t_shell **shell, int i, int *status);
+int					process_command(t_shell **shell, int i, int *pid);
+void				close_fds(t_shell *shell);
+int					handle_signal_and_token(t_shell **shell, int i, int *redir_flag);
 /*
 ** ************************************************************************** **
 **                        Miscellaneous Functions                             **
