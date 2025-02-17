@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
+/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/13 02:35:03 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/16 13:07:59 by ahramada         ###   ########.fr       */
+/*   Updated: 2025/02/17 04:59:32 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,13 +46,12 @@ static int	fill_command_tokens(t_command *cmd, char **t_str,
 	return (0);
 }
 
-static t_command	*allocate_command(char *cmd_str, int *i)
+static t_command	*allocate_command(char *cmd_str)
 {
 	t_command		*cmd;
 	t_next_token	decide;
 	char			**t_str;
 
-	(*i)++;
 	decide = (t_next_token){1, 0, 0, 0, 0, 0};
 	cmd = malloc(sizeof(t_command));
 	if (!cmd)
@@ -91,12 +90,13 @@ t_exec	*allocate_shell_commands(int num_commands, char **shell_command)
 	i = 0;
 	while (i < num_commands)
 	{
-		shell->commands[i - 1] = allocate_command(shell_command[i], &i);
-		if (!shell->commands[i - 1])
+		shell->commands[i] = allocate_command(shell_command[i]);
+		if (!shell->commands[i])
 		{
 			free_shell(shell);
 			return (NULL);
 		}
+		i++;
 	}
 	shell->commands[i] = NULL;
 	return (shell);

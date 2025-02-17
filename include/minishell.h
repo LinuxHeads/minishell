@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
+/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 19:24:00 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/16 13:23:56 by ahramada         ###   ########.fr       */
+/*   Updated: 2025/02/17 05:24:59 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,6 +122,14 @@ typedef struct s_shell
 	int				pipe_created;
 }					t_shell;
 
+typedef struct s_exp
+{
+	const char	*str;
+	int			i;
+	char		**result;
+	int			in_sq;
+	int			in_dq;
+}				t_exp;
 /*
 ** ************************************************************************** **
 **                         Signal Handling Functions                          **
@@ -170,6 +178,20 @@ int					ft_unset(char **arg, t_env **envp);
 int					ft_pwd(void);
 int					is_builtin_command(char **arg);
 int					execute_builtin_command(char **args, t_shell *shell);
+
+/*
+** ************************************************************************** **
+**                         Builtin helper			                          **
+** ************************************************************************** **
+*/
+
+int					export_syntax_error(const char *arg);
+int					check_initial_syntax(const char *arg);
+int					split_var(const char *arg, char **key, char **value);
+int					split_without_equal(const char *arg, char **key, char **value);
+int					split_without_equal(const char *arg, char **key, char **value);
+int					appeand_mode(char *key, char *value, t_env **env_list);
+int					set_or_append_env(char *key, char *value, t_env **env_list);
 
 /*
 ** ************************************************************************** **

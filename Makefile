@@ -17,7 +17,7 @@ SRC =  	parsing/parsing.c \
 		main.c init.c\
 		signals.c \
 		exit_handler.c \
-		execution/execute.c \
+		execution/execute_pipeline.c \
 		execution/exec_in_child.c \
 		execution/build_args.c \
 		execution/find_cmd.c \
@@ -41,7 +41,10 @@ SRC =  	parsing/parsing.c \
 		builtin_functions/cd.c \
 		builtin_functions/echo.c \
 		builtin_functions/env.c \
-		builtin_functions/export.c \
+		builtin_functions/export/export.c \
+		builtin_functions/export/export_syntax.c \
+		builtin_functions/export/export_utils.c \
+		builtin_functions/export/export_set.c \
 		builtin_functions/pwd.c \
 		builtin_functions/unset.c \
 		builtin_functions/exit.c \

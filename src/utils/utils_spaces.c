@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_spaces.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
+/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/15 17:50:11 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/16 12:23:19 by ahramada         ###   ########.fr       */
+/*   Updated: 2025/02/17 05:27:30 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ char	*trim_spaces(const char *s)
 }
 
 void	remove_extra_spaces(char *new_str, const char *str, int *j)
-{	
+{
 	int		i;
 	int		in_space;
 
