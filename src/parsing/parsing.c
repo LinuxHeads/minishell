@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/13 02:35:03 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/17 04:59:32 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/17 05:46:44 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,8 +87,8 @@ t_exec	*allocate_shell_commands(int num_commands, char **shell_command)
 		return (NULL);
 	}
 	shell->command_count = num_commands;
-	i = 0;
-	while (i < num_commands)
+	i = -1;
+	while (++i < num_commands)
 	{
 		shell->commands[i] = allocate_command(shell_command[i]);
 		if (!shell->commands[i])
@@ -96,7 +96,6 @@ t_exec	*allocate_shell_commands(int num_commands, char **shell_command)
 			free_shell(shell);
 			return (NULL);
 		}
-		i++;
 	}
 	shell->commands[i] = NULL;
 	return (shell);

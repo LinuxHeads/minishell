@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 01:23:07 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/17 05:40:48 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/17 05:46:22 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,6 @@ static int	init_pipeline(t_shell **shell)
 	return (1);
 }
 
-
 int	handle_signal_and_token(t_shell **shell, int i, int *redir_flag)
 {
 	if (g_signal_flag == SIGINT)
@@ -69,7 +68,6 @@ int	handle_signal_and_token(t_shell **shell, int i, int *redir_flag)
 	}
 	return (0);
 }
-
 
 void	execute_pipeline(t_shell **shell)
 {

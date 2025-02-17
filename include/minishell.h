@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 19:24:00 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/17 05:41:01 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/17 05:53:26 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,19 +19,17 @@
 ** ************************************************************************** **
 */
 
+# include <asm-generic/signal-defs.h>
+# include <errno.h>
+# include <fcntl.h>
+# include <signal.h>
 # include <stdio.h>
 # include <stdlib.h>
-# include <unistd.h>
-# include <fcntl.h>
-# include <sys/wait.h>
+# include <sys/ioctl.h>
 # include <sys/stat.h>
 # include <sys/types.h>
-# include <errno.h>
-# include <termios.h>
-# include <sys/ioctl.h>
-# include <asm-generic/signal-defs.h>
-# include <signal.h>
-# include <bits/sigaction.h>
+# include <sys/wait.h>
+# include <unistd.h>
 
 /*
 ** ************************************************************************** **
@@ -40,8 +38,8 @@
 */
 
 # include "../libft/libft.h"
-# include <readline/readline.h>
 # include <readline/history.h>
+# include <readline/readline.h>
 
 /*
 ** ************************************************************************** **
@@ -124,12 +122,12 @@ typedef struct s_shell
 
 typedef struct s_exp
 {
-	const char	*str;
-	int			i;
-	char		**result;
-	int			in_sq;
-	int			in_dq;
-}				t_exp;
+	const char		*str;
+	int				i;
+	char			**result;
+	int				in_sq;
+	int				in_dq;
+}					t_exp;
 /*
 ** ************************************************************************** **
 **                         Signal Handling Functions                          **
@@ -181,15 +179,17 @@ int					execute_builtin_command(char **args, t_shell *shell);
 
 /*
 ** ************************************************************************** **
-**                         Builtin helper			                          **
+**                         Builtin helper				                       **
 ** ************************************************************************** **
 */
 
 int					export_syntax_error(const char *arg);
 int					check_initial_syntax(const char *arg);
 int					split_var(const char *arg, char **key, char **value);
-int					split_without_equal(const char *arg, char **key, char **value);
-int					split_without_equal(const char *arg, char **key, char **value);
+int					split_without_equal(const char *arg, char **key,
+						char **value);
+int					split_without_equal(const char *arg, char **key,
+						char **value);
 int					appeand_mode(char *key, char *value, t_env **env_list);
 int					set_or_append_env(char *key, char *value, t_env **env_list);
 
@@ -243,6 +243,13 @@ char				**replace_token_in_array(char **argv, int index,
 						char **new_tokens);
 int					process_env_token(char ***argv_ptr, t_shell *shell, int i);
 int					expander(t_shell **shell);
+t_exp				init_exp(const char *str, char **res);
+void				toggle_quotes(char c, int *in_sq, int *in_dq);
+char				*expand_name(const char *str, int start, int *index,
+						t_shell *shell);
+int					expand_digit(char **expanded, t_shell *shell, int *index,
+						const char *str);
+int					normalize_env_value(char **var_value, char *result);
 
 /*
 ** ************************************************************************** **
@@ -266,7 +273,8 @@ int					contains_command_token(t_command *cmd);
 int					setup_command(t_shell **shell, int i, int *status);
 int					process_command(t_shell **shell, int i, int *pid);
 void				close_fds(t_shell *shell);
-int					handle_signal_and_token(t_shell **shell, int i, int *redir_flag);
+int					handle_signal_and_token(t_shell **shell, int i,
+						int *redir_flag);
 /*
 ** ************************************************************************** **
 **                        Miscellaneous Functions                             **

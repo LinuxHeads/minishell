@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
+/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/29 20:22:52 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/16 12:06:27 by ahramada         ###   ########.fr       */
+/*   Updated: 2025/02/17 05:52:43 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,6 @@ static void	process_commands(t_shell *shell, char *input)
 		free(proc);
 		return ;
 	}
-	// print_shell(shell->parser);
 	if (!syntax_checker(shell->parser))
 	{
 		shell->exit_status = 2;
