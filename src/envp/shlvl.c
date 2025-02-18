@@ -6,7 +6,7 @@
 /*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 15:35:29 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/18 13:29:19 by ahramada         ###   ########.fr       */
+/*   Updated: 2025/02/18 13:44:18 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ static int	ft_setup_value(t_env **envp, int shlvl)
 {
 	char	*new_shlvl;
 
-	if (shlvl >= 1000)
+	if (shlvl >= 999)
 	{
 		printf("minishell: warning: shell \
 level (SHLVL) too high,resetting to 1\n");
