@@ -6,7 +6,7 @@
 /*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 05:14:15 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/18 08:43:31 by ahramada         ###   ########.fr       */
+/*   Updated: 2025/02/18 12:31:14 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,12 +47,10 @@ t_env	*init_envp(char **envp)
 	t_env	*tail;
 	t_env	*new;
 
-	if (!envp)
-		return (NULL);
 	head = NULL;
 	tail = NULL;
 	i = -1;
-	while (envp[++i])
+	while (envp && envp[++i])
 	{
 		if (!ft_strchr(envp[i], '='))
 			continue ;

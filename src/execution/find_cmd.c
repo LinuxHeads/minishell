@@ -6,7 +6,7 @@
 /*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 06:21:46 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/18 12:17:41 by ahramada         ###   ########.fr       */
+/*   Updated: 2025/02/18 12:32:59 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,8 @@
 static char	*search_executable_in_paths(char **cmd, char **paths,
 		char **full_path, int *i)
 {
-	char *path;
-	
+	char	*path;
+
 	while (paths[*i])
 	{
 		*full_path = ft_strjoin(paths[*i], "/");
