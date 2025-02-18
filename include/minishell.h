@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 19:24:00 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/18 05:03:02 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/18 17:58:03 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -267,6 +267,10 @@ char				*process_var_value_spaces(char *var_value, int in_dq,
 						char **result);
 int					handle_dollar(t_expander *ctx);
 int					append_char(t_expander *ctx);
+int					if_it_has_space(const char *str);
+char				*expand_and_cleanup_token(char ***argv_ptr,
+						char **argv, int i, t_shell *shell);
+
 /*
 ** ************************************************************************** **
 **                         Execution Functions                                **
