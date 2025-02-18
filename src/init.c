@@ -6,7 +6,7 @@
 /*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/29 20:22:52 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/18 09:58:20 by ahramada         ###   ########.fr       */
+/*   Updated: 2025/02/18 18:13:43 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,9 +33,6 @@ static void	env_init(t_shell *shell, char **envp)
 		return ;
 	}
 	shell->env_list = init_envp(envp);
-	// if (!shell->env_list)
-	// 	ft_exit_handler(shell, 0, (char *[]){"Error: env list is NULL\n", NULL},
-	// 		1);
 	if (!ft_setup_shlvl(&shell->env_list))
 	{
 		free_envp_list(shell->env_list);
@@ -53,13 +50,13 @@ static void	env_init(t_shell *shell, char **envp)
 
 void	init_minishell(t_shell *shell, char **envp)
 {
-	// if (!isatty(STDIN_FILENO) || !isatty(STDOUT_FILENO)
-		// || !isatty(STDERR_FILENO))
-	// {
-		// ft_putstr_fd("Error: Minishell must be run in a terminal (TTY)\n",
-			// STDERR_FILENO);
-		// exit(1);
-	// }
+	if (!isatty(STDIN_FILENO) || !isatty(STDOUT_FILENO)
+		|| !isatty(STDERR_FILENO))
+	{
+		ft_putstr_fd("Error: Minishell must be run in a terminal (TTY)\n",
+			STDERR_FILENO);
+		exit(1);
+	}
 	env_init(shell, envp);
 	shell->exit_status = 0;
 	shell->parser = NULL;
