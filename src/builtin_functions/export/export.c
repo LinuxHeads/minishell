@@ -6,11 +6,25 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 15:42:39 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/17 05:25:38 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/18 05:23:20 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
+
+static void	print_export(t_env *env)
+{
+	while (env)
+	{
+		if (env->value != NULL)
+		{
+			printf("declare -x ");
+			printf("%s=", env->name);
+			printf("\"%s\"\n", env->value);
+		}
+		env = env->next;
+	}
+}
 
 static int	ft_printenv_sorted(t_env *env_list)
 {
@@ -20,7 +34,7 @@ static int	ft_printenv_sorted(t_env *env_list)
 	if (!tmp)
 		return (0);
 	ft_sort_env(&tmp);
-	print_envp(tmp);
+	print_export(tmp);
 	free_envp_list(tmp);
 	return (1);
 }
