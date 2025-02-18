@@ -6,7 +6,7 @@
 /*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 05:09:35 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/17 13:13:05 by ahramada         ###   ########.fr       */
+/*   Updated: 2025/02/18 08:45:33 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,8 @@ void	free_envp_array(char **envp)
 	int	i;
 
 	i = 0;
+	if (!envp)
+		return ;
 	while (envp[i])
 	{
 		free(envp[i]);

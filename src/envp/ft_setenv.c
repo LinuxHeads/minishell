@@ -6,7 +6,7 @@
 /*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 04:50:36 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/17 13:13:18 by ahramada         ###   ########.fr       */
+/*   Updated: 2025/02/18 10:00:35 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,12 @@ int	ft_setenv(const char *name, const char *value, t_env **env_list)
 	t_env	*env;
 	t_env	*new;
 
+	if (!env_list)
+	{
+		new = create_new_env_entry(name, value);
+		if (!new)
+			return (0);
+	}
 	env = *env_list;
 	while (env)
 	{

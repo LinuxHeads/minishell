@@ -6,12 +6,11 @@
 /*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/14 04:44:23 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/17 15:56:44 by ahramada         ###   ########.fr       */
+/*   Updated: 2025/02/18 11:07:18 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
-#include <string.h>
 
 void	check_if_directory(char *cmd_path, t_shell **shell)
 {

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/29 20:22:52 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/18 05:33:43 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/18 09:58:20 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,9 +33,9 @@ static void	env_init(t_shell *shell, char **envp)
 		return ;
 	}
 	shell->env_list = init_envp(envp);
-	if (!shell->env_list)
-		ft_exit_handler(shell, 0, (char *[]){"Error: env list is NULL\n", NULL},
-			1);
+	// if (!shell->env_list)
+	// 	ft_exit_handler(shell, 0, (char *[]){"Error: env list is NULL\n", NULL},
+	// 		1);
 	if (!ft_setup_shlvl(&shell->env_list))
 	{
 		free_envp_list(shell->env_list);

@@ -6,7 +6,7 @@
 /*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 15:35:29 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/17 13:13:25 by ahramada         ###   ########.fr       */
+/*   Updated: 2025/02/18 10:01:48 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,8 +64,6 @@ int	ft_setup_shlvl(t_env **envp)
 	int		shlvl;
 	char	*shlvl_str;
 
-	if (!envp || !*envp)
-		return (0);
 	shlvl_str = ft_getenv("SHLVL", *envp);
 	if (!shlvl_str)
 	{
