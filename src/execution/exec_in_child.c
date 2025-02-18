@@ -6,12 +6,11 @@
 /*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/10 02:41:05 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/17 15:57:30 by ahramada         ###   ########.fr       */
+/*   Updated: 2025/02/18 12:11:50 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
-#include <string.h>
 
 int	setup_pipe_for_command(int i, t_shell **shell)
 {
