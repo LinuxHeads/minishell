@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_cmd_handler.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/17 05:34:51 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/18 05:56:04 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/18 11:48:39 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,18 +58,22 @@ int	process_command(t_shell **shell, int i, int *pid)
 	int	redir_flag;
 
 	redir_flag = 0;
+	if (handle_signal_and_token(shell, i, &redir_flag))
+		return (1);
 	if (!get_redirections((*shell)->parser->commands[i], &(*shell)->in_fd,
 			&(*shell)->out_fd, *shell))
 	{
 		(*shell)->exit_status = 1;
 		redir_flag = 1;
 	}
-	if (handle_signal_and_token(shell, i, &redir_flag))
-		return (1);
 	if (!(*shell)->argv || !(*shell)->argv[0])
 	{
-		ft_exit_handler(*shell, NULL, (char *[]){"minishell: invalid command\n",
-			NULL}, (*shell)->exit_status);
+		// ft_putstr_fd("minishell:", 2);
+		// ft_putstr_fd(" command not found\n", 2);
+		// (*shell)->exit_status = 127;
+		return (2);
+		// ft_exit_handler(*shell, NULL, (char *[]){"minishell: invalid command\n",
+			// NULL}, (*shell)->exit_status);
 	}
 	if (is_builtin_command((*shell)->argv)
 		&& (*shell)->parser->command_count == 1)
