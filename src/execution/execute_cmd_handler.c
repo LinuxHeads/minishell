@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_cmd_handler.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
+/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/17 05:34:51 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/17 15:58:25 by ahramada         ###   ########.fr       */
+/*   Updated: 2025/02/18 05:56:04 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ int	setup_command(t_shell **shell, int i, int *status)
 		printf("Error building command argv\n");
 		return (0);
 	}
-	if (!expander(shell))
+	if (expander(shell) < 0)
 	{
 		if (!get_redirections((*shell)->parser->commands[i], &(*shell)->in_fd,
 				&(*shell)->out_fd, *shell))
