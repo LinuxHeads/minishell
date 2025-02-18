@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 07:38:40 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/16 07:50:08 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/18 05:03:40 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,11 +28,27 @@ static char	*handle_quote_token(char *token)
 	return (c);
 }
 
-/*
-** Processes a token that does NOT contain '$'.
-** If the token equals "~", it gets replaced by the HOME env var.
-** Then, outer quotes are stripped and the token is cleaned up.
-*/
+static int	tilde_expander_helper(t_shell *shell, char **token_ptr,
+		char **old_arg)
+{
+	char	*expanded;
+	char	*home;
+
+	home = ft_getenv("HOME", shell->env_list);
+	if (!home)
+		home = "";
+	if ((*old_arg)[1] == '\0')
+		expanded = ft_strdup(home);
+	else
+		expanded = ft_strjoin(home, *old_arg + 1);
+	if (!expanded)
+		return (0);
+	free(*token_ptr);
+	*token_ptr = expanded;
+	*old_arg = expanded;
+	return (1);
+}
+
 static int	process_no_env_token(char **token_ptr, t_shell *shell)
 {
 	char	*old_arg;
@@ -40,8 +56,11 @@ static int	process_no_env_token(char **token_ptr, t_shell *shell)
 	char	*tmp;
 
 	old_arg = *token_ptr;
-	if (ft_strcmp(old_arg, "~") == 0)
-		old_arg = ft_getenv("HOME", shell->env_list);
+	if (old_arg[0] == '~' && (old_arg[1] == '/' || old_arg[1] == '\0'))
+	{
+		if (!tilde_expander_helper(shell, token_ptr, &old_arg))
+			return (-1);
+	}
 	no_closed = strip_outers_quotes(old_arg);
 	if (no_closed)
 	{
