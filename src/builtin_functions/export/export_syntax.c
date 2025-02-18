@@ -6,7 +6,7 @@
 /*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/17 05:15:07 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/18 14:43:31 by ahramada         ###   ########.fr       */
+/*   Updated: 2025/02/18 17:47:01 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,8 @@ int	check_initial_syntax(const char *arg)
 		ft_putstr_fd("minishell: export: ", STDERR_FILENO);
 		ft_putstr_fd(arg, STDERR_FILENO);
 		ft_putstr_fd(": invalid option\n", STDERR_FILENO);
-		ft_putstr_fd("export: usage: export [-fn] [name[=value] ...] or export -p\n", STDERR_FILENO);
+		ft_putstr_fd("export: usage: export [-fn] [name[=value] ...] or export \
+-p\n", STDERR_FILENO);
 		return (2);
 	}
 	return (1);

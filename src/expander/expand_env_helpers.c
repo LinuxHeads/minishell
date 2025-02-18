@@ -6,7 +6,7 @@
 /*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/17 13:31:36 by ahramada          #+#    #+#             */
-/*   Updated: 2025/02/18 16:00:15 by ahramada         ###   ########.fr       */
+/*   Updated: 2025/02/18 17:49:20 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,20 +54,10 @@ char	*process_var_value_spaces(char *var_value, int in_dq, char **result)
 	return (var_value);
 }
 
-int if_it_has_space(const char *str) {
-    if (!str) return 0; 
-
-    while (*str) {
-        if (*str == ' ')
-            return 1;
-        str++;
-    }
-    return 0;
-}
-
-
 int	setup_var_value(char **var_value, t_expander *ctx)
 {
+	char	*temp;
+
 	*var_value = process_var_value_quotes(*var_value);
 	if (!*var_value)
 	{
@@ -77,7 +67,9 @@ int	setup_var_value(char **var_value, t_expander *ctx)
 	*var_value = process_var_value_spaces(*var_value, ctx->in_dq, &ctx->result);
 	if (if_it_has_space(*var_value))
 	{
-    	*var_value = ft_strjoin(*var_value, " ");
+		temp = *var_value;
+		*var_value = ft_strjoin(*var_value, " ");
+		free(temp);
 	}
 	if (!*var_value)
 		return (-1);

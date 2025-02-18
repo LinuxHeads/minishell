@@ -6,7 +6,7 @@
 /*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 15:42:39 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/18 14:43:37 by ahramada         ###   ########.fr       */
+/*   Updated: 2025/02/18 17:46:34 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ int	ft_export(char **args, t_env **env_list)
 		status = process_export_argument(args[i], env_list);
 		if (status == 2)
 			ret = 2;
-		else if (status == 1 && ret != 2)  // Only set ret to 1 if no option error occurred.
+		else if (status == 1 && ret != 2)
 			ret = 1;
 		i++;
 	}

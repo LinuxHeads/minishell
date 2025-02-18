@@ -6,7 +6,7 @@
 /*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 07:47:50 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/18 14:07:16 by ahramada         ###   ########.fr       */
+/*   Updated: 2025/02/18 17:56:32 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,45 +74,6 @@ static int	finalize_expanded_token(int encl, char *expanded, char **argv,
 		argv[i] = expanded;
 	}
 	return (1);
-}
-
-static char	*expand_and_cleanup_token(char ***argv_ptr, char **argv, int i,
-		t_shell *shell)
-{
-	char	*tmp;
-	char	*expanded;
-
-	expanded = expand_env_string(argv[i], shell);
-	if (!expanded || is_whitespace(expanded))
-	{
-		free(expanded);
-		remove_argument(argv_ptr, i);
-		return (0);
-	}
-
-	if (argv[i][0] == '$' && argv[i][1] != '\0') {
-    	tmp = expanded;
-	} 
-	else if (argv[i][0] == '\"' && argv[i][1] == '$' && argv[i][2] != '\0') {
-    	tmp = expanded;
-	} 
-	else if (argv[i][0] == '\'' && argv[i][1] == '$' && argv[i][2] != '\0') {
-    	tmp = expanded;
-	} 
-	else
-	{
-    tmp = cleanup_input(expanded);
-    free(expanded);
-	}
-
-	
-	if (!tmp)
-	{
-		remove_argument(argv_ptr, i);
-		return (0);
-	}
-	expanded = tmp;
-	return (expanded);
 }
 
 int	process_env_token(char ***argv_ptr, t_shell *shell, int i)

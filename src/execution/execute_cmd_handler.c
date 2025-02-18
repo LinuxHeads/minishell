@@ -6,7 +6,7 @@
 /*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/17 05:34:51 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/18 12:32:20 by ahramada         ###   ########.fr       */
+/*   Updated: 2025/02/18 17:13:16 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,7 @@ int	process_command(t_shell **shell, int i, int *pid)
 	}
 	if (!(*shell)->argv || !(*shell)->argv[0])
 	{
+		free_str_array((*shell)->argv);
 		return (2);
 	}
 	if (is_builtin_command((*shell)->argv)

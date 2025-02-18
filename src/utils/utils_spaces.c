@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_spaces.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/15 17:50:11 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/17 05:27:30 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/18 17:48:34 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,4 +97,17 @@ char	*compress_whitespace(const char *str)
 	remove_extra_spaces(new_str, str, &j);
 	new_str[j] = '\0';
 	return (new_str);
+}
+
+int	if_it_has_space(const char *str)
+{
+	if (!str)
+		return (0);
+	while (*str)
+	{
+		if (*str == ' ')
+			return (1);
+		str++;
+	}
+	return (0);
 }
