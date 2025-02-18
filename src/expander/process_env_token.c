@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   process_env_token.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
+/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 07:47:50 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/16 13:13:30 by ahramada         ###   ########.fr       */
+/*   Updated: 2025/02/18 06:15:14 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-int	for_good_resone(char ****argv_ptr, char ***argv, int i,
+int	replace_wrapper(char ****argv_ptr, char ***argv, int i,
 		char ***split_tokens)
 {
 	**argv_ptr = replace_token_in_array(*argv, i, *split_tokens);
@@ -42,7 +42,7 @@ static int	process_expanded_token_with_spaces(char ***argv_ptr, char **argv,
 		return (0);
 	}
 	if (array_length(split_tokens) > 1)
-		return (for_good_resone(&argv_ptr, &argv, i, &split_tokens));
+		return (replace_wrapper(&argv_ptr, &argv, i, &split_tokens));
 	else
 	{
 		free(argv[i]);
@@ -115,10 +115,8 @@ int	process_env_token(char ***argv_ptr, t_shell *shell, int i)
 	if (!encl && ft_strchr(expanded, ' '))
 	{
 		temp = process_expanded_token_with_spaces(argv_ptr, argv, i, expanded);
-		if (temp == -1)
-			return (-1);
-		else if (temp == 0)
-			return (0);
+		if (temp <= 0)
+			return (temp);
 	}
 	else
 	{
