@@ -6,7 +6,7 @@
 /*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 15:40:45 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/18 12:17:02 by ahramada         ###   ########.fr       */
+/*   Updated: 2025/02/18 13:37:01 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ static void	print_arguments(char **args, int start_index)
 	{
 		if ((args[i][0] == '\"' && args[i][1] == '\"') || (args[i][0] == '\''
 				&& args[i][1] == '\''))
-			printf(" ");
+			printf("");
 		else
 			printf("%s", args[i]);
 		if (args[i + 1])

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   process_env_token.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 07:47:50 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/18 06:15:14 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/18 14:07:16 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,8 +89,23 @@ static char	*expand_and_cleanup_token(char ***argv_ptr, char **argv, int i,
 		remove_argument(argv_ptr, i);
 		return (0);
 	}
-	tmp = cleanup_input(expanded);
-	free(expanded);
+
+	if (argv[i][0] == '$' && argv[i][1] != '\0') {
+    	tmp = expanded;
+	} 
+	else if (argv[i][0] == '\"' && argv[i][1] == '$' && argv[i][2] != '\0') {
+    	tmp = expanded;
+	} 
+	else if (argv[i][0] == '\'' && argv[i][1] == '$' && argv[i][2] != '\0') {
+    	tmp = expanded;
+	} 
+	else
+	{
+    tmp = cleanup_input(expanded);
+    free(expanded);
+	}
+
+	
 	if (!tmp)
 	{
 		remove_argument(argv_ptr, i);
