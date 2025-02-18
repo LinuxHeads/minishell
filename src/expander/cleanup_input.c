@@ -6,13 +6,14 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 07:39:53 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/18 05:06:48 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/18 06:04:52 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-static char	*replace_and_free(char *input, const char *old_sub, const char *new_sub)
+static char	*replace_and_free(char *input, const char *old_sub,
+		const char *new_sub)
 {
 	char	*result;
 

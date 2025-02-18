@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 07:38:40 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/18 05:55:14 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/18 06:04:44 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,7 +126,7 @@ int	expander(t_shell **shell)
 	{
 		ret = process_simple_token(&argv, i, shell);
 		if (ret < 0)
-				return (-1);
+			return (-1);
 		if (ret == 1)
 		{
 			i++;
