@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/17 05:15:07 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/17 05:25:50 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/18 05:32:30 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,9 @@ static int	validate_identifier_chars(const char *arg, size_t len)
 				i++;
 			else
 			{
-				fprintf(stderr,
-					"minishell: export: `%s': not a valid identifier\n", arg);
+				ft_putstr_fd("minishell: export: `", STDERR_FILENO);
+				ft_putstr_fd(arg, STDERR_FILENO);
+				ft_putstr_fd("': not a valid identifier\n", STDERR_FILENO);
 				return (0);
 			}
 		}
@@ -59,12 +60,14 @@ int	check_initial_syntax(const char *arg)
 	{
 		if (arg[0] == '-')
 		{
-			fprintf(stderr, "minishell: export: `%s': not a valid identifier\n",
-				arg);
+			ft_putstr_fd("minishell: export: `", STDERR_FILENO);
+			ft_putstr_fd(arg, STDERR_FILENO);
+			ft_putstr_fd("': not a valid identifier\n", STDERR_FILENO);
 			return (2);
 		}
-		fprintf(stderr, "minishell: export: `%s': not a valid identifier\n",
-			arg);
+		ft_putstr_fd("minishell: export: `", STDERR_FILENO);
+		ft_putstr_fd(arg, STDERR_FILENO);
+		ft_putstr_fd("': not a valid identifier\n", STDERR_FILENO);
 		return (0);
 	}
 	return (1);

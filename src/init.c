@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
+/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/29 20:22:52 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/17 14:22:58 by ahramada         ###   ########.fr       */
+/*   Updated: 2025/02/18 05:33:43 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,10 +54,11 @@ static void	env_init(t_shell *shell, char **envp)
 void	init_minishell(t_shell *shell, char **envp)
 {
 	// if (!isatty(STDIN_FILENO) || !isatty(STDOUT_FILENO)
-	// 	|| !isatty(STDERR_FILENO))
+		// || !isatty(STDERR_FILENO))
 	// {
-	// 	fprintf(stderr, "Error: Minishell must be run in a terminal (TTY)\n");
-	// 	exit(1);
+		// ft_putstr_fd("Error: Minishell must be run in a terminal (TTY)\n",
+			// STDERR_FILENO);
+		// exit(1);
 	// }
 	env_init(shell, envp);
 	shell->exit_status = 0;
