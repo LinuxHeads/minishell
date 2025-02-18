@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   build_args.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
+/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 06:18:02 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/16 12:39:59 by ahramada         ###   ########.fr       */
+/*   Updated: 2025/02/18 05:47:44 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,10 @@
 
 static int	is_redirection_token(int type)
 {
-	return (type == REDIRECT_IN || type == REDIRECT_OUT
-		|| type == REDIRECT_APPEND || type == HEREDOC);
+	if (type == REDIRECT_IN || type == REDIRECT_OUT
+		|| type == REDIRECT_APPEND || type == HEREDOC)
+		return (1);
+	return (0);
 }
 
 static int	count_command_arguments(t_command *cmd)

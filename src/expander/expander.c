@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 07:38:40 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/18 05:03:40 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/18 05:55:14 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,22 +57,24 @@ static int	process_no_env_token(char **token_ptr, t_shell *shell)
 
 	old_arg = *token_ptr;
 	if (old_arg[0] == '~' && (old_arg[1] == '/' || old_arg[1] == '\0'))
-	{
 		if (!tilde_expander_helper(shell, token_ptr, &old_arg))
 			return (-1);
-	}
 	no_closed = strip_outers_quotes(old_arg);
 	if (no_closed)
 	{
 		free(*token_ptr);
 		*token_ptr = no_closed;
 	}
+	else
+		return (-1);
 	tmp = cleanup_input(*token_ptr);
 	if (tmp)
 	{
 		free(*token_ptr);
 		*token_ptr = tmp;
 	}
+	else
+		return (-1);
 	return (0);
 }
 
@@ -123,13 +125,13 @@ int	expander(t_shell **shell)
 	while (argv[i])
 	{
 		ret = process_simple_token(&argv, i, shell);
-		if (ret <= 0)
-			if (ret < 0)
+		if (ret < 0)
 				return (-1);
 		if (ret == 1)
+		{
 			i++;
-		if (ret == 1)
 			continue ;
+		}
 		ret = process_env_token(&argv, *shell, i);
 		if (ret < 0)
 			return (-1);
