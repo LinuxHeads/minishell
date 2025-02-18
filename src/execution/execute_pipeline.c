@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 01:23:07 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/17 05:46:22 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/18 05:33:10 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,8 @@ static int	init_pipeline(t_shell **shell)
 	(*shell)->envp = envp_to_str((*shell)->env_list);
 	if (!(*shell)->envp || !(*shell)->envp[0])
 	{
-		fprintf(stderr, "Error converting env to string array\n");
+		ft_putstr_fd("Error converting env to string array\n", STDERR_FILENO);
+		(*shell)->exit_status = 1;
 		return (0);
 	}
 	signals_setup(1);

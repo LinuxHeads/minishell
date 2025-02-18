@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   unset.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
+/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 15:42:37 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/16 13:26:17 by ahramada         ###   ########.fr       */
+/*   Updated: 2025/02/18 05:40:20 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-void	for_the_norme(char *arg)
+static void	print_error_message(char *arg)
 {
 	ft_putstr_fd("minishell: unset: `", STDERR_FILENO);
 	ft_putstr_fd(arg, STDERR_FILENO);
@@ -26,7 +26,7 @@ static int	unset_one(char *arg, t_env **envp)
 
 	if (ft_strncmp(arg, "-", 1) == 0)
 	{
-		for_the_norme(arg);
+		print_error_message(arg);
 		return (2);
 	}
 	tmp = *envp;
