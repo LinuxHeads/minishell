@@ -6,7 +6,7 @@
 /*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 15:35:29 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/18 10:01:48 by ahramada         ###   ########.fr       */
+/*   Updated: 2025/02/18 13:29:19 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,26 +44,27 @@ level (SHLVL) too high,resetting to 1\n");
 
 static int	ft_check_errors(int shlvl, char *shlvl_str, t_env **envp)
 {
-	if (shlvl == 0 && shlvl_str[0] != '0')
-	{
-		if (!ft_setenv("SHLVL", "0", envp))
-			return (0);
-		return (2);
-	}
-	if (!ft_isnumber(shlvl_str))
-	{
-		if (!ft_setenv("SHLVL", "1", envp))
-			return (0);
-		return (2);
-	}
-	return (1);
+    if (!ft_isnumber(shlvl_str))
+    {
+        if (!ft_setenv("SHLVL", "1", envp))
+            return (0);
+        return (2);
+    }
+    if (shlvl == 0 && shlvl_str[0] != '0')
+    {
+        if (!ft_setenv("SHLVL", "0", envp))
+            return (0);
+        return (2);
+    }
+    return (1);
 }
 
 int	ft_setup_shlvl(t_env **envp)
 {
 	int		shlvl;
 	char	*shlvl_str;
-
+	int		ret;
+	
 	shlvl_str = ft_getenv("SHLVL", *envp);
 	if (!shlvl_str)
 	{
@@ -72,9 +73,10 @@ int	ft_setup_shlvl(t_env **envp)
 		return (1);
 	}
 	shlvl = ft_atoi(shlvl_str);
-	if (!ft_check_errors(shlvl, shlvl_str, envp))
+	ret = ft_check_errors(shlvl, shlvl_str, envp); 
+	if (!ret)
 		return (0);
-	if (ft_check_errors(shlvl, shlvl_str, envp) == 2)
+	if (ret == 2)
 		return (1);
 	if (!ft_setup_value(envp, shlvl))
 		return (0);
