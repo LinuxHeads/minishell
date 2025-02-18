@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
+/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 15:30:45 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/17 14:25:50 by ahramada         ###   ########.fr       */
+/*   Updated: 2025/02/18 04:28:03 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,8 @@ int	cheker_for_number(char **args, t_shell *shell)
 {
 	if (ft_isnumber(args[0]))
 	{
-		ft_exit_handler(shell, NULL, (char *[]){"exit: too many arguments\n",
-			NULL}, 2);
+		ft_putendl_fd("exit: too many arguments", 2);
+		shell->exit_status = 1;
 		return (1);
 	}
 	else
