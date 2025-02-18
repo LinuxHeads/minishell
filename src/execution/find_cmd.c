@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   find_cmd.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 06:21:46 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/15 05:53:50 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/18 12:17:41 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,12 +15,18 @@
 static char	*search_executable_in_paths(char **cmd, char **paths,
 		char **full_path, int *i)
 {
+	char *path;
+	
 	while (paths[*i])
 	{
-		*full_path = malloc(ft_strlen(paths[*i]) + ft_strlen(*cmd) + 2);
-		if (!*full_path)
+		*full_path = ft_strjoin(paths[*i], "/");
+		if (!full_path)
 			return (NULL);
-		sprintf(*full_path, "%s/%s", paths[*i], *cmd);
+		path = ft_strjoin(*full_path, *cmd);
+		if (!path)
+			return (NULL);
+		free(*full_path);
+		*full_path = path;
 		if (access(*full_path, X_OK) == 0)
 		{
 			free_str_array(paths);
