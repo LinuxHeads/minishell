@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_in_child.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
+/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/10 02:41:05 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/18 12:11:50 by ahramada         ###   ########.fr       */
+/*   Updated: 2025/02/20 14:47:38 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,19 +26,6 @@ int	setup_pipe_for_command(int i, t_shell **shell)
 	return (0);
 }
 
-/*
-** Helper: setup_fd_redirection
-**
-** Sets up file descriptor redirections for the child process.
-** - Duplicates in_fd to STDIN if needed.
-** - If a pipe was created,
-	uses its write end as STDOUT if out_fd was not redirected.
-** - Duplicates out_fd to STDOUT.
-**
-	- Closes the previous file descriptor (if any)
-	and both pipe ends (since they are
-**   no longer needed after dup2).
-*/
 static void	setup_fd_redirection(t_shell **shell)
 {
 	if ((*shell)->in_fd != STDIN_FILENO)
@@ -67,16 +54,6 @@ static void	setup_fd_redirection(t_shell **shell)
 	}
 }
 
-/*
-** Helper: execute_command
-**
-** After setting up redirections, this function:
-** - Checks for and executes built-in commands.
-** - Locates the command’s executable path.
-** - Calls execve to execute the command.
-** - If execve returns (i.e. an error occurs), it cleans up and exits
-**   with an appropriate exit code.
-*/
 static void	execute_command(t_shell **shell)
 {
 	char	*cmd_path;

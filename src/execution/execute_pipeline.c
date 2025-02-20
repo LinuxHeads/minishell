@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_pipeline.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
+/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 01:23:07 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/18 17:12:19 by ahramada         ###   ########.fr       */
+/*   Updated: 2025/02/20 14:49:40 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,7 @@ int	handle_signal_and_token(t_shell **shell, int i, int *redir_flag)
 			*redir_flag = 1;
 		}
 		free_str_array((*shell)->argv);
+		close_fds(*shell);
 		return (1);
 	}
 	return (0);

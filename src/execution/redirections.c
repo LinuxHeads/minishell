@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/08 00:46:38 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/20 03:08:21 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/20 14:44:48 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,6 +117,8 @@ static int	ft_setup_heredoc(t_command *cmd, int *in_fd, int *i, t_shell *shell)
 			cmd->tokens[*i]->value = trim_quotes(cmd->tokens[*i]->value);
 			if (cmd->tokens[*i]->value == NULL)
 				return (0);
+			if (*in_fd != STDIN_FILENO)
+				close(*in_fd);
 			if (pipe(pipe_fds) == -1)
 			{
 				perror("pipe");
