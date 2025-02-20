@@ -3,20 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   redirections.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/08 00:46:38 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/20 15:02:16 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/20 17:49:47 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
-
-void	check_close_fd(int fd, int value)
-{
-	if (fd != value)
-		close(fd);
-}
 
 static int	ft_setup_infile(t_command *cmd, int *in_fd, int *i, t_shell *shell)
 {
@@ -37,12 +31,10 @@ static int	ft_setup_infile(t_command *cmd, int *in_fd, int *i, t_shell *shell)
 				perror(cmd->tokens[*i]->value);
 				return (0);
 			}
+			return (1);
 		}
-		else
-		{
-			ft_putstr_fd("minishell: syntax error.\n", 2);
-			return (0);
-		}
+		ft_putstr_fd("minishell: syntax error.\n", 2);
+		return (0);
 	}
 	return (1);
 }
@@ -68,12 +60,10 @@ static int	ft_setup_outfile(t_command *cmd, int *out_fd, int *i,
 				perror(cmd->tokens[*i]->value);
 				return (0);
 			}
+			return (1);
 		}
-		else
-		{
-			ft_putstr_fd("minishell: syntax error.\n", 2);
-			return (0);
-		}
+		ft_putstr_fd("minishell: syntax error.\n", 2);
+		return (0);
 	}
 	return (1);
 }
@@ -98,12 +88,10 @@ static int	ft_setup_append(t_command *cmd, int *out_fd, int *i, t_shell *shell)
 				perror(cmd->tokens[*i]->value);
 				return (0);
 			}
+			return (1);
 		}
-		else
-		{
-			ft_putstr_fd("minishell: syntax error.\n", 2);
-			return (0);
-		}
+		ft_putstr_fd("minishell: syntax error.\n", 2);
+		return (0);
 	}
 	return (1);
 }
@@ -114,24 +102,24 @@ static int	ft_setup_heredoc(t_command *cmd, int *in_fd, int *i, t_shell *shell)
 
 	if (cmd->tokens[*i]->type == HEREDOC && *i + 1 < cmd->token_count)
 	{
-			(*i)++;
-			cmd->tokens[*i]->value = trim_quotes(cmd->tokens[*i]->value);
-			if (cmd->tokens[*i]->value == NULL)
-				return (0);
-			check_close_fd(*in_fd, STDIN_FILENO);
-			if (pipe(pipe_fds) == -1)
-			{
-				perror("pipe");
-				exit(EXIT_FAILURE);
-			}
-			if (!ft_heredoc(pipe_fds, cmd, *i, shell))
-			{
-				close(pipe_fds[1]);
-				*in_fd = pipe_fds[0];
-				return (0);
-			}
+		(*i)++;
+		cmd->tokens[*i]->value = trim_quotes(cmd->tokens[*i]->value);
+		if (cmd->tokens[*i]->value == NULL)
+			return (0);
+		check_close_fd(*in_fd, STDIN_FILENO);
+		if (pipe(pipe_fds) == -1)
+		{
+			perror("pipe");
+			exit(EXIT_FAILURE);
+		}
+		if (!ft_heredoc(pipe_fds, cmd, *i, shell))
+		{
 			close(pipe_fds[1]);
 			*in_fd = pipe_fds[0];
+			return (0);
+		}
+		close(pipe_fds[1]);
+		*in_fd = pipe_fds[0];
 	}
 	return (1);
 }

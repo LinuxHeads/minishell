@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   redir_utils.c                                      :+:      :+:    :+:   */
+/*   exec_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/08 01:44:02 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/17 05:38:56 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/20 17:44:49 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,4 +36,10 @@ void	close_fds(t_shell *shell)
 		close(shell->in_fd);
 	if (shell->out_fd != STDOUT_FILENO)
 		close(shell->out_fd);
+}
+
+void	check_close_fd(int fd, int value)
+{
+	if (fd != value)
+		close(fd);
 }

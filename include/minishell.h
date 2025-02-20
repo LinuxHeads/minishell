@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
+/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 19:24:00 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/20 02:51:06 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/20 17:45:12 by ahramada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -295,6 +295,8 @@ int					process_command(t_shell **shell, int i, int *pid);
 void				close_fds(t_shell *shell);
 int					handle_signal_and_token(t_shell **shell, int i,
 						int *redir_flag);
+void				check_close_fd(int fd, int value);
+
 /*
 ** ************************************************************************** **
 **                        Miscellaneous Functions                             **
