@@ -6,11 +6,17 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/08 00:46:38 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/20 14:44:48 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/20 15:02:16 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
+
+void	check_close_fd(int fd, int value)
+{
+	if (fd != value)
+		close(fd);
+}
 
 static int	ft_setup_infile(t_command *cmd, int *in_fd, int *i, t_shell *shell)
 {
@@ -23,8 +29,7 @@ static int	ft_setup_infile(t_command *cmd, int *in_fd, int *i, t_shell *shell)
 			cmd->tokens[*i]->value = trim_quotes(cmd->tokens[*i]->value);
 			if (cmd->tokens[*i]->value == NULL)
 				return (0);
-			if (*in_fd != STDIN_FILENO)
-				close(*in_fd);
+			check_close_fd(*in_fd, STDIN_FILENO);
 			*in_fd = open(cmd->tokens[*i]->value, O_RDONLY);
 			if (*in_fd < 0)
 			{
@@ -54,8 +59,7 @@ static int	ft_setup_outfile(t_command *cmd, int *out_fd, int *i,
 			cmd->tokens[*i]->value = trim_quotes(cmd->tokens[*i]->value);
 			if (cmd->tokens[*i]->value == NULL)
 				return (0);
-			if (*out_fd != STDOUT_FILENO)
-                close(*out_fd);
+			check_close_fd(*out_fd, STDOUT_FILENO);
 			*out_fd = open(cmd->tokens[*i]->value, O_WRONLY | O_CREAT | O_TRUNC,
 					0644);
 			if (*out_fd < 0)
@@ -85,8 +89,7 @@ static int	ft_setup_append(t_command *cmd, int *out_fd, int *i, t_shell *shell)
 			cmd->tokens[*i]->value = trim_quotes(cmd->tokens[*i]->value);
 			if (cmd->tokens[*i]->value == NULL)
 				return (0);
-			if (*out_fd != STDOUT_FILENO)
-				close(*out_fd);
+			check_close_fd(*out_fd, STDOUT_FILENO);
 			*out_fd = open(cmd->tokens[*i]->value,
 					O_WRONLY | O_CREAT | O_APPEND, 0644);
 			if (*out_fd < 0)
@@ -109,16 +112,13 @@ static int	ft_setup_heredoc(t_command *cmd, int *in_fd, int *i, t_shell *shell)
 {
 	int	pipe_fds[2];
 
-	if (cmd->tokens[*i]->type == HEREDOC)
+	if (cmd->tokens[*i]->type == HEREDOC && *i + 1 < cmd->token_count)
 	{
-		if (*i + 1 < cmd->token_count)
-		{
 			(*i)++;
 			cmd->tokens[*i]->value = trim_quotes(cmd->tokens[*i]->value);
 			if (cmd->tokens[*i]->value == NULL)
 				return (0);
-			if (*in_fd != STDIN_FILENO)
-				close(*in_fd);
+			check_close_fd(*in_fd, STDIN_FILENO);
 			if (pipe(pipe_fds) == -1)
 			{
 				perror("pipe");
@@ -132,7 +132,6 @@ static int	ft_setup_heredoc(t_command *cmd, int *in_fd, int *i, t_shell *shell)
 			}
 			close(pipe_fds[1]);
 			*in_fd = pipe_fds[0];
-		}
 	}
 	return (1);
 }
