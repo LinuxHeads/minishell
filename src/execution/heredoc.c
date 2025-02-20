@@ -6,7 +6,7 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/17 05:37:10 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/17 05:39:44 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/20 03:00:57 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,13 +42,23 @@ static void	heredoc_loop(int pipe_fds[2], t_command *cmd, int i, t_shell *shell)
 	}
 }
 
-void	ft_heredoc(int pipe_fds[2], t_command *cmd, int i, t_shell *shell)
+int	ft_heredoc(int pipe_fds[2], t_command *cmd, int i, t_shell *shell)
 {
 	reset_signals_heredoc();
 	heredoc_loop(pipe_fds, cmd, i, shell);
 	signals_setup(0);
 	if (g_signal_flag == SIGINT)
+	{
 		write(1, "\n", 1);
+		close(pipe_fds[1]);
+		dup2(2, 0);
+		return (0);
+	}
 	if (dup2(2, 0) < 0)
+	{
 		perror("dup2");
+		close(pipe_fds[1]);
+		return (0);
+	}
+	return (1);
 }

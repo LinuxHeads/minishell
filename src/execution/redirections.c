@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirections.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
+/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/08 00:46:38 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/16 13:14:31 by ahramada         ###   ########.fr       */
+/*   Updated: 2025/02/20 03:08:21 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,8 @@ static int	ft_setup_infile(t_command *cmd, int *in_fd, int *i, t_shell *shell)
 			cmd->tokens[*i]->value = trim_quotes(cmd->tokens[*i]->value);
 			if (cmd->tokens[*i]->value == NULL)
 				return (0);
+			if (*in_fd != STDIN_FILENO)
+				close(*in_fd);
 			*in_fd = open(cmd->tokens[*i]->value, O_RDONLY);
 			if (*in_fd < 0)
 			{
@@ -52,6 +54,8 @@ static int	ft_setup_outfile(t_command *cmd, int *out_fd, int *i,
 			cmd->tokens[*i]->value = trim_quotes(cmd->tokens[*i]->value);
 			if (cmd->tokens[*i]->value == NULL)
 				return (0);
+			if (*out_fd != STDOUT_FILENO)
+                close(*out_fd);
 			*out_fd = open(cmd->tokens[*i]->value, O_WRONLY | O_CREAT | O_TRUNC,
 					0644);
 			if (*out_fd < 0)
@@ -81,6 +85,8 @@ static int	ft_setup_append(t_command *cmd, int *out_fd, int *i, t_shell *shell)
 			cmd->tokens[*i]->value = trim_quotes(cmd->tokens[*i]->value);
 			if (cmd->tokens[*i]->value == NULL)
 				return (0);
+			if (*out_fd != STDOUT_FILENO)
+				close(*out_fd);
 			*out_fd = open(cmd->tokens[*i]->value,
 					O_WRONLY | O_CREAT | O_APPEND, 0644);
 			if (*out_fd < 0)
@@ -116,7 +122,12 @@ static int	ft_setup_heredoc(t_command *cmd, int *in_fd, int *i, t_shell *shell)
 				perror("pipe");
 				exit(EXIT_FAILURE);
 			}
-			ft_heredoc(pipe_fds, cmd, *i, shell);
+			if (!ft_heredoc(pipe_fds, cmd, *i, shell))
+			{
+				close(pipe_fds[1]);
+				*in_fd = pipe_fds[0];
+				return (0);
+			}
 			close(pipe_fds[1]);
 			*in_fd = pipe_fds[0];
 		}

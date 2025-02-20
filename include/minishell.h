@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
+/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 19:24:00 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/18 17:58:03 by ahramada         ###   ########.fr       */
+/*   Updated: 2025/02/20 02:51:06 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -285,7 +285,7 @@ void				fork_check(int pid, t_shell **shell);
 void				exec_in_child(int i, t_shell **shell, int *pid,
 						int redir_flag);
 void				execute_builtin_in_parent(t_shell **shell, int redir_flag);
-void				ft_heredoc(int pipe_fds[2], t_command *cmd, int i,
+int					ft_heredoc(int pipe_fds[2], t_command *cmd, int i,
 						t_shell *shell);
 void				ft_exit_handler(t_shell *shell, void *ptr, char **message,
 						int exit_code);
