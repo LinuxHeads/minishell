@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahramada <ahramada@student.42.fr>          +#+  +:+       +#+        */
+/*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 15:42:39 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/18 17:46:34 by ahramada         ###   ########.fr       */
+/*   Updated: 2025/02/21 23:58:19 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,15 +16,14 @@ static void	print_export(t_env *env)
 {
 	while (env)
 	{
+		printf("declare -x %s", env->name);
 		if (env->value != NULL)
-		{
-			printf("declare -x ");
-			printf("%s=", env->name);
-			printf("\"%s\"\n", env->value);
-		}
+			printf("=\"%s\"", env->value);
+		printf("\n");
 		env = env->next;
 	}
 }
+
 
 static int	ft_printenv_sorted(t_env *env_list)
 {
@@ -41,32 +40,31 @@ static int	ft_printenv_sorted(t_env *env_list)
 
 static int	process_export_argument(const char *arg, t_env **env_list)
 {
-	char	*key;
-	char	*value;
-	int		syntax;
+    char	*key;
+    char	*value;
+    int		syntax;
 
-	syntax = export_syntax_error(arg);
-	if (syntax != 1)
-	{
-		if (syntax == 2)
-			return (2);
-		return (1);
-	}
-	if (!split_var(arg, &key, &value))
-		return (1);
-	if (value)
-	{
-		if (set_or_append_env(key, value, env_list))
-		{
-			free(key);
-			free(value);
-			return (1);
-		}
-	}
-	free(key);
-	free(value);
-	return (0);
+    syntax = export_syntax_error(arg);
+    if (syntax != 1)
+    {
+        if (syntax == 2)
+            return (2);
+        return (1);
+    }
+    if (!split_var(arg, &key, &value))
+        return (1);
+    
+    if (!ft_setenv(key, value, env_list))
+    {
+        free(key);
+        free(value);
+        return (1);
+    }
+    free(key);
+    free(value);
+    return (0);
 }
+
 
 int	ft_export(char **args, t_env **env_list)
 {

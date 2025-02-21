@@ -6,15 +6,12 @@
 /*   By: abdsalah <abdsalah@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/17 05:23:33 by abdsalah          #+#    #+#             */
-/*   Updated: 2025/02/17 05:25:46 by abdsalah         ###   ########.fr       */
+/*   Updated: 2025/02/21 23:55:01 by abdsalah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../../include/minishell.h"
 
-/*
-** appeand_mode: if key ends with '+' then append value to the old value.
-*/
 int	appeand_mode(char *key, char *value, t_env **env_list)
 {
 	char	*old_value;
@@ -38,22 +35,26 @@ int	appeand_mode(char *key, char *value, t_env **env_list)
 	return (1);
 }
 
-/*
-** set_or_append_env: Wraps appeand_mode and ft_setenv.
-*/
 int	set_or_append_env(char *key, char *value, t_env **env_list)
 {
-	if (!appeand_mode(key, value, env_list))
-	{
-		free(key);
-		free(value);
-		return (1);
-	}
-	else if (!ft_setenv(key, value, env_list))
-	{
-		free(key);
-		free(value);
-		return (1);
-	}
-	return (0);
+    // Check if key ends with '+' for append mode
+    if (key[ft_strlen(key) - 1] == '+')
+    {
+        if (!appeand_mode(key, value, env_list))
+        {
+            free(key);
+            free(value);
+            return (1);
+        }
+    }
+    else
+    {
+        if (!ft_setenv(key, value, env_list))
+        {
+            free(key);
+            free(value);
+            return (1);
+        }
+    }
+    return (0);
 }
