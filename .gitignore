@@ -1,2 +1,5 @@
 .vscode/
 *.o
+minishell
+libft/libft.a
+42_minishell_tester/
